@@ -1,5 +1,5 @@
 <template>
-  <Form >
+  <Form :validation-schema="formSchema" @submit="onSubmit">
     <Stepper class="flex w-full items-start gap-2 relative" v-model="stepIndex">
       <StepperItem v-for="step in steps" :key="step.step" v-slot="{ state }"
         class="flex w-full flex-col items-center justify-center" :step="step.step">
@@ -29,14 +29,113 @@
 -->
       </StepperItem>
     </Stepper>
-    <div class="flex flex-col gap-4 mt-16 items-center min-w-2xl">
+    <div class="flex flex-col gap-4 mt-16 items-center min-w-screen p-2">
       <template v-if="stepIndex === 1">
+        <div class="flex flex-row px-2 gap-x-2">
+          <FormField v-slot="{ componentField }" name="firstName">
+            <FormItem>
+              <FormLabel>Nombre</FormLabel>
+              <FormControl>
+                <Input type="text" v-bind="componentField" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+          <FormField v-slot="{ componentField }" name="lastName">
+            <FormItem>
+              <FormLabel>Apellido</FormLabel>
+              <FormControl>
+                <Input type="text" v-bind="componentField" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+        </div>
+        <FormField v-slot="{ componentField }" name="id">
+          <FormItem>
+            <FormLabel>Numero de Identificacion (DPI o Pasaporte)</FormLabel>
+            <FormControl>
+              <Input type="text" v-bind="componentField" />
+            </FormControl>
+            <FormDescription class="text-xs">
+              *DPI solo valido para nacionales Guatemaltecos
+            </FormDescription>
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ componentField }" name="phone">
+          <FormItem>
+            <FormLabel>Telefono</FormLabel>
+            <FormControl>
+              <Input type="text" v-bind="componentField" />
+            </FormControl>
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ componentField }" name="email">
+          <FormItem>
+            <FormLabel>Correo Electronico</FormLabel>
+            <FormControl>
+              <Input type="text" v-bind="componentField" />
+            </FormControl>
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ componentField }" name="university">
+          <FormItem>
+            <FormLabel>Universidad</FormLabel>
+            <FormControl>
+              <Input type="text" v-bind="componentField" />
+            </FormControl>
+          </FormItem>
+        </FormField>
+      </template>
+
+
+      <template v-if="stepIndex === 2">
+        <div class="px-4 text-gray-800">
+          <p class="text-base font-medium">
+            Puedes realizar el pago con tu tarjeta de
+            <span class="font-bold text-brand-red">Débito o Crédito VISA, MASTERCARD</span>
+            por un monto de <span class="font-semibold">$45.00</span>.
+            <br />
+            <span class="text-sm text-muted-foreground">(No se aceptan transferencias)</span>
+          </p>
+
+          <ol class="list-decimal space-y-2 text-sm leading-relaxed">
+            <li>Ingresa tu nombre completo.</li>
+            <li>Ingresa tu correo electrónico.</li>
+            <li>Llena el formulario de pago con los datos de tu tarjeta.</li>
+            <li>Elige el país al que pertenece tu tarjeta.</li>
+            <li>Procede con el pago.</li>
+            <li>Guarda el link de tu pago exitoso en la opcion 'Compartir Comprobante'.</li>
+            <li>Recibirás un mensaje de confirmación en tu correo.</li>
+            <li>Ingresa el link del comprobante en el siguiente paso.</li>
+          </ol>
+
+          <Button as-child class="self-center">
+            <NuxtLink to="https://app.recurrente.com/checkout-session/ch_gzv3nkfdre74yqqq" class="text-center mt-2"
+              target="_blank">
+              <Icon name="lucide:wallet" />
+              Ingresa a este link para realizar tu pago
+            </NuxtLink>
+          </Button>
+        </div>
+      </template>
+
+      <template v-if="stepIndex === 3">
+        <FormField name="firstName">
+          <FormItem>
+            <FormLabel>Link de Comprobante</FormLabel>
+            <FormControl>
+              <Input type="text" />
+            </FormControl>
+          </FormItem>
+        </FormField>
+      </template>
+
+      <template v-if="stepIndex === 4">
         <div class="flex flex-row px-2 gap-x-2">
           <FormField name="firstName">
             <FormItem>
               <FormLabel>Nombre</FormLabel>
               <FormControl>
-                <Input type="text" />
+                <Input type="text" disabled />
               </FormControl>
             </FormItem>
           </FormField>
@@ -44,7 +143,7 @@
             <FormItem>
               <FormLabel>Apellido</FormLabel>
               <FormControl>
-                <Input type="text" />
+                <Input type="text" disabled />
               </FormControl>
             </FormItem>
           </FormField>
@@ -53,7 +152,7 @@
           <FormItem>
             <FormLabel>ID</FormLabel>
             <FormControl>
-              <Input type="text" />
+              <Input type="text" disabled />
             </FormControl>
           </FormItem>
         </FormField>
@@ -61,7 +160,7 @@
           <FormItem>
             <FormLabel>Telefono</FormLabel>
             <FormControl>
-              <Input type="text" />
+              <Input type="text" disabled />
             </FormControl>
           </FormItem>
         </FormField>
@@ -69,7 +168,7 @@
           <FormItem>
             <FormLabel>Correo Electronico</FormLabel>
             <FormControl>
-              <Input type="text" />
+              <Input type="text" disabled />
             </FormControl>
           </FormItem>
         </FormField>
@@ -77,41 +176,32 @@
           <FormItem>
             <FormLabel>Universidad</FormLabel>
             <FormControl>
-              <Input type="text" />
+              <Input type="text" disabled />
             </FormControl>
           </FormItem>
         </FormField>
       </template>
-
-      <template v-if="stepIndex === 2">
-        <h1>Lorem ipsum instruccion</h1>
-      </template>
-
-      <template v-if="stepIndex === 3">
-        <h1>Link de Pago</h1>
-      </template>
-
-      <template v-if="stepIndex === 4">
-        <h1>Nombre</h1>
-        <h1>Apellido</h1>
-        <h1>ID</h1>
-        <h1>Telefono</h1>
-        <h1>Correo Electronico</h1>
-        <h1>Universidad</h1>
-      </template>
     </div>
     <div class="absolute bottom-12 left-0 w-full grid grid-cols-2">
-      <Button variant="outline" class="rounded-none" @click="() => stepIndex--" :disabled="stepIndex === 1" type="button">
+      <Button variant="outline" class="rounded-none" @click="() => stepIndex--" :disabled="stepIndex === 1"
+        type="button">
         Anterior
       </Button>
-      <Button variant="outline" class="rounded-none" @click="() => stepIndex++" :disabled="stepIndex === steps.length" type="button">
+      <Button variant="outline" class="rounded-none" @click="() => stepIndex++" v-if="stepIndex !== steps.length"
+        type="button">
         Siguiente
+      </Button>
+      <Button as-child variant="outline" class="rounded-none" v-else type="button">
+        <NuxtLink to="https://app.recurrente.com/checkout-session/ch_gzv3nkfdre74yqqq" class="text-center"
+          target="_blank">
+          Finalizar Inscripcion
+        </NuxtLink>
       </Button>
     </div>
   </Form>
 </template>
 <script setup lang="ts">
-import { FormField } from "#components";
+import { FormField, NuxtLink } from "#components";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form } from "@/components/ui/form";
@@ -126,6 +216,23 @@ import {
 import FormControl from "~/components/ui/form/FormControl.vue";
 import FormItem from "~/components/ui/form/FormItem.vue";
 import FormLabel from "~/components/ui/form/FormLabel.vue";
+import FormDescription from "~/components/ui/form/FormDescription.vue";
+import { useForm } from "vee-validate";
+import * as z from 'zod'
+import { toTypedSchema } from '@vee-validate/zod'
+
+const formSchema = toTypedSchema(z.object({
+  firstName: z.string().min(1).max(50),
+  lastName: z.string().min(1).max(50),
+}))
+
+const form = useForm({
+  validationSchema: formSchema,
+})
+
+function onSubmit(values: any) {
+  console.log('Form submitted!', values)
+}
 
 const stepIndex = ref(1);
 const steps = [
