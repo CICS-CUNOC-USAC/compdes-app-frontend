@@ -29,7 +29,7 @@
 -->
       </StepperItem>
     </Stepper>
-    <div class="flex flex-col gap-4 mt-16 items-center">
+    <div class="flex flex-col gap-4 mt-16 items-center min-w-2xl">
       <template v-if="stepIndex === 1">
         <div class="flex flex-row px-2 gap-x-2">
           <FormField name="firstName">
