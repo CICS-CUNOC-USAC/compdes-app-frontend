@@ -80,7 +80,25 @@
           <FormItem>
             <FormLabel>Universidad</FormLabel>
             <FormControl>
-              <Input type="text" v-bind="componentField" />
+              <Select v-bind="componentField">
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona una universidad" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Red Compdes</SelectLabel>
+                    <SelectItem v-for="uni in compdesU" :key="uni" :value="uni">
+                      {{ uni }}
+                    </SelectItem>
+                  </SelectGroup>
+                  <SelectGroup>
+                    <SelectLabel>Guatemala</SelectLabel>
+                    <SelectItem v-for="uni in guatemalaU" :key="uni" :value="uni">
+                      {{ uni }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </FormControl>
           </FormItem>
         </FormField>
@@ -119,11 +137,11 @@
       </template>
 
       <template v-if="stepIndex === 3">
-        <FormField name="firstName">
+        <FormField name="receiptUrl" v-slot="{ componentField }">
           <FormItem>
             <FormLabel>Link de Comprobante</FormLabel>
             <FormControl>
-              <Input type="text" />
+              <Input type="text" v-bind="componentField" />
             </FormControl>
           </FormItem>
         </FormField>
@@ -220,10 +238,22 @@ import FormDescription from "~/components/ui/form/FormDescription.vue";
 import { useForm } from "vee-validate";
 import * as z from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
+import Select from "~/components/ui/select/Select.vue";
+import SelectTrigger from "~/components/ui/select/SelectTrigger.vue";
+import SelectValue from "~/components/ui/select/SelectValue.vue";
+import SelectContent from "~/components/ui/select/SelectContent.vue";
+import SelectGroup from "~/components/ui/select/SelectGroup.vue";
+import SelectLabel from "~/components/ui/select/SelectLabel.vue";
+import SelectItem from "~/components/ui/select/SelectItem.vue";
 
 const formSchema = toTypedSchema(z.object({
-  firstName: z.string().min(1).max(50),
-  lastName: z.string().min(1).max(50),
+  firstName: z.string().min(1, "Nombre requerido").max(50),
+  lastName: z.string().min(1, "Apellido requerido").max(50),
+  id: z.string().min(5, "Debe ingresar un ID válido"),
+  phone: z.string().min(6, "Número inválido"),
+  email: z.string().email("Correo inválido"),
+  university: z.string().min(1, "Universidad requerida"),
+  receiptUrl: z.string().url("Debe ingresar un enlace válido al comprobante"),
 }))
 
 const form = useForm({
@@ -261,4 +291,30 @@ const steps = [
     icon: "lucide:users",
   },
 ];
+
+const compdesU = [
+  "Bluefields Indian and Caribbean University (BICU).",
+  "Instituto Tecnológico de Costa Rica - Sede San Carlos (ITCR-SSC).",
+  "Universidad de Alcalá (UAH).",
+  "Universidad de El Salvador (UES).",
+  "Universidad de las Regiones Autónomas de la Costa Caribe Nicaragüense (URACCAN).",
+  "Universidad de San Carlos de Guatemala - Centro Universitario de Occidente (CUNOC-USAC).",
+  "Universidad Nacional Autonoma de Honduras (UNAH).",
+  "Universidad Nacional Autonoma de Nicaragua - León (UNAN-León).",
+  "Universidad Nacional Autonoma de Nicaragua - Managua (UNAN-Managua).",
+  "Universidad Nacional de Ingeniería (Nicaragua) (UNI).",
+  "Universidad de Costa Rica (UCR)."
+]
+
+const guatemalaU = [
+  "Universidad Mariano Gálvez.",
+  "Universidad Mesoamericana.",
+  "Universidad Regional de Guatemala.",
+  "Universidad Da Vinci.",
+  "Universidad Rural de Guatemala.",
+  "Universidad Rafael Landivar.",
+  "Universidad Galileo.",
+  "Universidad Panamericana.",
+  "Universidad de Occidente."
+]
 </script>
