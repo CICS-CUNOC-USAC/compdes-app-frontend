@@ -81,13 +81,13 @@
             <FormLabel>Universidad</FormLabel>
             <FormControl>
               <Select v-bind="componentField">
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecciona una universidad" />
+                <SelectTrigger class="truncate max-w-full">
+                  <SelectValue placeholder="Selecciona una universidad" class="max-w-[80vw] truncate" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent class="max-w-[95vw]">
                   <SelectGroup>
                     <SelectLabel>Red Compdes</SelectLabel>
-                    <SelectItem v-for="uni in compdesU" :key="uni" :value="uni">
+                    <SelectItem v-for="uni in compdesU" :key="uni" :value="uni" class="whitespace-normal break-words">
                       {{ uni }}
                     </SelectItem>
                   </SelectGroup>
@@ -302,7 +302,7 @@ const compdesU = [
   "Universidad Nacional Autonoma de Honduras (UNAH).",
   "Universidad Nacional Autonoma de Nicaragua - León (UNAN-León).",
   "Universidad Nacional Autonoma de Nicaragua - Managua (UNAN-Managua).",
-  "Universidad Nacional de Ingeniería (Nicaragua) (UNI).",
+  "Universidad Nacional de Ingenierí��a (Nicaragua) (UNI).",
   "Universidad de Costa Rica (UCR)."
 ]
 
