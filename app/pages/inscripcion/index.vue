@@ -1,5 +1,5 @@
 <template>
-  <Form :validation-schema="formSchema" @submit="onSubmit">
+  <Form :validation-schema="formSchema" @submit="onSubmit" class="w-full flex flex-col gap-4 h-full pt-8">
     <Stepper class="flex w-full items-start gap-2 relative" v-model="stepIndex">
       <StepperItem v-for="step in steps" :key="step.step" v-slot="{ state }"
         class="flex w-full flex-col items-center justify-center" :step="step.step">
@@ -29,7 +29,7 @@
 -->
       </StepperItem>
     </Stepper>
-    <div class="flex flex-col gap-4 mt-16 items-center min-w-screen p-2">
+    <div class="flex flex-col gap-4 mt-16 items-center w-full p-2 flex-1">
       <template v-if="stepIndex === 1">
         <div class="flex flex-row px-2 gap-x-2">
           <FormField v-slot="{ componentField }" name="firstName">
@@ -106,11 +106,11 @@
 
 
       <template v-if="stepIndex === 2">
-        <div class="px-4 text-gray-800">
+        <div class="px-4 text-foreground">
           <p class="text-base font-medium">
             Puedes realizar el pago con tu tarjeta de
-            <span class="font-bold text-brand-red">Débito o Crédito VISA, MASTERCARD</span>
-            por un monto de <span class="font-semibold">$45.00</span>.
+            <span class="font-semibold text-brand-red">Débito o Crédito VISA, MASTERCARD</span>
+            por un monto de <span class="font-black">$45.00</span>.
             <br />
             <span class="text-sm text-muted-foreground">(No se aceptan transferencias)</span>
           </p>
@@ -200,7 +200,7 @@
         </FormField>
       </template>
     </div>
-    <div class="absolute bottom-12 left-0 w-full grid grid-cols-2">
+    <div class="w-full grid grid-cols-2">
       <Button variant="outline" class="rounded-none" @click="() => stepIndex--" :disabled="stepIndex === 1"
         type="button">
         Anterior
