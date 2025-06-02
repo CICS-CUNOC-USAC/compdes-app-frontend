@@ -1,14 +1,17 @@
 <template>
-  <div class="text-center h-dvh px-6 bg-white" vaul-drawer-wrapper>
+  <div class="text-center h-svh px-6 bg-background" vaul-drawer-wrapper>
     <div class="flex gap-12 flex-col items-center justify-center h-full lg:grid lg:grid-cols-2 lg:gap-0">
       <section class="flex gap-7 flex-col items-center justify-center lg:border-r lg:border-neutral-200 lg:h-full">
-        <img src="~/assets/svg/compdes-logo.svg" alt="COMPDES Logo" class="size-32 mx-auto" />
+        <!-- <img src="~/assets/svg/compdes-logo.svg" alt="COMPDES Logo" class="size-32 mx-auto" /> -->
+         <CompdesIcon 
+          class="size-32 mx-auto fill-black dark:fill-white"
+         />
 
-        <h2 class="text-5xl text-neutral-700 font-bold">
+        <h2 class="text-5xl text-foreground font-bold">
           <strong>COMPDES</strong>
           <span class="text-brand-green"> 2025</span>
         </h2>
-        <p class="text-xl text-center text-neutral-600">
+        <p class="text-xl text-center text-muted-foreground">
           Ciencias de la Computación aplicadas a la Ingeniería
         </p>
       </section>
@@ -37,6 +40,7 @@
 </template>
 <script setup>
 import { NuxtLink } from "#components";
+import CompdesIcon from "~/components/icons/CompdesIcon.vue";
 import Button from "~/components/ui/button/Button.vue";
 </script>
 <style scoped></style>
