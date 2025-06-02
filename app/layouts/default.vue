@@ -5,9 +5,9 @@
     </header> -->
     <SidebarProvider>
       <AppSidebar />
-      <main class="w-full pt-8 relative">
+      <main class="w-full min-h-screen flex flex-col">
         <div
-          class="flex py-2 px-3.5 z-50 w-full justify-between gap-x-2 absolute top-0"
+          class="flex py-2 px-3.5 z-50 w-full justify-between gap-x-2 sticky top-0 bg-background/80 backdrop-blur"
         >
           <section class="flex items-center gap-x-2">
             <SidebarTrigger>
@@ -64,7 +64,9 @@
             </Button> -->
           </section>
         </div>
-        <NuxtPage />
+        <div class="flex-1">
+          <NuxtPage />
+        </div>
       </main>
     </SidebarProvider>
 
