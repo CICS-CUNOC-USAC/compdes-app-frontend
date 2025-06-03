@@ -168,11 +168,11 @@ async function loadSalonData() {
   // const response = await fetch(`endpoint`);
   // const data = await response.json();
 
-  initialValues.value = { ...data };
+  /*initialValues.value = { ...data };
 
   if (resetFormFn) {
     resetFormFn({ values: data });
-  }
+  }*/
 }
 
 function onSubmit(values: any) {
