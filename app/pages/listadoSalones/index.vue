@@ -11,7 +11,7 @@
         <div class="overflow-x-auto">
             <table class="min-w-full border border-gray-300 rounded-md">
                 <thead>
-                    <tr class="bg-gray-100">
+                      <tr class="bg-gray-800 text-white">
                         <th class="text-left p-3 border-b border-gray-300">Nombre</th>
                         <th class="text-left p-3 border-b border-gray-300">Ubicación</th>
                         <th class="text-left p-3 border-b border-gray-300">Capacidad</th>
@@ -19,7 +19,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="salon in salones" :key="salon.id" class="hover:bg-gray-50">
+                    <tr v-for="salon in salones" :key="salon.id" class="hover:bg-gray-700 text-white">
                         <td class="p-3 border-b border-gray-300">{{ salon.name }}</td>
                         <td class="p-3 border-b border-gray-300">{{ salon.location }}</td>
                         <td class="p-3 border-b border-gray-300">{{ salon.space }}</td>

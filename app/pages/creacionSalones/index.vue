@@ -1,88 +1,84 @@
 <template>
-  <Form :validation-schema="formSchema" @submit="onSubmit">
+  <!-- <button
+  @click="() => stepIndex++"
+  >
+    test
+  </button> -->
 
-    <div class="mb-6">
-      <Button variant="outline" class="flex items-center ml-8" @click="volver" type="button">
-        <Icon name="lucide:arrow-left" class="mr-2" />
-        Volver
-      </Button>
-    </div>
+  <div class="mb-6">
+    <Button variant="outline" class="flex items-center ml-8" @click="volver" type="button">
+      <Icon name="lucide:arrow-left" class="mr-2" />
+      Volver
+    </Button>
+  </div>
 
-
-    <Stepper class="flex w-full items-start gap-2 relative lg:-ml-90" v-model="stepIndex">
-
+  <div class="flex flex-col h-full pt-4">
+    <Stepper class="flex w-full items-start gap-2 relative" v-model="stepIndex">
       <StepperItem v-for="step in steps" :key="step.step" v-slot="{ state }"
         class="flex w-full flex-col items-center justify-center" :step="step.step">
-        <StepperSeparator v-if="step.step !== steps[steps.length - 1].step"
-          class="absolute left-[calc(0%+40px)] right-[calc(-0%+30px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary" />
+        <!-- <StepperSeparator
+          v-if="step.step !== steps[steps.length - 1].step"
+          class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary"
+        /> -->
 
-        <div class="z-10 rounded-full shrink-0 p-2"
-          :class="[state === 'active' && 'outline-2 outline-ring outline-offset-2']" @click="() => undefined">
+        <div class="z-10 rounded-full shrink-0 p-2" :class="[
+          state === 'active' && 'outline-2 outline-ring outline-offset-2',
+        ]" @click="() => undefined">
           <Icon name="lucide:check" v-if="state === 'completed'" />
           <Icon :name="step.icon" v-else />
         </div>
 
         <StepperTitle :class="[state === 'active' && 'text-primary']"
-          class="absolute top-full mt-4 w-max -translate-x-1/2 left-1/2 text-xl font-semibold transition lg:text-base"
+          class="absolute top-full mt-4 w-max -translate-x-1/2 left-1/2 text-xl font-semibold"
           v-if="state === 'active'">
           {{ step.title }}
         </StepperTitle>
       </StepperItem>
     </Stepper>
+    <!-- <div class="flex flex-col gap-4 mt-16 items-center w-full p-2 flex-1"> -->
+    <Form Form :validation-schema="formSchema" @submit="onSubmit" keep-values class="flex flex-col flex-1 pt-6">
+      <div class="flex-1 overflow-auto self-center w-full max-w-xl px-1 pt-20">
+        <template v-if="stepIndex === 1">
+          <div class="w-full max-w-2xl px-2 flex flex-col gap-4">
+            <FormField v-slot="{ componentField }" name="name">
+              <FormItem>
+                <FormLabel>Nombre</FormLabel>
+                <FormControl>
+                  <Input type="text" v-bind="componentField" />
+                </FormControl>
+              </FormItem>
+            </FormField>
 
-    <div class="flex flex-col gap-8 mt-16 items-start min-w-screen p-2 lg:ml-100">
+            <FormField v-slot="{ componentField }" name="location">
+              <FormItem>
+                <FormLabel>Ubicación</FormLabel>
+                <FormControl>
+                  <Input type="text" v-bind="componentField" />
+                </FormControl>
+              </FormItem>
+            </FormField>
 
-      <template v-if="stepIndex === 1">
-        <div class="w-full max-w-2xl px-2 flex flex-col gap-4">
-          <FormField v-slot="{ componentField }" name="name">
-            <FormItem>
-              <FormLabel>Nombre</FormLabel>
-              <FormControl>
-                <Input type="text" v-bind="componentField" />
-              </FormControl>
-            </FormItem>
-          </FormField>
+            <FormField v-slot="{ componentField }" name="space">
+              <FormItem>
+                <FormLabel>Capacidad</FormLabel>
+                <FormControl>
+                  <Input type="text" v-bind="componentField" />
+                </FormControl>
+              </FormItem>
+            </FormField>
+            <div class="w-full sticky bottom-0 bg-background flex justify-end px-4 py-3 pt-20"
+              v-if="stepIndex === steps.length">
+              <Button variant="outline" class="rounded-none" type="submit">
+                Guardar Salón
+              </Button>
+            </div>
+          </div>
+        </template>
+      </div>
 
-          <FormField v-slot="{ componentField }" name="location">
-            <FormItem>
-              <FormLabel>Ubicación</FormLabel>
-              <FormControl>
-                <Input type="text" v-bind="componentField" />
-              </FormControl>
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="space">
-            <FormItem>
-              <FormLabel>Capacidad</FormLabel>
-              <FormControl>
-                <Input type="text" v-bind="componentField" />
-              </FormControl>
-            </FormItem>
-          </FormField>
-        </div>
-      </template>
-    </div>
-
-    <div class="absolute bottom-12 left-0 w-full grid grid-cols-2 gap-px">
-      <!-- Botón Anterior: solo visible si hay más de un paso -->
-      <Button v-if="steps.length > 1" variant="outline" class="rounded-none" @click="() => stepIndex--"
-        :disabled="stepIndex === 1" type="button">
-        Anterior
-      </Button>
-
-      <Button variant="outline" class="rounded-none" @click="() => stepIndex++" v-if="stepIndex !== steps.length"
-        type="button">
-        Siguiente
-      </Button>
-
-      <!-- Botón Guardar: ocupa ambas columnas si es el único visible -->
-      <Button variant="outline" class="rounded-none text-left lg:ml-50" v-else
-        :class="steps.length === 1 ? 'col-span-2' : ''" type="submit">
-        Guardar Salón
-      </Button>
-    </div>
-  </Form>
+    </Form>
+    <!-- </div> -->
+  </div>
 </template>
 
 <script setup lang="ts">
