@@ -1,9 +1,4 @@
 <template>
-  <!-- <button
-  @click="() => stepIndex++"
-  >
-    test
-  </button> -->
   <div class="flex flex-col h-full pt-4">
     <Stepper class="flex w-full items-start gap-2 relative" v-model="stepIndex">
       <StepperItem
@@ -45,7 +40,7 @@
       keep-values
       class="flex flex-col flex-1 pt-6"
     >
-      <div class="flex-1 overflow-auto self-center w-full max-w-xl px-4">
+      <div class="flex-1 overflow-auto self-center w-full max-w-xl px-4 pt-10">
         <template v-if="stepIndex === 1">
           <fieldset class="gap-4 grid grid-cols-1">
             <FormField v-slot="{ componentField }" name="firstName">
@@ -67,7 +62,10 @@
                 <FormMessage name="lastName" />
               </FormItem>
             </FormField>
-            <FormField v-slot="{ componentField }" name="id">
+            <FormField
+              v-slot="{ componentField }"
+              name="identificationDocument"
+            >
               <FormItem>
                 <FormLabel icon="lucide:id-card"
                   >Numero de Identificacion (DPI o Pasaporte)</FormLabel
@@ -100,7 +98,7 @@
               </FormItem>
             </FormField>
 
-            <FormField v-slot="{ componentField }" name="university">
+            <FormField v-slot="{ componentField }" name="organisation">
               <FormItem>
                 <FormLabel icon="lucide:school">Universidad</FormLabel>
 
@@ -211,12 +209,16 @@
         </template>
 
         <template v-if="stepIndex === 3">
-          <FormField name="receiptUrl" v-slot="{ componentField }">
+          <FormField name="link" v-slot="{ componentField }">
             <FormItem>
               <FormLabel>Link de Comprobante</FormLabel>
               <FormControl>
                 <Input type="text" v-bind="componentField" />
               </FormControl>
+              <FormDescription class="text-xs">
+                Ingresa el link del comprobante de pago exitoso.
+              </FormDescription>
+              <FormMessage name="link" />
             </FormItem>
           </FormField>
         </template>
@@ -277,29 +279,41 @@
       <div class="w-full grid grid-cols-2 sticky bottom-0 bg-background">
         <Button
           variant="outline"
-          class="rounded-none"
+          class="rounded-none bg-gradient-to-b from-white to-white hover:from-white hover:to-ghost-white transition duration-200 group"
           @click="handlePrevStep"
           :disabled="stepIndex === 1"
           type="button"
         >
+          <Icon
+            name="lucide:chevron-left"
+            class="group-hover:-translate-x-1 transition-transform duration-200"
+          />
           Anterior
         </Button>
         <Button
           variant="outline"
-          class="rounded-none"
+          class="rounded-none bg-gradient-to-b from-white to-white hover:from-white hover:to-ghost-white transition duration-200 group"
           v-if="stepIndex !== steps.length"
           type="submit"
         >
           Siguiente
+          <Icon
+            name="lucide:chevron-right"
+            class="group-hover:translate-x-1 transition-transform duration-200"
+          />
         </Button>
 
         <Button
           variant="outline"
-          class="rounded-none"
+          class="rounded-none bg-gradient-to-b from-white to-white hover:from-white hover:to-ghost-white transition duration-200 group"
           v-if="stepIndex === steps.length"
           type="submit"
         >
           Finalizar
+          <Icon
+            name="lucide:check"
+            class="group-hover:translate-x-1 transition-transform duration-200"
+          />
         </Button>
       </div>
     </Form>
@@ -311,15 +325,8 @@
   import { Button } from "@/components/ui/button";
   import { Form } from "@/components/ui/form";
   import { Input } from "@/components/ui/input";
-  import {
-    Stepper,
-    StepperItem,
-    StepperSeparator,
-    StepperTitle,
-  } from "@/components/ui/stepper";
+  import { Stepper, StepperItem, StepperTitle } from "@/components/ui/stepper";
   import { toTypedSchema } from "@vee-validate/zod";
-  import { ComboboxLabel } from "reka-ui";
-  import { ErrorMessage, Field, useForm } from "vee-validate";
   import * as z from "zod";
   import Combobox from "~/components/ui/combobox/Combobox.vue";
   import ComboboxAnchor from "~/components/ui/combobox/ComboboxAnchor.vue";
@@ -334,35 +341,6 @@
   import FormDescription from "~/components/ui/form/FormDescription.vue";
   import FormItem from "~/components/ui/form/FormItem.vue";
   import FormLabel from "~/components/ui/form/FormLabel.vue";
-  import Select from "~/components/ui/select/Select.vue";
-  import SelectContent from "~/components/ui/select/SelectContent.vue";
-  import SelectGroup from "~/components/ui/select/SelectGroup.vue";
-  import SelectItem from "~/components/ui/select/SelectItem.vue";
-  import SelectLabel from "~/components/ui/select/SelectLabel.vue";
-  import SelectTrigger from "~/components/ui/select/SelectTrigger.vue";
-  import SelectValue from "~/components/ui/select/SelectValue.vue";
-
-  const languages = [
-    { label: "English", value: "en" },
-    { label: "French", value: "fr" },
-    { label: "German", value: "de" },
-    { label: "Spanish", value: "es" },
-    { label: "Portuguese", value: "pt" },
-    { label: "Russian", value: "ru" },
-    { label: "Japanese", value: "ja" },
-    { label: "Korean", value: "ko" },
-    { label: "Chinese", value: "zh" },
-  ] as const;
-
-  const frameworks = [
-    { value: "next.js", label: "Next.js" },
-    { value: "sveltekit", label: "SvelteKit" },
-    { value: "nuxt", label: "Nuxt" },
-    { value: "remix", label: "Remix" },
-    { value: "astro", label: "Astro" },
-  ];
-
-  const value = ref<(typeof frameworks)[0]>();
 
   const stepIndex = ref(1);
   const schemas = [
@@ -376,7 +354,7 @@
           .string({ message: "Campo requerido" })
           .min(1, "El apellido debe contener al menos 1 caracter")
           .max(100),
-        id: z
+        identificationDocument: z
           .string({ message: "Campo requerido" })
           .min(5, "DPI o Pasaporte requerido"),
         phone: z
@@ -385,8 +363,8 @@
         email: z
           .string({ message: "Campo requerido" })
           .email("Correo inválido"),
-        university: z.string({ message: "Campo requerido" }).min(1),
-        // receiptUrl: z
+        organisation: z.string({ message: "Campo requerido" }).min(1),
+        // link: z
         //   .string()
         //   .url("Debe ingresar un enlace válido al comprobante"),
       }),
@@ -394,9 +372,9 @@
     undefined, // Step 2 does not require validation
     toTypedSchema(
       z.object({
-        receiptUrl: z
-          .string()
-          .url("Debe ingresar un enlace válido al comprobante"),
+        link: z
+          .string({ message: "Campo requerido" })
+          .url("Debes ingresar un enlace válido al comprobante"),
       }),
     ),
   ];
@@ -407,6 +385,12 @@
   function handleNextStep(values) {
     console.log("Current Step: ", values);
     if (stepIndex.value === 4) {
+      const { link } = values;
+      delete values.link;
+      values.paymentProof = {
+        link,
+      };
+
       console.log("Done: ", JSON.stringify(values, null, 2));
       return;
     }
