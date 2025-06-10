@@ -108,7 +108,7 @@
                 <FormControl>
                   <Datepicker :model-value="componentField.modelValue" @update:model-value="componentField.onChange"
                     :enable-time-picker="true" :minute-increment="5" locale="es" format="yyyy-MM-dd HH:mm"
-                    placeholder="Selecciona fecha y hora" auto-apply class="w-full" />
+                    placeholder="Selecciona fecha y hora" auto-apply class="w-full rounded-lg" />
                 </FormControl>
                 <FormMessage name="sheduledDate" />
               </FormItem>

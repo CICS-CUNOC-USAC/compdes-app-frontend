@@ -1,9 +1,4 @@
 <template>
-  <!-- <button
-  @click="() => stepIndex++"
-  >
-    test
-  </button> -->
   <div class="flex flex-col h-full pt-4">
     <Stepper class="flex w-full items-start gap-2 relative" v-model="stepIndex">
       <StepperItem
@@ -44,8 +39,9 @@
       :validation-schema="currentSchema"
       keep-values
       class="flex flex-col flex-1 pt-6"
+      #="{ values }"
     >
-      <div class="flex-1 overflow-auto self-center w-full max-w-xl px-4">
+      <div class="flex-1 overflow-auto self-center w-full max-w-xl px-4 pt-10">
         <template v-if="stepIndex === 1">
           <fieldset class="gap-4 grid grid-cols-1">
             <FormField v-slot="{ componentField }" name="firstName">
@@ -67,7 +63,10 @@
                 <FormMessage name="lastName" />
               </FormItem>
             </FormField>
-            <FormField v-slot="{ componentField }" name="id">
+            <FormField
+              v-slot="{ componentField }"
+              name="identificationDocument"
+            >
               <FormItem>
                 <FormLabel icon="lucide:id-card"
                   >Numero de Identificacion (DPI o Pasaporte)</FormLabel
@@ -100,7 +99,7 @@
               </FormItem>
             </FormField>
 
-            <FormField v-slot="{ componentField }" name="university">
+            <FormField v-slot="{ componentField }" name="organisation">
               <FormItem>
                 <FormLabel icon="lucide:school">Universidad</FormLabel>
 
@@ -110,7 +109,7 @@
                       <ComboboxTrigger as-child class="">
                         <Button
                           variant="outline"
-                          class="justify-between rounded-md py-2.5 min-w-full max-w-full"
+                          class="justify-between rounded-md py-2.5 min-w-full max-w-full normal-case tracking-normal"
                         >
                           <span class="truncate font-normal">
                             {{
@@ -167,6 +166,22 @@
                 <FormMessage name="university" />
               </FormItem>
             </FormField>
+            <FormField v-slot="{ value, handleChange }" name="isAuthor">
+              <FormItem class="flex items-center gap-2">
+                <FormControl>
+                  <Checkbox
+                    class="size-6"
+                    :default-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </FormControl>
+                <FormLabel class="cursor-pointer" icon="lucide:pencil-line"
+                  >¿Eres autor de un trabajo de
+                  investigacion/ponencia/taller?</FormLabel
+                >
+                <FormMessage name="isAuthor" />
+              </FormItem>
+            </FormField>
           </fieldset>
         </template>
         <template v-if="stepIndex === 2">
@@ -199,7 +214,7 @@
 
             <Button as-child class="self-center">
               <NuxtLink
-                to="https://app.recurrente.com/checkout-session/ch_gzv3nkfdre74yqqq"
+                to="https://app.recurrente.com/s/pago-compdes-2025-quetzaltenango/pago-de-inscripcion-a-congreso-compdes-2025-quetzaltenango-guatemala-qrauvp"
                 class="text-center mt-2"
                 target="_blank"
               >
@@ -211,95 +226,175 @@
         </template>
 
         <template v-if="stepIndex === 3">
-          <FormField name="receiptUrl" v-slot="{ componentField }">
-            <FormItem>
-              <FormLabel>Link de Comprobante</FormLabel>
-              <FormControl>
-                <Input type="text" v-bind="componentField" />
-              </FormControl>
-            </FormItem>
-          </FormField>
+          <h3>
+            Elige el método de pago que utilizaste e ingresa el comprobante de
+            pago
+          </h3>
+          <Tabs default-value="recurrente" class="w-[400px]">
+            <TabsList class="grid w-full grid-cols-2">
+              <TabsTrigger value="recurrente">
+                A través de Recurrente
+              </TabsTrigger>
+              <TabsTrigger value="transfer">
+                A través de Transferencia
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="recurrente">
+              <FormField name="link" v-slot="{ componentField }">
+                <FormItem>
+                  <FormLabel>Link de Comprobante</FormLabel>
+                  <FormControl>
+                    <Input type="text" v-bind="componentField" />
+                  </FormControl>
+                  <FormDescription class="text-xs">
+                    Ingresa el link del comprobante de pago exitoso.
+                  </FormDescription>
+                  <FormMessage name="link" />
+                </FormItem>
+              </FormField>
+            </TabsContent>
+            <TabsContent value="transfer">
+              <FormField name="file" v-slot="{ componentField }">
+                <!-- TODO: cambiar el uso del input a controlado en lugar de no controlado, usando la data que devuelve el scoped slot -->
+                <FormItem>
+                  <FormLabel>Archivo de Comprobante</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      v-bind="componentField"
+                      accept="image/*,application/pdf"
+                    />
+                  </FormControl>
+                  <FormDescription class="text-xs">
+                    Selecciona el comprobante de pago exitoso.
+                  </FormDescription>
+                  <FormMessage name="file" />
+                </FormItem>
+              </FormField>
+            </TabsContent>
+          </Tabs>
         </template>
 
         <template v-if="stepIndex === 4">
-          <div class="flex flex-row px-2 gap-x-2">
-            <FormField name="firstName">
+          <fieldset class="gap-4 grid grid-cols-1">
+            <FormField v-slot="{ componentField }" name="firstName">
               <FormItem>
-                <FormLabel>Nombre</FormLabel>
-                <FormControl>
-                  <Input type="text" disabled />
-                </FormControl>
+                <FormLabel icon="lucide:user">Nombre</FormLabel>
+                <Input readonly type="text" v-bind="componentField" />
               </FormItem>
             </FormField>
-            <FormField name="lastName">
+            <FormField v-slot="{ componentField }" name="lastName">
               <FormItem>
-                <FormLabel>Apellido</FormLabel>
-                <FormControl>
-                  <Input type="text" disabled />
-                </FormControl>
+                <FormLabel icon="lucide:user"> Apellido </FormLabel>
+                <Input readonly type="text" v-bind="componentField" />
               </FormItem>
             </FormField>
-          </div>
-          <FormField name="id">
-            <FormItem>
-              <FormLabel>ID</FormLabel>
-              <FormControl>
-                <Input type="text" disabled />
-              </FormControl>
-            </FormItem>
-          </FormField>
-          <FormField name="phone">
-            <FormItem>
-              <FormLabel>Telefono</FormLabel>
-              <FormControl>
-                <Input type="text" disabled />
-              </FormControl>
-            </FormItem>
-          </FormField>
-          <FormField name="email">
-            <FormItem>
-              <FormLabel>Correo Electronico</FormLabel>
-              <FormControl>
-                <Input type="text" disabled />
-              </FormControl>
-            </FormItem>
-          </FormField>
-          <FormField name="university">
-            <FormItem>
-              <FormLabel>Universidad</FormLabel>
-              <FormControl>
-                <Input type="text" disabled />
-              </FormControl>
-            </FormItem>
-          </FormField>
+            <FormField
+              v-slot="{ componentField }"
+              name="identificationDocument"
+            >
+              <FormItem>
+                <FormLabel icon="lucide:id-card"
+                  >Numero de Identificacion (DPI o Pasaporte)</FormLabel
+                >
+                <Input readonly type="text" v-bind="componentField" />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="phone">
+              <FormItem>
+                <FormLabel icon="lucide:phone">Telefono</FormLabel>
+                <Input readonly type="text" v-bind="componentField" />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="email">
+              <FormItem>
+                <FormLabel icon="lucide:mail">Correo Electronico</FormLabel>
+                <Input readonly type="text" v-bind="componentField" />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="organisation">
+              <FormItem>
+                <FormLabel icon="lucide:school">Universidad</FormLabel>
+                <Input readonly type="text" v-bind="componentField" />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField, value }" name="link">
+              <!-- <template v-if="value.link"> -->
+                <FormItem>
+                  <FormLabel>Link de Comprobante</FormLabel>
+                  <Input readonly type="text" v-bind="componentField" />
+                </FormItem>
+              <!-- </template> -->
+            </FormField>
+            <!-- <FormField v-slot="{ componentField, value }" name="file">
+              <template v-if="value.file">
+                <FormItem>
+                  <FormLabel>Archivo de Comprobante</FormLabel>
+                  <Input
+                    readonly
+                    type="text"
+                    v-bind="componentField"
+                    :value="value.file.name"
+                  />
+                </FormItem>
+              </template>
+            </FormField> -->
+            <FormField v-slot="{ value }" name="isAuthor">
+              <FormItem class="flex items-center gap-2">
+                <FormControl>
+                  <Checkbox
+                    class="size-6"
+                    :default-value="value"
+                    disabled
+                  />
+                </FormControl>
+                <FormLabel class="cursor-pointer" icon="lucide:pencil-line"
+                  >¿Eres autor de un trabajo de
+                  investigacion/ponencia/taller?</FormLabel
+                >
+              </FormItem>
+            </FormField>
+          </fieldset>
         </template>
       </div>
       <div class="w-full grid grid-cols-2 sticky bottom-0 bg-background">
         <Button
           variant="outline"
-          class="rounded-none"
+          class="rounded-none bg-gradient-to-b from-white to-white hover:from-white hover:to-ghost-white transition duration-200 group"
           @click="handlePrevStep"
           :disabled="stepIndex === 1"
           type="button"
         >
+          <Icon
+            name="lucide:chevron-left"
+            class="group-hover:-translate-x-1 transition-transform duration-200"
+          />
           Anterior
         </Button>
         <Button
           variant="outline"
-          class="rounded-none"
+          class="rounded-none bg-gradient-to-b from-white to-white hover:from-white hover:to-ghost-white transition duration-200 group"
           v-if="stepIndex !== steps.length"
           type="submit"
         >
           Siguiente
+          <Icon
+            name="lucide:chevron-right"
+            class="group-hover:translate-x-1 transition-transform duration-200"
+          />
         </Button>
 
         <Button
           variant="outline"
-          class="rounded-none"
+          class="rounded-none bg-gradient-to-b from-white to-white hover:from-white hover:to-ghost-white transition duration-200 group"
           v-if="stepIndex === steps.length"
           type="submit"
         >
           Finalizar
+          <Icon
+            name="lucide:check"
+            class="group-hover:translate-x-1 transition-transform duration-200"
+          />
         </Button>
       </div>
     </Form>
@@ -311,16 +406,10 @@
   import { Button } from "@/components/ui/button";
   import { Form } from "@/components/ui/form";
   import { Input } from "@/components/ui/input";
-  import {
-    Stepper,
-    StepperItem,
-    StepperSeparator,
-    StepperTitle,
-  } from "@/components/ui/stepper";
+  import { Stepper, StepperItem, StepperTitle } from "@/components/ui/stepper";
   import { toTypedSchema } from "@vee-validate/zod";
-  import { ComboboxLabel } from "reka-ui";
-  import { ErrorMessage, Field, useForm } from "vee-validate";
   import * as z from "zod";
+  import Checkbox from "~/components/ui/checkbox/Checkbox.vue";
   import Combobox from "~/components/ui/combobox/Combobox.vue";
   import ComboboxAnchor from "~/components/ui/combobox/ComboboxAnchor.vue";
   import ComboboxEmpty from "~/components/ui/combobox/ComboboxEmpty.vue";
@@ -334,35 +423,10 @@
   import FormDescription from "~/components/ui/form/FormDescription.vue";
   import FormItem from "~/components/ui/form/FormItem.vue";
   import FormLabel from "~/components/ui/form/FormLabel.vue";
-  import Select from "~/components/ui/select/Select.vue";
-  import SelectContent from "~/components/ui/select/SelectContent.vue";
-  import SelectGroup from "~/components/ui/select/SelectGroup.vue";
-  import SelectItem from "~/components/ui/select/SelectItem.vue";
-  import SelectLabel from "~/components/ui/select/SelectLabel.vue";
-  import SelectTrigger from "~/components/ui/select/SelectTrigger.vue";
-  import SelectValue from "~/components/ui/select/SelectValue.vue";
-
-  const languages = [
-    { label: "English", value: "en" },
-    { label: "French", value: "fr" },
-    { label: "German", value: "de" },
-    { label: "Spanish", value: "es" },
-    { label: "Portuguese", value: "pt" },
-    { label: "Russian", value: "ru" },
-    { label: "Japanese", value: "ja" },
-    { label: "Korean", value: "ko" },
-    { label: "Chinese", value: "zh" },
-  ] as const;
-
-  const frameworks = [
-    { value: "next.js", label: "Next.js" },
-    { value: "sveltekit", label: "SvelteKit" },
-    { value: "nuxt", label: "Nuxt" },
-    { value: "remix", label: "Remix" },
-    { value: "astro", label: "Astro" },
-  ];
-
-  const value = ref<(typeof frameworks)[0]>();
+  import Tabs from "~/components/ui/tabs/Tabs.vue";
+  import TabsContent from "~/components/ui/tabs/TabsContent.vue";
+  import TabsList from "~/components/ui/tabs/TabsList.vue";
+  import TabsTrigger from "~/components/ui/tabs/TabsTrigger.vue";
 
   const stepIndex = ref(1);
   const schemas = [
@@ -376,7 +440,7 @@
           .string({ message: "Campo requerido" })
           .min(1, "El apellido debe contener al menos 1 caracter")
           .max(100),
-        id: z
+        identificationDocument: z
           .string({ message: "Campo requerido" })
           .min(5, "DPI o Pasaporte requerido"),
         phone: z
@@ -385,19 +449,32 @@
         email: z
           .string({ message: "Campo requerido" })
           .email("Correo inválido"),
-        university: z.string({ message: "Campo requerido" }).min(1),
-        // receiptUrl: z
+        organisation: z.string({ message: "Campo requerido" }).min(1),
+        isAuthor: z.boolean().default(false),
+        // link: z
         //   .string()
         //   .url("Debe ingresar un enlace válido al comprobante"),
       }),
     ),
     undefined, // Step 2 does not require validation
     toTypedSchema(
-      z.object({
-        receiptUrl: z
-          .string()
-          .url("Debe ingresar un enlace válido al comprobante"),
-      }),
+      z
+        .object({
+          link: z
+            .string({ message: "Campo requerido" })
+            .url("Debes ingresar un enlace válido al comprobante"),
+        })
+        .or(
+          z.object({
+            file: z
+              .instanceof(File, {
+                message: "Debes seleccionar un archivo de comprobante",
+              })
+              .refine((file) => file.size > 0, {
+                message: "El archivo no puede estar vacío",
+              }),
+          }),
+        ),
     ),
   ];
   const currentSchema = computed(() => {
@@ -405,8 +482,13 @@
   });
 
   function handleNextStep(values) {
-    console.log("Current Step: ", values);
     if (stepIndex.value === 4) {
+      const { link } = values;
+      delete values.link;
+      values.paymentProof = {
+        link,
+      };
+
       console.log("Done: ", JSON.stringify(values, null, 2));
       return;
     }
