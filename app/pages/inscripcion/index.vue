@@ -606,7 +606,7 @@
   import TabsTrigger from "~/components/ui/tabs/TabsTrigger.vue";
   import { createInscription } from "~/lib/api/inscriptions";
 
-  const stepIndex = ref(2);
+  const stepIndex = ref(1);
   const schemas = [
     toTypedSchema(
       z.object({
