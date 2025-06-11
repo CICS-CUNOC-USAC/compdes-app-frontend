@@ -1,4 +1,4 @@
-export async function createInscription(data: {
+export interface InscriptionData {
   firstName: string;
   lastName: string;
   email: string;
@@ -10,7 +10,9 @@ export async function createInscription(data: {
     link: string;
   };
   file?: File;
-}) {
+}
+export async function createInscription(data: InscriptionData) {
+  console.log("Creating inscription with data:", data);
   const formData = new FormData();
   formData.append("firstName", data.firstName);
   formData.append("lastName", data.lastName);
@@ -25,9 +27,9 @@ export async function createInscription(data: {
   if (data.file) {
     formData.append("file", data.file);
   }
-  console.log("FormData:", formData);
-  // const response = await $api("/participants", {
-  //   method: "POST",
-  //   body: formData,
-  // });
+  const response = await $api("/participants", {
+    method: "POST",
+    body: formData,
+  });
+  return response;
 }

@@ -27,17 +27,17 @@
                 </Button>
               </DialogTrigger>
               <DialogContent
-                class="sm:max-w-[425px] grid-rows-[auto_minmax(0,1fr)_auto] p-0 max-h-[90dvh]"
+                class="sm:max-w-[700px] grid-rows-[auto_minmax(0,1fr)_auto] p-0 max-h-[90dvh]"
               >
                 <DialogHeader class="p-6 pb-0">
-                  <DialogTitle>Edit profile</DialogTitle>
+                  <DialogTitle>Dudas frecuentes</DialogTitle>
                   <DialogDescription>
-                    Make changes to your profile here. Click save when you're
-                    done.
+                    Tienes alguna duda sobre el evento? Aquí encontrarás
+                    respuestas a las preguntas más comunes.
                   </DialogDescription>
                 </DialogHeader>
-                <div class="grid gap-4 py-4 overflow-y-auto px-6">
-                  <div class="flex flex-col justify-between h-[300dvh]">
+                <div class="grid gap-4 py-4 overflow-y-auto ">
+                  <!-- <div class="flex flex-col justify-between h-[300dvh]">
                     <p>
                       This is some placeholder content to show the scrolling
                       behavior for modals. We use repeated line breaks to
@@ -50,10 +50,13 @@
                     <p>
                       This content should appear at the bottom after you scroll.
                     </p>
-                  </div>
+                  </div> -->
+                  <FaqContent />
                 </div>
                 <DialogFooter class="p-6 pt-0">
-                  <Button type="submit"> Save changes </Button>
+                  <Button type="submit" size="sm">
+                    <Icon name="lucide:x" class="size-4" />
+                    Cerrar </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -79,7 +82,16 @@
   import AppSidebar from "~/components/AppSidebar.vue";
   import SidebarProvider from "~/components/ui/sidebar/SidebarProvider.vue";
   import SidebarTrigger from "~/components/ui/sidebar/SidebarTrigger.vue";
-  import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "~/components/ui/dialog";
+  import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+  } from "~/components/ui/dialog";
   import { Button } from "~/components/ui/button";
+  import FaqContent from "~/components/content/FaqContent.vue";
 </script>
 <style scoped></style>
