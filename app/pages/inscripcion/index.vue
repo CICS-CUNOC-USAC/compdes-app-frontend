@@ -574,7 +574,7 @@
     <!-- </div> -->
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
   import { FormField, NuxtLink } from "#components";
   import { Button } from "@/components/ui/button";
   import { Form } from "@/components/ui/form";
