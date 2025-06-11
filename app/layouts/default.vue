@@ -36,7 +36,7 @@
                     respuestas a las preguntas más comunes.
                   </DialogDescription>
                 </DialogHeader>
-                <div class="grid gap-4 py-4 overflow-y-auto ">
+                <div class="grid gap-4 py-4 overflow-y-auto">
                   <!-- <div class="flex flex-col justify-between h-[300dvh]">
                     <p>
                       This is some placeholder content to show the scrolling
@@ -54,9 +54,12 @@
                   <FaqContent />
                 </div>
                 <DialogFooter class="p-6 pt-0">
-                  <Button type="submit" size="sm">
-                    <Icon name="lucide:x" class="size-4" />
-                    Cerrar </Button>
+                  <DialogClose as-child>
+                    <Button type="submit" size="sm">
+                      <Icon name="lucide:x" class="size-4" />
+                      Cerrar
+                    </Button>
+                  </DialogClose>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
