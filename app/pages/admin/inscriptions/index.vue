@@ -1,8 +1,23 @@
 <template>
-  <div class="max-w-5xl mx-auto p-4">
+  <div class="container mx-auto pt-4">
+    <div class="mb-3">
+      <Button as-child size="sm" variant="link">
+        <NuxtLink to="/admin/home">
+          <Icon name="lucide:arrow-left" />
+          Volver a Inicio
+        </NuxtLink>
+      </Button>
+    </div>
+
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
-      <Button to="/">Crear Inscripción</Button>
+
+      <Button size="sm" as-child>
+        <NuxtLink to="/admin/inscriptions/new">
+          <Icon name="lucide:plus" />
+          Crear Inscripción
+        </NuxtLink>
+      </Button>
     </div>
 
     <div v-if="status == 'pending'" class="p-4 text-center">⏳ Cargando...</div>
@@ -27,19 +42,25 @@
         </TableHeader>
 
         <TableBody>
-          <TableRow v-for="p in participantes" :key="p.id" class="hover:bg-gray-100">
+          <TableRow
+            v-for="p in participantes"
+            :key="p.id"
+            class="hover:bg-gray-100"
+          >
             <TableCell>{{ p.firstName }} {{ p.lastName }}</TableCell>
             <TableCell>{{ p.email }}</TableCell>
             <TableCell>{{ p.phone }}</TableCell>
-            <TableCell class="whitespace-nowrap">{{ p.organisation }}</TableCell>
+            <TableCell class="whitespace-nowrap">{{
+              p.organisation
+            }}</TableCell>
             <TableCell>{{ p.identificationDocument }}</TableCell>
-            <TableCell>{{ p.isAuthor ? 'Sí' : 'No' }}</TableCell>
-            <TableCell>{{ p.isGuest ? 'Sí' : 'No' }}</TableCell>
+            <TableCell>{{ p.isAuthor ? "Sí" : "No" }}</TableCell>
+            <TableCell>{{ p.isGuest ? "Sí" : "No" }}</TableCell>
             <TableCell>
-              {{ p.registrationStatus.isApproved ? 'Aprobada' : 'Pendiente' }}
+              {{ p.registrationStatus.isApproved ? "Aprobada" : "Pendiente" }}
             </TableCell>
             <TableCell>
-              {{ p.registrationStatus.isCashPayment ? 'Efectivo' : 'Tarjeta' }}
+              {{ p.registrationStatus.isCashPayment ? "Efectivo" : "Tarjeta" }}
             </TableCell>
             <TableCell class="text-center">
               <NuxtLink :to="`/admin/inscriptions/${p.id}`">
@@ -54,7 +75,11 @@
 </template>
 
 <script setup lang="ts">
-import type { Participant } from '~/lib/api/participants'
+  import type { Participant } from "~/lib/api/participants";
 
-const { data: participantes, status, error } = await useAsyncData<Participant[]>(() => $api('/participants/all'))
+  const {
+    data: participantes,
+    status,
+    error,
+  } = await useAsyncData<Participant[]>(() => $api("/participants/all"));
 </script>

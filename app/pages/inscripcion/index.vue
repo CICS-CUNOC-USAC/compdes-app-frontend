@@ -33,7 +33,6 @@
         </StepperTitle>
       </StepperItem>
     </Stepper>
-    <!-- <div class="flex flex-col gap-4 mt-16 items-center w-full p-2 flex-1"> -->
     <Form
       @submit="handleNextStep"
       :validation-schema="currentSchema"
@@ -200,7 +199,7 @@
               Puedes comunicarte al correo
               <a
                 href="mailto:enriquetebalan202230026@cunoc.edu.gt"
-                class=" text-primary hover:underline font-semibold"
+                class="text-primary hover:underline font-semibold"
                 >enriquetebalan202230026@cunoc.edu.gt
               </a>
               obtener para asistencia.
@@ -213,19 +212,22 @@
               <TabsTrigger value="extranjero"> Extranjero </TabsTrigger>
             </TabsList>
             <TabsContent value="nacional">
-              <ul class="list-disc pl-5 space-y-3 text-gray-800">
+              <ul class="list-disc pl-5 space-y-3 ">
                 <li>
                   Realiza el pago de <strong>Q350.00</strong> mediante
                   depósitos, transferencias o pagos en efectivo.
                 </li>
                 <li>
                   Para depósitos y transferencias a la cuenta:<br />
-                  <strong>Banco:</strong> Banrural<br />
-                  <strong>Nombre:</strong> Enrique Alexander Tebalán
-                  Hernandez<br />
-                  <strong>Tipo de cuenta:</strong> Cuenta de ahorros<br />
-                  <strong>Número de cuenta:</strong> 4034284384<br />
-                  <strong>Moneda:</strong> Quetzales
+
+                  <div class="p-3.5 bg-accent rounded-md">
+                    <strong>Banco:</strong> Banrural<br />
+                    <strong>Nombre:</strong> Enrique Alexander Tebalán
+                    Hernandez<br />
+                    <strong>Tipo de cuenta:</strong> Cuenta de ahorros<br />
+                    <strong>Número de cuenta:</strong> 4034284384<br />
+                    <strong>Moneda:</strong> Quetzales
+                  </div>
                 </li>
                 <li>
                   Para pagos en efectivo, acércate al stand de pago en la
@@ -561,17 +563,13 @@
           class="rounded-none group"
           v-if="stepIndex === steps.length"
           type="submit"
-          :disabled="asyncStatus === 'loading'"
+          :loading="asyncStatus === 'loading'"
         >
           Finalizar
-          <Icon
-            :name="asyncStatus === 'loading' ? 'lucide:loader' : 'lucide:check'"
-            :class="asyncStatus === 'loading' ? ' animate-spin ' : ''"
-          />
+          <Icon name="lucide:check" />
         </Button>
       </div>
     </Form>
-    <!-- </div> -->
   </div>
 </template>
 <script setup lang="ts">
