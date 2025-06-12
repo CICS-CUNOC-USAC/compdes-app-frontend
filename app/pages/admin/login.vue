@@ -5,17 +5,27 @@
       <form @submit.prevent="login(credentials)" class="space-y-6">
         <div class="space-y-2">
           <Label for="username">Nombre de usuario:</Label>
-          <Input v-model="credentials.username" type="text" id="username" required />
+          <Input
+            v-model="credentials.username"
+            type="text"
+            id="username"
+            required
+          />
         </div>
         <div class="space-y-2">
           <Label for="password">Contraseña:</Label>
           <div class="relative w-full">
-            <Input v-model="credentials.password" type="password" id="password" required />
+            <Input
+              v-model="credentials.password"
+              type="password"
+              id="password"
+              required
+            />
           </div>
         </div>
         <Button type="submit" class="w-full" :loading>
           <Icon name="lucide:log-in" />
-          Login</Button
+          Iniciar Sesión</Button
         >
       </form>
     </div>

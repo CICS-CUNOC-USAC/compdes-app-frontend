@@ -6,7 +6,7 @@
   import { useFormField } from "./useFormField";
 
   const props = defineProps<
-    LabelProps & { class?: HTMLAttributes["class"]; icon?: string }
+    LabelProps & { class?: HTMLAttributes["class"]; icon?: string, required?: boolean }
   >();
 
   const { error, formItemId } = useFormField();
@@ -21,5 +21,6 @@
   >
     <Icon v-if="props.icon" :name="props.icon" class="size-3.5" />
     <slot />
+    <span v-if="props.required" class="text-destructive-foreground">*</span>
   </Label>
 </template>

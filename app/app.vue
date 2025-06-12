@@ -10,6 +10,7 @@
       duration: 5000,
       classes: {
         toast: 'font-sans',
+        description: '!text-muted-foreground',
       },
     }"
   />

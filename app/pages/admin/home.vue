@@ -21,7 +21,12 @@
     </section>
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
       <NuxtLink v-for="(item, index) in linkItems" :key="index" :to="item.link">
-        <Card class="bg-gradient-to-b from-white to-ghost-white group">
+        <Card
+          class="
+          bg-gradient-to-b from-transparent to-primary/40 group hover:via-primary/10 via-primary/5 transition duration-200
+          dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5
+          "
+        >
           <CardHeader>
             <CardTitle class="flex items-center gap-2 text-lg">
               <Icon :name="item.icon" />
