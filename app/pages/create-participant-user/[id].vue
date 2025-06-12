@@ -52,7 +52,7 @@
           </button>
         </div>
 
-        <Button type="submit" class="w-full" :loading="loading">
+        <Button type="submit" class="w-full" :loading="asyncStatus.loading">
           <Icon name="lucide:shield-check" />
           Crear Contraseña
         </Button>
@@ -90,7 +90,27 @@ const errorMessage = ref("");
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
-const crearPassword = async () => {
+const patchPassword = (values) =>
+  $fetch('/api/participant/finalize', {
+    method: 'PATCH',
+    body: values,
+  });
+
+const { mutate, asyncStatus } = useMutation({
+  mutation: patchPassword,
+  onSuccess: (response) => {
+    alert(response.message || "Contraseña creada con éxito");
+    form.value.password = "";
+    form.value.confirmPassword = "";
+    showPasswordError.value = false;
+  },
+  onError: (error) => {
+    errorMessage.value = error.data?.message || "Error al crear la contraseña. Intenta de nuevo.";
+    showPasswordError.value = true;
+  }
+});
+
+const crearPassword = () => {
   showPasswordError.value = false;
   errorMessage.value = "";
 
@@ -106,36 +126,11 @@ const crearPassword = async () => {
     return;
   }
 
-  console.log("Formulario enviado:", form.value);
-
-  try {
-    const response = await $fetch('/api/participant/finalize', {
-      method: 'PATCH',
-      body: {
-        username: form.value.username,
-        identificationDocument: form.value.identificationDocument,
-        password: form.value.password,
-      },
-    });
-
-    if (response.success) {
-      successMessage.value = response.message || 'Contraseña creada con éxito';
-      showSuccessMessage.value = true;
-
-      form.value.username = "";
-      form.value.identificationDocument = "";
-      form.value.password = "";
-      form.value.confirmPassword = "";
-    } else {
-      errorMessage.value = response.message || 'Error desconocido al crear la contraseña.';
-      showPasswordError.value = true;
-    }
-  } catch (err) {
-
-    errorMessage.value = err.data?.message || 'Error al crear la contraseña. Intenta de nuevo.';
-    showPasswordError.value = true;
-  }
-
+  mutate({
+    username: form.value.username,
+    identificationDocument: form.value.identificationDocument,
+    password: form.value.password,
+  });
 };
 </script>
 
