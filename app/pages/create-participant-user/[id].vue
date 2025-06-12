@@ -1,0 +1,137 @@
+<template>
+  <Alert v-if="showPasswordError" variant="error" class="mb-4 flex items-start justify-between">
+    <div class="flex items-center gap-2">
+      <Icon name="lucide:alert-triangle" class="size-4 text-red-600" />
+      <div>
+        <AlertTitle class="font-semibold">Error</AlertTitle>
+        <AlertDescription class="text-sm">
+          {{ errorMessage }}
+        </AlertDescription>
+      </div>
+    </div>
+    <button aria-label="Cerrar alerta" @click="showPasswordError = false" class="ml-4 text-red-600 hover:text-red-800"
+      style="font-weight: bold;">
+      ×
+    </button>
+  </Alert>
+
+  <main class="grid place-items-center h-full">
+    <div class="max-w-md w-full p-6">
+      <div class="flex justify-center mb-2 text-primary text-4xl">
+        <Icon name="lucide:lock" />
+      </div>
+
+      <h1 class="text-2xl font-bold text-center mb-6">Crear Contraseña</h1>
+      <form @submit.prevent="crearPassword" class="space-y-6">
+        <div class="space-y-2">
+          <Label for="username">Nombre de usuario:</Label>
+          <Input v-model="form.username" type="text" id="username" required />
+        </div>
+        <div class="space-y-2">
+          <Label for="identificationDocument">Documento de Identificación:</Label>
+          <Input v-model="form.identificationDocument" type="text" id="identificationDocument" required />
+        </div>
+
+        <div class="space-y-2 relative">
+          <Label for="password">Contraseña:</Label>
+          <Input :type="showPassword ? 'text' : 'password'" v-model="form.password" id="password" required />
+          <button type="button" @click="showPassword = !showPassword"
+            class="absolute right-3 top-9 text-gray-500 hover:text-gray-700" aria-label="Mostrar u ocultar contraseña">
+            <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="size-5" />
+          </button>
+        </div>
+
+        <div class="space-y-2 relative">
+          <Label for="confirmPassword">Confirmar Contraseña:</Label>
+          <Input :type="showConfirmPassword ? 'text' : 'password'" v-model="form.confirmPassword" id="confirmPassword"
+            required />
+          <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+            class="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+            aria-label="Mostrar u ocultar confirmar contraseña">
+            <Icon :name="showConfirmPassword ? 'lucide:eye-off' : 'lucide:eye'" class="size-5" />
+          </button>
+        </div>
+
+        <Button type="submit" class="w-full" :loading="asyncStatus.loading">
+          <Icon name="lucide:shield-check" />
+          Crear Contraseña
+        </Button>
+      </form>
+    </div>
+  </main>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import Button from "~/components/ui/button/Button.vue";
+import Input from "~/components/ui/input/Input.vue";
+import Label from "~/components/ui/label/Label.vue";
+
+import Alert from "~/components/ui/alert/Alert.vue";
+import AlertTitle from "~/components/ui/alert/AlertTitle.vue";
+import AlertDescription from "~/components/ui/alert/AlertDescription.vue";
+
+
+import { useSessionStore } from "~/stores/session";
+
+const sessionStore = useSessionStore();
+const { loading } = storeToRefs(sessionStore);
+
+const form = ref({
+  username: "",
+  identificationDocument: "",
+  password: "",
+  confirmPassword: "",
+});
+
+const showPasswordError = ref(false);
+const errorMessage = ref("");
+
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+
+const patchPassword = (values) =>
+  $fetch('/api/participant/finalize', {
+    method: 'PATCH',
+    body: values,
+  });
+
+const { mutate, asyncStatus } = useMutation({
+  mutation: patchPassword,
+  onSuccess: (response) => {
+    alert(response.message || "Contraseña creada con éxito");
+    form.value.password = "";
+    form.value.confirmPassword = "";
+    showPasswordError.value = false;
+  },
+  onError: (error) => {
+    errorMessage.value = error.data?.message || "Error al crear la contraseña. Intenta de nuevo.";
+    showPasswordError.value = true;
+  }
+});
+
+const crearPassword = () => {
+  showPasswordError.value = false;
+  errorMessage.value = "";
+
+  if (form.value.password.length < 8) {
+    errorMessage.value = "La contraseña debe tener al menos 8 caracteres.";
+    showPasswordError.value = true;
+    return;
+  }
+
+  if (form.value.password !== form.value.confirmPassword) {
+    errorMessage.value = "Las contraseñas no coinciden. Por favor, vuelve a intentarlo.";
+    showPasswordError.value = true;
+    return;
+  }
+
+  mutate({
+    username: form.value.username,
+    identificationDocument: form.value.identificationDocument,
+    password: form.value.password,
+  });
+};
+</script>
+
+<style scoped></style>
