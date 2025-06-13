@@ -119,6 +119,16 @@
             selecciones al momento de registrarte.
           </p>
         </div>
+
+        <div>
+          <h3 class="text-xl font-semibold mb-1 text-muted-foreground">
+            ¿Si me inscribi usando el antiguo formulario de Forms debo volver a inscribirme aqui?
+          </h3>
+          <p>
+            No, si te inscribiste en el formulario anterior tu informacion ya fue cargada a la plataforma,
+            espera un correo con la aprobacion de tu inscripcion
+          </p>
+        </div>
       </article>
     </div>
 
