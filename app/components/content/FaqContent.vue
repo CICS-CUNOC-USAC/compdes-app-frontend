@@ -2,6 +2,18 @@
   <section class="mx-auto px-6 space-y-10">
     <!-- Event Section -->
     <div>
+      <p>
+        Para cualquier duda no presente aqui puedes comunicarte al correo
+        <a
+          href="mailto:mariagomez202030849@cunoc.edu.gt"
+          class="text-primary hover:underline font-semibold"
+          >mariagomez202030849@cunoc.edu.gt
+          <Icon name="lucide:mail" class="inline size-4" />
+          </a
+        >
+        para asistencia.
+      </p>
+
       <h2 class="text-2xl font-semibold mb-6">Sobre el evento</h2>
 
       <article class="space-y-4">
