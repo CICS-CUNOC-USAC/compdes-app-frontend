@@ -36,6 +36,7 @@
           >
             Comprueba el estado de tu inscripcion
           </NuxtLink>
+          <p class="font-medium text-sm mt-4 max-w-80">Si usaste el antiguo formulario de Forms, no es necesario que vuelvas a inscribirte</p>
         </div>
       </section>
     </div>
