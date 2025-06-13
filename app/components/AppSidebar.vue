@@ -11,26 +11,12 @@ import SidebarMenuItem from './ui/sidebar/SidebarMenuItem.vue';
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: "lucide:user",
   },
   {
-    title: "Inbox",
-    url: "#",
-    icon: "lucide:user",
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: "lucide:user",
-  },
-  {
-    title: "Search",
-    icon: "lucide:user",
-  },
-  {
-    title: "Settings",
-    url: "#",
+    title: "Inscribete!",
+    url: "/inscripcion",
     icon: "lucide:user",
   },
 ];

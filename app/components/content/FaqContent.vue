@@ -2,7 +2,7 @@
   <section class="mx-auto px-6 space-y-10">
     <!-- Event Section -->
     <div>
-      <p>
+      <p class="text-xs mb-4">
         Para cualquier duda no presente aqui puedes comunicarte al correo
         <a
           href="mailto:mariagomez202030849@cunoc.edu.gt"
