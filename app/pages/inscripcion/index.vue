@@ -240,17 +240,7 @@
                 </li>
                 <li>
                   Guarda tu recibo de pago, boleta bancaria de pago o captura de
-                  transferencia exitosa.
-                </li>
-                <li>
-                  Llena el formulario de inscripción mediante el siguiente link:
-                  <a
-                    href="https://forms.gle/tRQEbz1KaUHHg5nR6"
-                    target="_blank"
-                    class="text-primary underline hover:no-underline"
-                  >
-                    (Formulario de inscripción) </a
-                  >, y adjunta dos fotografías de comprobante de pago (recibo de
+                  transferencia exitosa y adjunta dos fotografías de comprobante de pago (recibo de
                   pago y boleta bancaria o captura de transferencia) junto con
                   tus datos.
                 </li>
