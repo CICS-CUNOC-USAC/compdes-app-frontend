@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { Label, type LabelProps } from 'reka-ui'
-import { cn } from '@/lib/utils'
+  import type { HTMLAttributes } from "vue";
+  import { reactiveOmit } from "@vueuse/core";
+  import { Label, type LabelProps } from "reka-ui";
+  import { cn } from "@/lib/utils";
 
-const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>()
+  const props = defineProps<LabelProps & { class?: HTMLAttributes["class"], icon?: string }>();
 
-const delegatedProps = reactiveOmit(props, 'class')
+  const delegatedProps = reactiveOmit(props, "class");
 </script>
 
 <template>
@@ -20,6 +20,7 @@ const delegatedProps = reactiveOmit(props, 'class')
       )
     "
   >
+    <Icon v-if="props.icon" :name="props.icon" class="size-3.5" />
     <slot />
   </Label>
 </template>

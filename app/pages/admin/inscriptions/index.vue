@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto pt-4">
+  <div class="container mx-auto p-5">
     <div class="mb-3">
       <Button as-child size="sm" variant="link">
         <NuxtLink to="/admin/home">
@@ -20,66 +20,74 @@
       </Button>
     </div>
 
-    <div v-if="status == 'pending'" class="p-4 text-center">⏳ Cargando...</div>
+    <LoaderIndicator v-if="status == 'pending'" />
     <div v-else-if="status == 'error'" class="p-4 text-center text-red-600">
       Error: {{ error?.message }}
     </div>
-    <div v-else>
-      <Table class="border rounded-md overflow-hidden">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nombre</TableHead>
-            <TableHead>Correo</TableHead>
-            <TableHead>Teléfono</TableHead>
-            <TableHead class="whitespace-nowrap">Organización</TableHead>
-            <TableHead>ID Documento</TableHead>
-            <TableHead>Autor?</TableHead>
-            <TableHead>Invitado?</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Pago</TableHead>
-            <TableHead class="text-center">Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
+    <Table
+      class=""
+      v-else
+      container-class="max-w-5xl mx-auto border rounded-lg pb-2.5"
+    >
+      <TableHeader>
+        <TableRow>
+          <TableHead class="text-center">Acciones</TableHead>
+          <TableHead>Nombre</TableHead>
+          <TableHead>Correo</TableHead>
+          <TableHead>Teléfono</TableHead>
+          <TableHead class="whitespace-nowrap">Organización</TableHead>
+          <TableHead>ID Documento</TableHead>
+          <TableHead>Autor?</TableHead>
+          <TableHead>Invitado?</TableHead>
+          <TableHead>Estado</TableHead>
+          <TableHead>Pago</TableHead>
+        </TableRow>
+      </TableHeader>
 
-        <TableBody>
-          <TableRow
-            v-for="p in participantes"
-            :key="p.id"
-            class="hover:bg-gray-100"
-          >
-            <TableCell>{{ p.firstName }} {{ p.lastName }}</TableCell>
-            <TableCell>{{ p.email }}</TableCell>
-            <TableCell>{{ p.phone }}</TableCell>
-            <TableCell class="whitespace-nowrap">{{
-              p.organisation
-            }}</TableCell>
-            <TableCell>{{ p.identificationDocument }}</TableCell>
-            <TableCell>{{ p.isAuthor ? "Sí" : "No" }}</TableCell>
-            <TableCell>{{ p.isGuest ? "Sí" : "No" }}</TableCell>
-            <TableCell>
-              {{ p.registrationStatus.isApproved ? "Aprobada" : "Pendiente" }}
-            </TableCell>
-            <TableCell>
-              {{ p.registrationStatus.isCashPayment ? "Efectivo" : "Tarjeta" }}
-            </TableCell>
-            <TableCell class="text-center">
+      <TableBody>
+        <TableRow
+          v-for="p in participantesResponse?.content"
+          :key="p.id"
+          class="hover:bg-gray-100"
+        >
+          <TableCell class="text-center">
+            <Button as-child size="sm" variant="outline">
               <NuxtLink :to="`/admin/inscriptions/${p.id}`">
-                <Button>Ver</Button>
+                <Icon name="lucide:external-link" /> Ver
               </NuxtLink>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
+            </Button>
+          </TableCell>
+          <TableCell>{{ p.firstName }} {{ p.lastName }}</TableCell>
+          <TableCell>{{ p.email }}</TableCell>
+          <TableCell>{{ p.phone }}</TableCell>
+          <TableCell class="max-w-sm truncate">{{ p.organisation }}</TableCell>
+          <TableCell>{{ p.identificationDocument }}</TableCell>
+          <TableCell>{{ p.isAuthor ? "Sí" : "No" }}</TableCell>
+          <TableCell>{{ p.isGuest ? "Sí" : "No" }}</TableCell>
+          <TableCell>
+            {{ p.registrationStatus?.isApproved ? "Aprobada" : "Pendiente" }}
+          </TableCell>
+          <TableCell>
+            {{ p.registrationStatus?.isCashPayment ? "Efectivo" : "Tarjeta" }}
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { Participant } from "~/lib/api/participants";
+  import type { InscriptionsResponse } from "~/lib/api/participants";
+  import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
 
   const {
-    data: participantes,
+    data: participantesResponse,
     status,
     error,
-  } = await useAsyncData<Participant[]>(() => $api("/participants/all"));
+  } = await useAsyncData<InscriptionsResponse>(
+    () => $api("/participants/all"),
+    {
+      lazy: true,
+    },
+  );
 </script>
