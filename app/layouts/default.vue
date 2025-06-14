@@ -7,7 +7,7 @@
       <AppSidebar />
       <main class="w-full min-h-screen flex flex-col">
         <div
-          class="flex py-2 px-3.5 z-50 w-full justify-between gap-x-2 sticky top-0 bg-background/80 backdrop-blur"
+          class="flex py-2 px-3.5 z-50 justify-between gap-x-2 sticky top-0 bg-background/80 backdrop-blur"
         >
           <section class="flex items-center gap-x-2">
             <SidebarTrigger>

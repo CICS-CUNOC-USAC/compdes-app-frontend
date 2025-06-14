@@ -29,18 +29,14 @@ export const useSessionStore = defineStore('session', () => {
         }
       })
       session.value = response
+      session.value.username = session.value?.userName
       toast.success('Sesión iniciada correctamente')
-      // toast.add({
-      //   severity: 'success',
-      //   summary: 'Sesión',
-      //   detail: 'Sesión iniciada correctamente',
-      //   life: 3000
-      // })
 
       navigateTo('/admin/home')
 
       return response
     } catch (error) {
+      console.log('Error al iniciar sesión:', error)
       toast.error(error.data?.message ?? error.name, {})
       // console.log('Error al iniciar sesión:', error)
       return {

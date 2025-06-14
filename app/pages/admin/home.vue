@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container mx-auto p-5">
     <h1 class="text-2xl font-bold">Administración</h1>
     <section class="py-2 space-y-2">
       <h5
@@ -22,10 +22,7 @@
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
       <NuxtLink v-for="(item, index) in linkItems" :key="index" :to="item.link">
         <Card
-          class="
-          bg-gradient-to-b from-transparent to-primary/40 group hover:via-primary/10 via-primary/5 transition duration-200
-          dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5
-          "
+          class="bg-gradient-to-b from-transparent to-primary/40 group hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5"
         >
           <CardHeader>
             <CardTitle class="flex items-center gap-2 text-lg">
@@ -36,13 +33,17 @@
           </CardHeader>
           <CardContent> </CardContent>
           <CardFooter
-            class="flex gap-4 px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200"
+            class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200"
           >
-            Ver más
-            <Icon
-              name="lucide:arrow-right"
-              class="transition duration-200 group-hover:translate-x-1"
-            />
+            <span class="text-sm">Accesos rapidos</span>
+            <div class="space-x-2">
+              <Button as-child size="sm" variant="secondary">
+                <NuxtLink to="/admin/inscriptions/new">
+                  <Icon name="lucide:plus" />
+                  Crear
+                </NuxtLink>
+              </Button>
+            </div>
           </CardFooter>
         </Card>
       </NuxtLink>

@@ -1,11 +1,17 @@
 <template>
-  <div class="container mx-auto h-full pt-4">
+  <div class="container mx-auto h-full pt-5 px-5">
     <div class="flex flex-col h-full">
       <div class="">
         <Button as-child size="sm" variant="link" class="mb-3">
           <NuxtLink to="/admin/inscriptions">
             <Icon name="lucide:arrow-left" />
             Volver a Inscripciones
+          </NuxtLink>
+        </Button>
+        <Button as-child size="sm" variant="link" class="mb-3">
+          <NuxtLink to="/admin/home">
+            <Icon name="lucide:house" />
+            Volver a Inicio
           </NuxtLink>
         </Button>
 
@@ -50,7 +56,7 @@
         class="flex flex-col flex-1 pt-6"
       >
         <div
-          class="flex-1 overflow-auto self-center w-full max-w-2xl px-4 pt-10"
+          class="flex-1 overflow-auto self-center w-full max-w-2xl px-4 pt-10 pb-6"
         >
           <template v-if="stepIndex === 1">
             <fieldset class="gap-4 grid grid-cols-1">
