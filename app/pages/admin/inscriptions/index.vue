@@ -44,9 +44,12 @@
         </TableRow>
       </TableHeader>
 
+      <!-- 
+      NOTE: Changing this temporarly to use participantesResponse only with old version of API, but after fixing, should be participantsResponse?.content again
+      -->
       <TableBody>
         <TableRow
-          v-for="p in participantesResponse?.content"
+          v-for="p in participantesResponse"
           :key="p.id"
           class="hover:bg-gray-100"
         >
@@ -77,17 +80,15 @@
 </template>
 
 <script setup lang="ts">
-  import type { InscriptionsResponse } from "~/lib/api/participants";
   import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
+  import type { Participant } from "~/lib/api/participants";
 
   const {
     data: participantesResponse,
     status,
     error,
-  } = await useAsyncData<InscriptionsResponse>(
-    () => $api("/participants/all"),
-    {
-      lazy: true,
-    },
-  );
+    // NOTE: Temporarily changing type to match old API response structure, type should be updated later to InscriptionsResponse
+  } = await useAsyncData<Participant[]>(() => $api("/participants/all"), {
+    lazy: true,
+  });
 </script>
