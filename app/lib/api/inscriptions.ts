@@ -3,6 +3,7 @@ export interface InscriptionData {
   lastName: string;
   email: string;
   phone: string;
+  areaCode: string;
   organisation: string;
   isAuthor: boolean;
   identificationDocument: string;
@@ -17,7 +18,7 @@ export async function createInscription(data: InscriptionData) {
   formData.append("firstName", data.firstName);
   formData.append("lastName", data.lastName);
   formData.append("email", data.email);
-  formData.append("phone", data.phone);
+  formData.append("phone", `${data.areaCode}${data.phone}`);
   formData.append("organisation", data.organisation);
   formData.append("identificationDocument", data.identificationDocument);
   formData.append("isAuthor", String(data.isAuthor));
@@ -27,6 +28,9 @@ export async function createInscription(data: InscriptionData) {
   if (data.file) {
     formData.append("file", data.file);
   }
+  formData.forEach((value, key) => {
+    console.log(`FormData key: ${key}, value: ${value}`);
+  });
   const response = await $api("/participants", {
     method: "POST",
     body: formData,

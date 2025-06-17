@@ -49,7 +49,7 @@
       -->
       <TableBody>
         <TableRow
-          v-for="p in participantesResponse"
+          v-for="p in participantesResponse?.content"
           :key="p.id"
           class="hover:bg-gray-100"
         >
@@ -81,14 +81,17 @@
 
 <script setup lang="ts">
   import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
-  import type { Participant } from "~/lib/api/participants";
+  import type { InscriptionsResponse } from "~/lib/api/participants";
 
   const {
     data: participantesResponse,
     status,
     error,
     // NOTE: Temporarily changing type to match old API response structure, type should be updated later to InscriptionsResponse
-  } = await useAsyncData<Participant[]>(() => $api("/participants/all"), {
-    lazy: true,
-  });
+  } = await useAsyncData<InscriptionsResponse>(
+    () => $api("/participants/all"),
+    {
+      lazy: true,
+    },
+  );
 </script>
