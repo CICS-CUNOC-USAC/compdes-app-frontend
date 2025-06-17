@@ -13,6 +13,23 @@ export default defineNuxtConfig({
     "@pinia/colada-nuxt",
     "@pinia/nuxt",
   ],
+  app: {
+    head: {
+      title: "COMPDES App - CUNOC 2025",
+      link: [
+        {
+          href: "/favicon_light.png",
+          rel: "icon",
+          media: "(prefers-color-scheme: light)",
+        },
+        {
+          href: "/favicon.png",
+          rel: "icon",
+          media: "(prefers-color-scheme: dark)",
+        },
+      ],
+    },
+  },
   css: ["~/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
@@ -32,7 +49,10 @@ export default defineNuxtConfig({
     defaults: {
       weights: [100, 200, 300, 400, 500, 600, 700, 800, 900],
     },
-    families: [{ name: "Sora", provider: "google" }, { name: "Space Mono", provider: "google" }],
+    families: [
+      { name: "Sora", provider: "google" },
+      { name: "Space Mono", provider: "google" },
+    ],
     experimental: {
       processCSSVariables: true,
     },
