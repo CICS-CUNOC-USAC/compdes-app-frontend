@@ -79,15 +79,90 @@
                 <FormMessage name="id" />
               </FormItem>
             </FormField>
-            <FormField v-slot="{ componentField }" name="phone">
-              <FormItem>
-                <FormLabel icon="lucide:phone">Telefono</FormLabel>
-                <FormControl>
-                  <Input type="text" v-bind="componentField" />
-                </FormControl>
-                <FormMessage name="phone" />
-              </FormItem>
-            </FormField>
+
+            <div class="flex gap-4 w-full">
+              <!-- phone country selector -->
+              <FormField v-slot="{ componentField }" name="areaCode">
+                <FormItem>
+                  <FormLabel icon="lucide:map">Código de area</FormLabel>
+
+                  <Combobox by="label" v-bind="componentField" class="">
+                    <!-- {{ componentField }} -->
+                    <FormControl>
+                      <ComboboxAnchor as-child class="">
+                        <ComboboxTrigger as-child class="">
+                          <Button
+                            variant="outline"
+                            class="justify-between rounded-md py-2.5 min-w-full max-w-full normal-case tracking-normal"
+                          >
+                            <span class="truncate font-normal">
+                              {{
+                                componentField.modelValue ??
+                                "Seleccionar país"
+                              }}
+                            </span>
+                            <Icon
+                              name="lucide:chevrons-up-down"
+                              class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                            />
+                          </Button>
+                        </ComboboxTrigger>
+                      </ComboboxAnchor>
+                    </FormControl>
+                    <ComboboxList class="max-h-[300px] overflow-y-auto !block">
+                      <div class="relative w-full items-center">
+                        <ComboboxInput
+                          class="pl-0 focus-visible:ring-0 rounded-none h-10"
+                          placeholder="Buscar país..."
+                          :autoFocus="false"
+                        />
+                        <span
+                          class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+                        >
+                          <Icon name="lucide:search" class="h-4 w-4 opacity-50">
+                          </Icon>
+                        </span>
+                      </div>
+
+                      <ComboboxEmpty class="w-full">
+                        No se encontraron resultados.
+                      </ComboboxEmpty>
+
+                      <ComboboxItem
+                        v-for="areaCode in callingCountries.all"
+                        :key="areaCode.alpha2"
+                        :value="areaCode.countryCallingCodes[0]"
+                        class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold"
+                      >
+                        <ComboboxItemIndicator>
+                          <Icon name="lucide:check" class="size-4" />
+                        </ComboboxItemIndicator>
+                        {{ areaCode.emoji }}
+                        <span class="font-medium">{{ areaCode.name }}</span>
+                        <code class="text-xs text-muted-foreground"
+                          >({{ areaCode.countryCallingCodes[0] }})</code
+                        >
+                      </ComboboxItem>
+                    </ComboboxList>
+                  </Combobox>
+                  <FormDescription class="text-xs">
+                    (Nombres de paises en inglés)
+                  </FormDescription>
+                  <FormMessage name="areaCode" />
+                </FormItem>
+              </FormField>
+
+              <FormField v-slot="{ componentField, errors }" name="phone" class="">
+                <FormItem class="w-full self-start">
+                  <FormLabel icon="lucide:phone">Telefono</FormLabel>
+                  <FormControl>
+                    <Input type="text" v-bind="componentField" />
+                  </FormControl>
+                  <FormMessage name="phone" />
+                </FormItem>
+              </FormField>
+            </div>
+
             <FormField v-slot="{ componentField }" name="email">
               <FormItem>
                 <FormLabel icon="lucide:mail">Correo Electronico</FormLabel>
@@ -212,7 +287,7 @@
               <TabsTrigger value="extranjero"> Extranjero </TabsTrigger>
             </TabsList>
             <TabsContent value="nacional">
-              <ul class="list-disc pl-5 space-y-3 ">
+              <ul class="list-disc pl-5 space-y-3">
                 <li>
                   Realiza el pago de <strong>Q350.00</strong> mediante
                   depósitos, transferencias o pagos en efectivo.
@@ -240,9 +315,9 @@
                 </li>
                 <li>
                   Guarda tu recibo de pago, boleta bancaria de pago o captura de
-                  transferencia exitosa y adjunta dos fotografías de comprobante de pago (recibo de
-                  pago y boleta bancaria o captura de transferencia) junto con
-                  tus datos.
+                  transferencia exitosa y adjunta dos fotografías de comprobante
+                  de pago (recibo de pago y boleta bancaria o captura de
+                  transferencia) junto con tus datos.
                 </li>
               </ul>
 
@@ -471,6 +546,7 @@
                 <Input readonly type="text" v-bind="componentField" />
               </FormItem>
             </FormField>
+
             <FormField v-slot="{ componentField }" name="phone">
               <FormItem>
                 <FormLabel icon="lucide:phone">Telefono</FormLabel>
@@ -594,6 +670,8 @@
   import TabsTrigger from "~/components/ui/tabs/TabsTrigger.vue";
   import { createInscription } from "~/lib/api/inscriptions";
 
+  import { callingCountries } from "country-data-list";
+
   const stepIndex = ref(1);
   const schemas = [
     toTypedSchema(
@@ -609,6 +687,9 @@
         identificationDocument: z
           .string({ message: "Campo requerido" })
           .min(5, "DPI o Pasaporte requerido"),
+        areaCode: z
+          .string({ message: "Campo requerido" })
+          .min(1, "Debes seleccionar un código de área"),
         phone: z
           .string({ message: "Campo requerido" })
           .min(6, "Número inválido"),
@@ -620,6 +701,7 @@
         // link: z
         //   .string()
         //   .url("Debe ingresar un enlace válido al comprobante"),
+
       }),
     ),
     undefined, // Step 2 does not require validation
