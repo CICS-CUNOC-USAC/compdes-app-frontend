@@ -72,7 +72,7 @@
             {{ p.registrationStatus?.isApproved ? "Aprobada" : "Pendiente" }}
           </TableCell>
           <TableCell>
-            {{ p.registrationStatus?.isCashPayment ? "Efectivo" : "Tarjeta" }}
+            {{ p.registrationStatus?.isCashPayment ? "Efectivo" : (p.isCardPayment ? "Tarjeta" : "Transferencia") }}
           </TableCell>
         </TableRow>
       </TableBody>
