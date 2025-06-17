@@ -16,3 +16,24 @@ export async function createInscriptionByAdmin(data: InscriptionData) {
   });
   return response;
 }
+
+export async function deleteInscriptionByAdmin(id: string) {
+  const response = await $api(`/participants/${id}`, {
+    method: "DELETE",
+  });
+  return response;
+}
+
+export async function getInscriptionByAdmin(id: string) {
+  const response = await $api(`/participants/${id}`, {
+    method: "GET",
+  });
+  return response;
+}
+
+export async function approveInscriptionByAdmin(id: string) {
+  const response = await $api(`/registration-status/approve/${id}`, {
+    method: "PATCH",
+  });
+  return response;
+}

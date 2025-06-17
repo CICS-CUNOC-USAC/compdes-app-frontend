@@ -24,11 +24,7 @@
     <div v-else-if="status == 'error'" class="p-4 text-center text-red-600">
       Error: {{ error?.message }}
     </div>
-    <Table
-      class=""
-      v-else
-      container-class="max-w-5xl mx-auto border rounded-lg pb-2.5"
-    >
+    <Table v-else container-class="max-w-5xl mx-auto border rounded-lg pb-2.5">
       <TableHeader>
         <TableRow>
           <TableHead class="text-center">Acciones</TableHead>
@@ -48,17 +44,22 @@
       NOTE: Changing this temporarly to use participantesResponse only with old version of API, but after fixing, should be participantsResponse?.content again
       -->
       <TableBody>
-        <TableRow
-          v-for="p in participantesResponse?.content"
-          :key="p.id"
-          class="hover:bg-gray-100"
-        >
-          <TableCell class="text-center">
+        <TableRow v-for="p in participantesResponse?.content" :key="p.id">
+          <TableCell class="text-center space-x-1">
             <Button as-child size="sm" variant="outline">
               <NuxtLink :to="`/admin/inscriptions/${p.id}`">
                 <Icon name="lucide:external-link" /> Ver
               </NuxtLink>
             </Button>
+            <ConfirmActionDialog
+              @confirm="() => approveInscription(p.id)"
+              description="¿Estás segur@ de que deseas aprobar esta inscripción?"
+              title="Aprobar Inscripción"
+            >
+              <Button size="icon" variant="default">
+                <Icon name="lucide:clipboard-check" />
+              </Button>
+            </ConfirmActionDialog>
           </TableCell>
           <TableCell>{{ p.firstName }} {{ p.lastName }}</TableCell>
           <TableCell>{{ p.email }}</TableCell>
@@ -80,13 +81,20 @@
 </template>
 
 <script setup lang="ts">
+  import { toast } from "vue-sonner";
   import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
+  import { approveInscriptionByAdmin } from "~/lib/api/admin/inscriptions";
   import type { InscriptionsResponse } from "~/lib/api/participants";
+  import { FetchError } from "ofetch";
+  import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
+  import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
+  import Tooltip from "~/components/ui/tooltip/Tooltip.vue";
 
   const {
     data: participantesResponse,
     status,
     error,
+    refresh: refreshInscriptions,
     // NOTE: Temporarily changing type to match old API response structure, type should be updated later to InscriptionsResponse
   } = await useAsyncData<InscriptionsResponse>(
     () => $api("/participants/all"),
@@ -94,4 +102,18 @@
       lazy: true,
     },
   );
+
+  const { mutate: approveInscription } = useMutation({
+    mutation: (id: string) => approveInscriptionByAdmin(id),
+    onSuccess: () => {
+      toast.success("Inscripción aprobada correctamente");
+      refreshInscriptions();
+    },
+    onError: (error) => {
+      const err = error as FetchError;
+      toast.error(
+        `Error al aprobar inscripción: ${err.data?.message || err.message}`,
+      );
+    },
+  });
 </script>
