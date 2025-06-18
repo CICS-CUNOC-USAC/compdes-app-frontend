@@ -32,7 +32,7 @@
           <p class="font-medium text-lg">¿Ya estás inscrito?</p>
           <NuxtLink
             class="text-brand-red hover:underline"
-            to="/check-inscription"
+            to="/verificar-inscripcion"
           >
             Comprueba el estado de tu inscripcion
           </NuxtLink>

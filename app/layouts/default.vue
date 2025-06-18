@@ -15,7 +15,7 @@
                 <Icon name="lucide:menu" class="size-4" />
               </template>
             </SidebarTrigger>
-            <h1 class="inline-block uppercase font-medium text-sm">Compdes</h1>
+            <NuxtLink to="/" class="inline-block uppercase font-medium text-sm">Compdes</NuxtLink>
           </section>
 
           <section>

@@ -9,74 +9,129 @@
       </Button>
     </div>
 
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between flex-col lg:flex-row lg:items-center gap-3 mb-6">
       <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
 
-      <Button size="sm" as-child>
-        <NuxtLink to="/admin/inscriptions/new">
-          <Icon name="lucide:plus" />
-          Crear Inscripción
-        </NuxtLink>
-      </Button>
+      <div class="space-x-2 space-y-2">
+        <Button
+          size="icon"
+          variant="outline"
+          @click="refreshInscriptions"
+        >
+          <Icon name="lucide:refresh-ccw" />
+        </Button>
+        <Button size="sm" as-child>
+          <NuxtLink to="/admin/inscriptions/new">
+            <Icon name="lucide:plus" />
+            Crear Inscripción
+          </NuxtLink>
+        </Button>
+      </div>
     </div>
 
     <LoaderIndicator v-if="status == 'pending'" />
     <div v-else-if="status == 'error'" class="p-4 text-center text-red-600">
       Error: {{ error?.message }}
     </div>
-    <Table v-else container-class="max-w-5xl mx-auto border rounded-lg pb-2.5">
-      <TableHeader>
-        <TableRow>
-          <TableHead class="text-center">Acciones</TableHead>
-          <TableHead>Nombre</TableHead>
-          <TableHead>Correo</TableHead>
-          <TableHead>Teléfono</TableHead>
-          <TableHead class="whitespace-nowrap">Organización</TableHead>
-          <TableHead>ID Documento</TableHead>
-          <TableHead>Autor?</TableHead>
-          <TableHead>Invitado?</TableHead>
-          <TableHead>Estado</TableHead>
-          <TableHead>Pago</TableHead>
-        </TableRow>
-      </TableHeader>
+    <div v-else>
+      <div class="max-w-5xl mx-auto border-2 rounded-lg overflow-hidden">
+        <Table container-class="pb-2.5 overflow-auto">
+          <TableHeader>
+            <TableRow>
+              <TableHead class="text-center">Acciones</TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Correo</TableHead>
+              <TableHead>Teléfono</TableHead>
+              <TableHead class="whitespace-nowrap">Organización</TableHead>
+              <TableHead>ID Documento</TableHead>
+              <TableHead>Autor?</TableHead>
+              <TableHead>Invitado?</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Pago</TableHead>
+            </TableRow>
+          </TableHeader>
 
-      <!-- 
-      NOTE: Changing this temporarly to use participantesResponse only with old version of API, but after fixing, should be participantsResponse?.content again
-      -->
-      <TableBody>
-        <TableRow v-for="p in participantesResponse?.content" :key="p.id">
-          <TableCell class="text-center space-x-1">
-            <Button as-child size="sm" variant="outline">
-              <NuxtLink :to="`/admin/inscriptions/${p.id}`">
-                <Icon name="lucide:external-link" /> Ver
-              </NuxtLink>
-            </Button>
-            <ConfirmActionDialog
-              @confirm="() => approveInscription(p.id)"
-              description="¿Estás segur@ de que deseas aprobar esta inscripción?"
-              title="Aprobar Inscripción"
-            >
-              <Button size="icon" variant="default">
-                <Icon name="lucide:clipboard-check" />
-              </Button>
-            </ConfirmActionDialog>
-          </TableCell>
-          <TableCell>{{ p.firstName }} {{ p.lastName }}</TableCell>
-          <TableCell>{{ p.email }}</TableCell>
-          <TableCell>{{ p.phone }}</TableCell>
-          <TableCell class="max-w-sm truncate">{{ p.organisation }}</TableCell>
-          <TableCell>{{ p.identificationDocument }}</TableCell>
-          <TableCell>{{ p.isAuthor ? "Sí" : "No" }}</TableCell>
-          <TableCell>{{ p.isGuest ? "Sí" : "No" }}</TableCell>
-          <TableCell>
-            {{ p.registrationStatus?.isApproved ? "Aprobada" : "Pendiente" }}
-          </TableCell>
-          <TableCell>
-            {{ p.registrationStatus?.isCashPayment ? "Efectivo" : (p.isCardPayment ? "Tarjeta" : "Transferencia") }}
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+          <!-- 
+        NOTE: Changing this temporarly to use participantesResponse only with old version of API, but after fixing, should be participantsResponse?.content again
+        -->
+          <TableBody>
+            <TableRow v-for="p in participantesResponse?.content" :key="p.id">
+              <TableCell class="text-center space-x-1">
+                <Button as-child size="sm" variant="outline">
+                  <NuxtLink :to="`/admin/inscriptions/${p.id}`">
+                    <Icon name="lucide:external-link" /> Ver
+                  </NuxtLink>
+                </Button>
+                <ConfirmActionDialog
+                  @confirm="() => approveInscription(p.id)"
+                  description="¿Estás segur@ de que deseas aprobar esta inscripción?"
+                  title="Aprobar Inscripción"
+                >
+                  <Button size="icon" variant="default">
+                    <Icon name="lucide:clipboard-check" />
+                  </Button>
+                </ConfirmActionDialog>
+              </TableCell>
+              <TableCell>{{ p.firstName }} {{ p.lastName }}</TableCell>
+              <TableCell>{{ p.email }}</TableCell>
+              <TableCell>{{ p.phone }}</TableCell>
+              <TableCell class="max-w-xs truncate">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger as-child>
+                      <span class="cursor-pointer">
+                        {{ p.organisation }}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <span class="">{{ p.organisation }}</span>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <!-- {{ p.organisation }} -->
+              </TableCell>
+              <TableCell>{{ p.identificationDocument }}</TableCell>
+              <TableCell class="text-center">
+                <Badge :variant="p.isAuthor ? 'default' : 'outline'">
+                  {{ p.isAuthor ? "Sí" : "No" }}
+                </Badge>
+              </TableCell>
+              <TableCell class="text-center">
+                <Badge :variant="p.isGuest ? 'default' : 'outline'">
+                  {{ p.isGuest ? "Sí" : "No" }}
+                </Badge>
+              </TableCell>
+              <TableCell class="text-center">
+                <Badge
+                  :variant="
+                    p.registrationStatus?.isApproved ? 'success' : 'warning'
+                  "
+                  class="capitalize"
+                >
+                  {{
+                    p.registrationStatus?.isApproved ? "Aprobada" : "Pendiente"
+                  }}
+                </Badge>
+              </TableCell>
+              <TableCell class="pr-4">
+                {{
+                  p.registrationStatus?.isCashPayment
+                    ? "Efectivo"
+                    : p.isCardPayment
+                    ? "Tarjeta"
+                    : "Transferencia"
+                }}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+
+      <!-- Pagination goes here -->
+      <div class="mt-6 flex justify-center">
+        
+      </div>
+    </div>
   </div>
 </template>
 
@@ -89,6 +144,7 @@
   import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
   import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
   import Tooltip from "~/components/ui/tooltip/Tooltip.vue";
+  import Badge from "~/components/ui/badge/Badge.vue";
 
   const {
     data: participantesResponse,

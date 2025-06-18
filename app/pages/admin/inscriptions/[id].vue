@@ -23,7 +23,10 @@
     <LoaderIndicator v-if="status === 'pending'" />
 
     <div v-else class="mt-3">
-      <div class="mb-3 space-x-2">
+      <h2 class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4">
+        Acciones:
+      </h2>
+      <div class="mb-3 space-x-2 space-y-2">
         <DeleteItemDialog @confirm="deleteInscription">
           <Button
             size="sm"
@@ -47,6 +50,9 @@
         </ConfirmActionDialog>
       </div>
 
+      <h2 class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4">
+        Información:
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h2 class="font-semibold text-sm text-muted-foreground">Nombre</h2>

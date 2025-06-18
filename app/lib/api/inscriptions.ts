@@ -1,3 +1,5 @@
+import type { NitroFetchOptions } from 'nitropack'
+
 export interface InscriptionData {
   firstName: string;
   lastName: string;
@@ -35,5 +37,13 @@ export async function createInscription(data: InscriptionData) {
     method: "POST",
     body: formData,
   });
+  return response;
+}
+
+export async function verifyInscriptionById(id: string, opts: NitroFetchOptions<any>) {
+  const response = await $api(
+    `/participants/public-inscription/by-document/${id}`,
+    opts
+  );
   return response;
 }

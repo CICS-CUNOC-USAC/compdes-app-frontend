@@ -9,7 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div data-slot="table-container" class=" relative overflow-auto" :class="cn(props.containerClass)">
+  <div data-slot="table-container" class="relative overflow-auto" :class="cn(props.containerClass)">
     <table data-slot="table" :class="cn('caption-bottom text-sm', props.class)">
       <slot />
     </table>
