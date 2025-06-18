@@ -49,7 +49,7 @@
         </SidebarGroupContent>
       </SidebarGroup>
     </SidebarContent>
-    <SidebarFooter v-if="session">
+    <SidebarFooter v-if="session && session.role === 'ADMIN'">
       <Alert>
         <Icon name="lucide:triangle-alert" class="!text-amber-400" />
         <AlertTitle>Sesión activa</AlertTitle>
