@@ -77,6 +77,9 @@ import { useSessionStore } from "~/stores/session";
 const sessionStore = useSessionStore();
 const { loading } = storeToRefs(sessionStore);
 
+const route = useRoute();
+const id = route.params.id;
+
 const form = ref({
   username: "",
   identificationDocument: "",
@@ -91,7 +94,7 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
 const patchPassword = (values) =>
-  $fetch('/api/participant/finalize', {
+  $fetch(`/api/participant/finalize/${id}`, {
     method: 'PATCH',
     body: values,
   });
