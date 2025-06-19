@@ -1,3 +1,5 @@
+import type { NitroFetchOptions } from 'nitropack'
+
 export interface InscriptionData {
   firstName: string;
   lastName: string;
@@ -22,18 +24,26 @@ export async function createInscription(data: InscriptionData) {
   formData.append("organisation", data.organisation);
   formData.append("identificationDocument", data.identificationDocument);
   formData.append("isAuthor", String(data.isAuthor));
+  // if (data.paymentProof) {
+  //   formData.append("paymentProof", JSON.stringify(data.paymentProof));
+  // }
   if (data.paymentProof) {
-    formData.append("paymentProof", JSON.stringify(data.paymentProof));
+    formData.append("paymentProof.link", data.paymentProof.link);
   }
   if (data.file) {
     formData.append("file", data.file);
   }
-  formData.forEach((value, key) => {
-    console.log(`FormData key: ${key}, value: ${value}`);
-  });
   const response = await $api("/participants", {
     method: "POST",
     body: formData,
   });
+  return response;
+}
+
+export async function verifyInscriptionById(id: string, opts: NitroFetchOptions<any>) {
+  const response = await $api(
+    `/participants/public-inscription/by-document/${id}`,
+    opts
+  );
   return response;
 }
