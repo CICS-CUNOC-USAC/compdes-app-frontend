@@ -124,7 +124,7 @@
               </TableCell>
               <TableCell class="pr-4">
                 {{
-                  p.created_at
+                  p.createdAt
                 }}
               </TableCell>
             </TableRow>
