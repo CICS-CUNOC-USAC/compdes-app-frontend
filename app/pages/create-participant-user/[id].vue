@@ -24,10 +24,6 @@
       <h1 class="text-2xl font-bold text-center mb-6">Crear Contraseña</h1>
       <form @submit.prevent="crearPassword" class="space-y-6">
         <div class="space-y-2">
-          <Label for="username">Nombre de usuario:</Label>
-          <Input v-model="form.username" type="text" id="username" required />
-        </div>
-        <div class="space-y-2">
           <Label for="identificationDocument">Documento de Identificación:</Label>
           <Input v-model="form.identificationDocument" type="text" id="identificationDocument" required />
         </div>
@@ -77,8 +73,10 @@ import { useSessionStore } from "~/stores/session";
 const sessionStore = useSessionStore();
 const { loading } = storeToRefs(sessionStore);
 
+const route = useRoute();
+const id = route.params.id;
+
 const form = ref({
-  username: "",
   identificationDocument: "",
   password: "",
   confirmPassword: "",
@@ -91,7 +89,7 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
 const patchPassword = (values) =>
-  $fetch('/api/participant/finalize', {
+  $fetch(`/api/participant/finalize/${id}`, {
     method: 'PATCH',
     body: values,
   });
@@ -127,7 +125,7 @@ const crearPassword = () => {
   }
 
   mutate({
-    username: form.value.username,
+    username: "123",
     identificationDocument: form.value.identificationDocument,
     password: form.value.password,
   });
