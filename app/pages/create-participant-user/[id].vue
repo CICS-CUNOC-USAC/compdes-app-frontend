@@ -69,6 +69,7 @@ import AlertDescription from "~/components/ui/alert/AlertDescription.vue";
 
 
 import { useSessionStore } from "~/stores/session";
+import { patchPassword } from "~/lib/api/inscriptions";
 
 const sessionStore = useSessionStore();
 const { loading } = storeToRefs(sessionStore);
@@ -88,14 +89,8 @@ const errorMessage = ref("");
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 
-const patchPassword = (values) =>
-  $fetch(`/api/participant/finalize/${id}`, {
-    method: 'PATCH',
-    body: values,
-  });
-
 const { mutate, asyncStatus } = useMutation({
-  mutation: patchPassword,
+  mutation: (val) => patchPassword(val, id),
   onSuccess: (response) => {
     alert(response.message || "Contraseña creada con éxito");
     form.value.password = "";
