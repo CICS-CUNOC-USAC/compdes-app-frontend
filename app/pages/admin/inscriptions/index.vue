@@ -122,6 +122,11 @@
                     : "Transferencia"
                 }}
               </TableCell>
+              <TableCell class="pr-4">
+                {{
+                  p.created_at
+                }}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

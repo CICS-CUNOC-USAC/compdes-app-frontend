@@ -45,6 +45,7 @@ export interface Participant extends Entity {
   isCardPayment: boolean;
   cardPaymentProofLink: string;
   transferPaymentProofLink: null;
+  created_at: Date;
 }
 
 export interface RegistrationStatus extends Entity {
