@@ -47,3 +47,11 @@ export async function verifyInscriptionById(id: string, opts: NitroFetchOptions<
   );
   return response;
 }
+
+export async function patchPassword(values: any, user_id: string){
+  const response = await $api(`/users/finalize/${user_id}`, {
+    method: 'PATCH',
+    body: values,
+  });
+  return response;
+}
