@@ -1,6 +1,6 @@
 <template>
 
-    <div class="mb-6">
+  <div class="mb-6">
     <Button variant="outline" class="flex items-center ml-8" @click="volver" type="button">
       <Icon name="lucide:arrow-left" class="mr-2" />
       Volver
@@ -26,7 +26,8 @@
       </StepperItem>
     </Stepper>
 
-    <Form @submit="handleNextStep" :validation-schema="currentSchema" keep-values class="flex flex-col flex-1 pt-6">
+    <Form @submit="handleNextStep" :validation-schema="currentSchema" :initial-values="formData" keep-values
+      class="flex flex-col flex-1 pt-6">
       <div class="flex-1 overflow-auto self-center w-full max-w-xl px-4 pt-20">
         <template v-if="stepIndex === 1">
           <fieldset class="gap-4 grid grid-cols-1">
@@ -218,18 +219,6 @@ function volver() {
   router.back() // o router.push('/listadoSalones') 
 }
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const;
-
 const frameworks = [
   { value: "next.js", label: "Next.js" },
   { value: "sveltekit", label: "SvelteKit" },
@@ -238,31 +227,41 @@ const frameworks = [
   { value: "astro", label: "Astro" },
 ];
 
-const value = ref<(typeof frameworks)[0]>();
+import { reactive } from 'vue'
+
+const formData = reactive({
+  name: '',
+  description: '',
+  type: '',
+  sheduledDate: '',
+  classroomId: '',
+})
+
 
 import { ref, onMounted } from 'vue'
+import { postConferencias } from "~/lib/api/conferencias";
+import { getSalones } from "~/lib/api/salones";
 
 interface Salon {
   id: number
   name: string
 }
 
-const salonList = ref<Salon[]>([])
+const salonList = ref<Salon[]>([]);
 
-async function cargarSalones() {
-  try {
-    const response = await fetch('endpoint')
-    const data = await response.json()
-    salonList.value = data.data
-  } catch (error) {
-    console.error('Error al cargar salones:', error)
+const { mutate: cargarSalones } = useMutation({
+  mutation: getSalones,
+  onSuccess: (data) => {
+    salonList.value = data;
+  },
+  onError: (error) => {
+    console.error("Error al cargar salones:", error);
   }
-}
+});
 
 onMounted(() => {
-  cargarSalones()
-})
-
+  cargarSalones();
+});
 
 const stepIndex = ref(1);
 const schemas = [
@@ -279,27 +278,60 @@ const schemas = [
       type: z.string({ message: "Campo requerido" }).min(1),
     }),
   ),
-  undefined,
   toTypedSchema(
     z.object({
-      sheduledDate: z.string(),
-      classroomId: z.string({ message: "Campo requerido" }).min(1),
-    }),
+      sheduledDate: z.preprocess(
+        (arg) => {
+          if (typeof arg === 'string' || arg instanceof Date) {
+            const date = new Date(arg);
+            return isNaN(date.getTime()) ? undefined : date;
+          }
+          return undefined;
+        },
+        z.date({ required_error: "La fecha es obligatoria", invalid_type_error: "La fecha debe ser válida" })
+      )
+
+      //classroomId: z.string({ message: "El salón es obligatorio" }).min(1),
+    })
   ),
 ];
 const currentSchema = computed(() => {
   return schemas[stepIndex.value - 1];
 });
 
+const errorMessage = ref('');
+const showError = ref(false);
+
+const { mutate, asyncStatus } = useMutation({
+  mutation: (val: { name: string; description: string; type: string; sheduledDate: string; classroomId: string }) => postConferencias(val),
+  onSuccess: (response) => {
+    const res = response as { message?: string };
+    alert(res.message || 'Conferencia creada con éxito');
+    formData.name = '';
+    formData.description = '';
+    formData.type = '';
+    formData.sheduledDate = '';
+    formData.classroomId = '';
+    showError.value = false;
+  },
+  onError: (error) => {
+    errorMessage.value = error?.message || 'Error al crear la conferencia. Intenta de nuevo.';
+    showError.value = true;
+  },
+});
+
 function handleNextStep(values: any) {
-  console.log("Current Step: ", values);
-  if (stepIndex.value === 2) {
-    console.log("Informacion a Enviar: ", JSON.stringify(values, null, 2));
+  Object.assign(formData, values);
+
+  if (stepIndex.value === steps.length) {
+    console.log('Enviando datos finales:', JSON.stringify(formData, null, 2));
+    mutate(formData);
     return;
   }
 
   stepIndex.value++;
 }
+
 
 function handlePrevStep() {
   if (stepIndex.value === 1) {

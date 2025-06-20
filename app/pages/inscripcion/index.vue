@@ -670,7 +670,7 @@
   import TabsTrigger from "~/components/ui/tabs/TabsTrigger.vue";
   import { createInscription } from "~/lib/api/inscriptions";
 
-  import { callingCountries } from "country-data-list";
+ // import { callingCountries } from "country-data-list";
 
   const stepIndex = ref(1);
   const schemas = [

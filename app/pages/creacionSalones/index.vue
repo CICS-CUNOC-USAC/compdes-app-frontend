@@ -1,159 +1,164 @@
 <template>
-  <!-- <button
-  @click="() => stepIndex++"
-  >
-    test
-  </button> -->
+  <Alert v-if="showSalonError" variant="error" class="mb-4 flex items-start justify-between">
+    <div class="flex items-center gap-2">
+      <Icon name="lucide:alert-triangle" class="size-4 text-red-600" />
+      <div>
+        <AlertTitle class="font-semibold">Error</AlertTitle>
+        <AlertDescription class="text-sm">
+          {{ errorMessage }}
+        </AlertDescription>
+      </div>
+    </div>
+    <button aria-label="Cerrar alerta" @click="showSalonError = false" class="ml-4 text-red-600 hover:text-red-800"
+      style="font-weight: bold;">
+      ×
+    </button>
+  </Alert>
 
-  <div class="mb-6">
-    <Button variant="outline" class="flex items-center ml-8" @click="volver" type="button">
-      <Icon name="lucide:arrow-left" class="mr-2" />
-      Volver
-    </Button>
-  </div>
-
-  <div class="flex flex-col h-full pt-4">
-    <Stepper class="flex w-full items-start gap-2 relative" v-model="stepIndex">
-      <StepperItem v-for="step in steps" :key="step.step" v-slot="{ state }"
-        class="flex w-full flex-col items-center justify-center" :step="step.step">
-        <!-- <StepperSeparator
-          v-if="step.step !== steps[steps.length - 1].step"
-          class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-muted group-data-[state=completed]:bg-primary"
-        /> -->
-
-        <div class="z-10 rounded-full shrink-0 p-2" :class="[
-          state === 'active' && 'outline-2 outline-ring outline-offset-2',
-        ]" @click="() => undefined">
-          <Icon name="lucide:check" v-if="state === 'completed'" />
-          <Icon :name="step.icon" v-else />
-        </div>
-
-        <StepperTitle :class="[state === 'active' && 'text-primary']"
-          class="absolute top-full mt-4 w-max -translate-x-1/2 left-1/2 text-xl font-semibold"
-          v-if="state === 'active'">
-          {{ step.title }}
-        </StepperTitle>
-      </StepperItem>
-    </Stepper>
-    <!-- <div class="flex flex-col gap-4 mt-16 items-center w-full p-2 flex-1"> -->
-    <Form Form :validation-schema="formSchema" @submit="onSubmit" keep-values class="flex flex-col flex-1 pt-6">
-      <div class="flex-1 overflow-auto self-center w-full max-w-xl px-1 pt-20">
-        <template v-if="stepIndex === 1">
-          <div class="w-full max-w-2xl px-2 flex flex-col gap-4">
-            <FormField v-slot="{ componentField }" name="name">
-              <FormItem>
-                <FormLabel>Nombre</FormLabel>
-                <FormControl>
-                  <Input type="text" v-bind="componentField" />
-                </FormControl>
-              </FormItem>
-            </FormField>
-
-            <FormField v-slot="{ componentField }" name="location">
-              <FormItem>
-                <FormLabel>Ubicación</FormLabel>
-                <FormControl>
-                  <Input type="text" v-bind="componentField" />
-                </FormControl>
-              </FormItem>
-            </FormField>
-
-            <FormField v-slot="{ componentField }" name="space">
-              <FormItem>
-                <FormLabel>Capacidad</FormLabel>
-                <FormControl>
-                  <Input type="text" v-bind="componentField" />
-                </FormControl>
-              </FormItem>
-            </FormField>
-            <div class="w-full sticky bottom-0 bg-background flex justify-end px-4 py-3 pt-20"
-              v-if="stepIndex === steps.length">
-              <Button variant="outline" class="rounded-none" type="submit">
-                Guardar Salón
-              </Button>
-            </div>
-          </div>
-        </template>
+  <main class="grid place-items-center h-full">
+    <div class="max-w-md w-full p-6">
+      <div class="flex justify-center mb-2 text-primary text-4xl">
+        <Icon name="lucide:presentation" />
       </div>
 
-    </Form>
-    <!-- </div> -->
-  </div>
+      <h1 class="text-2xl font-bold text-center mb-6">Crear Salon</h1>
+      <form @submit.prevent="crearSalon" class="space-y-6">
+        <div class="space-y-2">
+          <Label for="name">Nombre:</Label>
+          <Input v-model="form.name" type="text" id="name" required />
+        </div>
+
+        <FormField v-slot="{ componentField }" name="moduleId">
+          <FormItem>
+            <FormLabel icon="lucide:mic-vocal">Modulo</FormLabel>
+
+            <Combobox by="label" v-bind="componentField">
+              <FormControl>
+                <ComboboxAnchor as-child>
+                  <ComboboxTrigger as-child>
+                    <Button variant="outline" class="justify-between rounded-md py-2.5 min-w-full max-w-full">
+                      <span class="truncate font-normal">
+                        {{
+                          componentField.modelValue ?? "Selecciona un modulo..."
+                        }}
+                      </span>
+                      <Icon name="lucide:chevrons-up-down" class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </ComboboxTrigger>
+                </ComboboxAnchor>
+              </FormControl>
+
+              <ComboboxList class="max-h-[300px] overflow-y-auto !block">
+                <div class="relative w-full items-center">
+                  <ComboboxInput class="pl-0 focus-visible:ring-0 rounded-none h-10" placeholder="Buscar salón..."
+                    :autoFocus="false" />
+                  <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
+                    <Icon name="lucide:search" class="h-4 w-4 opacity-50" />
+                  </span>
+                </div>
+
+                <ComboboxEmpty class="w-full">
+                  No se encontraron resultados.
+                </ComboboxEmpty>
+
+                <ComboboxGroup heading="Salones disponibles">
+                  <ComboboxItem v-for="salon in salonList" :key="salon.id" :value="salon.name"
+                    class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
+                    <ComboboxItemIndicator>
+                      <Icon name="lucide:check" class="size-4" />
+                    </ComboboxItemIndicator>
+                    {{ salon.name }}
+                  </ComboboxItem>
+                </ComboboxGroup>
+              </ComboboxList>
+            </Combobox>
+            <FormMessage name="classroomId" />
+          </FormItem>
+        </FormField>
+
+        <Button type="submit" class="w-full" :loading="asyncStatus.loading">
+          <Icon name="lucide:shield-check" />
+          Crear Salon
+        </Button>
+      </form>
+    </div>
+  </main>
 </template>
 
-<script setup lang="ts">
-import { FormField, NuxtLink } from "#components";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Form } from "@/components/ui/form";
-import {
-  Stepper,
-  StepperItem,
-  StepperSeparator,
-  StepperTitle,
-} from "@/components/ui/stepper";
-import FormControl from "~/components/ui/form/FormControl.vue";
-import FormItem from "~/components/ui/form/FormItem.vue";
-import FormLabel from "~/components/ui/form/FormLabel.vue";
-import { useForm } from "vee-validate";
-import * as z from "zod";
-import { toTypedSchema } from "@vee-validate/zod";
-import { useRouter } from 'vue-router'
+<script setup>
+import { ref } from "vue";
+import Button from "~/components/ui/button/Button.vue";
+import Input from "~/components/ui/input/Input.vue";
+import Label from "~/components/ui/label/Label.vue";
 
-const router = useRouter()
+import Alert from "~/components/ui/alert/Alert.vue";
+import AlertTitle from "~/components/ui/alert/AlertTitle.vue";
+import AlertDescription from "~/components/ui/alert/AlertDescription.vue";
 
-function volver() {
-  router.back() // o router.push('/listadoSalones') 
-}
 
-const formSchema = toTypedSchema(
-  z.object({
-    name: z.string().min(1, "Nombre del salón requerido").max(50),
-    location: z.string().min(1, "Ubicación del salón requerida").max(50),
-    space: z.string().max(10).optional(), // No obligatorio
-  })
-);
+import { useSessionStore } from "~/stores/session";
+import { patchPassword } from "~/lib/api/inscriptions";
+import { postSalones } from "~/lib/api/salones";
+import { getModulos } from "~/lib/api/modules";
 
-const form = useForm({
-  validationSchema: formSchema,
+const sessionStore = useSessionStore();
+const { loading } = storeToRefs(sessionStore);
+
+const route = useRoute();
+const id = route.params.id;
+
+const form = ref({
+  name: "",
+  moduleId: ""
 });
 
-function onSubmit(values: any) {
-  console.log("Datos:", values);
-}
+const showSalonError = ref(false);
+const errorMessage = ref("");
 
-// Lógica para guardar salón
-/*async function onSubmit(values: any) {
-  try {
-    const response = await fetch("/ruta", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Error en la creación:", errorData);
-      return;
-    }
-
-    const result = await response.json();
-    console.log("Salón creado:", result);
-
-  } catch (error) {
-    console.error("Error al crear el salón:", error);
-  }
-}*/
-
-const stepIndex = ref(1);
-const steps = [
-  {
-    step: 1,
-    title: "Datos Salones",
-    description: "Provide the necessary information to create your exhibition hall.",
-    icon: "lucide:presentation",
+const { mutate: cargarModulos } = useMutation({
+  mutation: getModulos,
+  onSuccess: (data) => {
+    salonList.value = data;
   },
-];
+  onError: (error) => {
+    console.error("Error al cargar modulos:", error);
+  }
+});
+
+onMounted(() => {
+  cargarModulos();
+});
+
+
+const { mutate, asyncStatus } = useMutation({
+  mutation: (val) => postSalones(val),
+  onSuccess: (response) => {
+    alert(response.message || "Salon creado con éxito");
+    form.value.name = "";
+    form.value.moduleId = "";
+  },
+  onError: (error) => {
+    errorMessage.value = error.data?.message || "Error al crear el salon. Intenta de nuevo.";
+    showSalonError.value = true;
+  }
+});
+
+const crearSalon = () => {
+  showSalonError.value = false;
+  errorMessage.value = "";
+
+  if (!form.value.name || form.value.name.trim().length === 0) {
+    errorMessage.value = "El nombre es obligatorio.";
+    showSalonError.value = true;
+    return;
+  }
+
+
+  mutate({
+    name: form.value.name,
+    moduleId: form.value.moduleId,
+  });
+};
 </script>
+
+<style scoped></style>
