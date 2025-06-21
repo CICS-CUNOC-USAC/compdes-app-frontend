@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "@pinia/colada-nuxt",
     "@pinia/nuxt",
+    '@vueuse/nuxt',
   ],
   app: {
     head: {
