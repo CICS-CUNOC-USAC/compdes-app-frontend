@@ -1,8 +1,12 @@
 export interface Salon {
-    id: number,
-    name: string,
-    module: string
+  id: string;
+  name: string;
+  moduleUni: {
+    id: string;
+    name: string;
+  };
 }
+
 export async function postSalones(values: any){
   const response = await $api(`/classrooms/create`, {
     method: 'POST',

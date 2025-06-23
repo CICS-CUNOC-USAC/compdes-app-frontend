@@ -62,7 +62,7 @@
                 </ComboboxEmpty>
 
                 <ComboboxGroup heading="Modulos disponibles">
-                  <ComboboxItem v-for="salon in modulos" :key="salon.id" :value="salon.name"
+                  <ComboboxItem v-for="salon in modulos" :key="salon.id" :value="salon.id"
                     class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
                     <ComboboxItemIndicator>
                       <Icon name="lucide:check" class="size-4" />

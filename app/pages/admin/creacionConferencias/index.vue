@@ -103,15 +103,27 @@
         <template v-if="stepIndex === 2">
           <fieldset class="gap-4 grid grid-cols-1">
 
-            <FormField v-slot="{ componentField }" name="sheduledDate">
+            <FormField v-slot="{ componentField }" name="initScheduledDate">
               <FormItem>
-                <FormLabel icon="lucide:calendar-clock">Fecha y Hora</FormLabel>
+                <FormLabel icon="lucide:calendar-clock">Fecha y Hora Inicio</FormLabel>
                 <FormControl>
                   <Datepicker :model-value="componentField.modelValue" @update:model-value="componentField.onChange"
                     :enable-time-picker="true" :minute-increment="5" locale="es" format="yyyy-MM-dd HH:mm"
                     placeholder="Selecciona fecha y hora" auto-apply class="w-full rounded-lg" />
                 </FormControl>
-                <FormMessage name="sheduledDate" />
+                <FormMessage name="initScheduledDate" />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="endScheduledDate">
+              <FormItem>
+                <FormLabel icon="lucide:calendar-clock">Fecha y Hora Final</FormLabel>
+                <FormControl>
+                  <Datepicker :model-value="componentField.modelValue" @update:model-value="componentField.onChange"
+                    :enable-time-picker="true" :minute-increment="5" locale="es" format="yyyy-MM-dd HH:mm"
+                    placeholder="Selecciona fecha y hora" auto-apply class="w-full rounded-lg" />
+                </FormControl>
+                <FormMessage name="endScheduledDate" />
               </FormItem>
             </FormField>
 
@@ -149,7 +161,7 @@
                     </ComboboxEmpty>
 
                     <ComboboxGroup heading="Salones disponibles">
-                      <ComboboxItem v-for="salon in salonList" :key="salon.id" :value="salon.name"
+                      <ComboboxItem v-for="salon in salones" :key="salon.id" :value="salon.id"
                         class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
                         <ComboboxItemIndicator>
                           <Icon name="lucide:check" class="size-4" />
@@ -233,7 +245,8 @@ const formData = reactive({
   name: '',
   description: '',
   type: '',
-  sheduledDate: '',
+  initScheduledDate: '',
+  endScheduledDate: '',
   classroomId: '',
 })
 
@@ -242,26 +255,12 @@ import { ref, onMounted } from 'vue'
 import { postConferencias } from "~/lib/api/conferencias";
 import { getSalones } from "~/lib/api/salones";
 
-interface Salon {
-  id: number
-  name: string
-}
+const {
+  data: salones,
 
-const salonList = ref<Salon[]>([]);
+} = await useAsyncData(() => getSalones())
 
-const { mutate: cargarSalones } = useMutation({
-  mutation: getSalones,
-  onSuccess: (data) => {
-    salonList.value = data;
-  },
-  onError: (error) => {
-    console.error("Error al cargar salones:", error);
-  }
-});
 
-onMounted(() => {
-  cargarSalones();
-});
 
 const stepIndex = ref(1);
 const schemas = [
@@ -279,21 +278,31 @@ const schemas = [
     }),
   ),
   toTypedSchema(
-    z.object({
-      sheduledDate: z.preprocess(
-        (arg) => {
-          if (typeof arg === 'string' || arg instanceof Date) {
-            const date = new Date(arg);
-            return isNaN(date.getTime()) ? undefined : date;
-          }
-          return undefined;
-        },
-        z.date({ required_error: "La fecha es obligatoria", invalid_type_error: "La fecha debe ser válida" })
-      )
+  z.object({
+    initScheduledDate: z.preprocess(
+      (arg) => {
+        if (typeof arg === 'string' || arg instanceof Date) {
+          const date = new Date(arg);
+          return isNaN(date.getTime()) ? undefined : date;
+        }
+        return undefined;
+      },
+      z.date({ required_error: "La fecha de inicio es obligatoria", invalid_type_error: "La fecha debe ser válida" })
+    ),
+    endScheduledDate: z.preprocess(
+      (arg) => {
+        if (typeof arg === 'string' || arg instanceof Date) {
+          const date = new Date(arg);
+          return isNaN(date.getTime()) ? undefined : date;
+        }
+        return undefined;
+      },
+      z.date({ required_error: "La fecha de finalización es obligatoria", invalid_type_error: "La fecha debe ser válida" })
+    ),
+    classroomId: z.string({ message: "El salón es obligatorio" }).min(1),
+  })
+)
 
-      //classroomId: z.string({ message: "El salón es obligatorio" }).min(1),
-    })
-  ),
 ];
 const currentSchema = computed(() => {
   return schemas[stepIndex.value - 1];
@@ -303,14 +312,15 @@ const errorMessage = ref('');
 const showError = ref(false);
 
 const { mutate, asyncStatus } = useMutation({
-  mutation: (val: { name: string; description: string; type: string; sheduledDate: string; classroomId: string }) => postConferencias(val),
+  mutation: (val: { name: string; description: string; type: string; initScheduledDate: string; endScheduledDate: string; classroomId: string }) => postConferencias(val),
   onSuccess: (response) => {
     const res = response as { message?: string };
     alert(res.message || 'Conferencia creada con éxito');
     formData.name = '';
     formData.description = '';
     formData.type = '';
-    formData.sheduledDate = '';
+    formData.initScheduledDate = '';
+    formData.endScheduledDate = ''
     formData.classroomId = '';
     showError.value = false;
   },
@@ -321,14 +331,19 @@ const { mutate, asyncStatus } = useMutation({
 });
 
 function handleNextStep(values: any) {
+  console.log("Paso actual:", stepIndex.value);
+  console.log("Valores recibidos:", values);
+
   Object.assign(formData, values);
 
-  if (stepIndex.value === steps.length) {
+  // El paso final ya validó y ahora puede enviar
+  if (stepIndex.value >= steps.length) {
     console.log('Enviando datos finales:', JSON.stringify(formData, null, 2));
     mutate(formData);
     return;
   }
 
+  // Avanza al siguiente paso
   stepIndex.value++;
 }
 

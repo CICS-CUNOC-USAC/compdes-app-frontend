@@ -2,9 +2,7 @@
   <div class="container mx-auto p-5">
     <h1 class="text-2xl font-bold">Administración</h1>
     <section class="py-2 space-y-2">
-      <h5
-        class="text-xs text-muted-foreground uppercase font-light tracking-wider"
-      >
+      <h5 class="text-xs text-muted-foreground uppercase font-light tracking-wider">
         Sesión iniciada como:
       </h5>
       <h2 class="text-lg font-medium text-accent-foreground font-mono">
@@ -63,22 +61,22 @@
 </template>
 <script setup>
   import { NuxtLink } from "#components";
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-    CardFooter,
-  } from "~/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "~/components/ui/card";
 
-  const linkItems = [
-    {
-      title: "Inscripciones",
-      description:
-        "Verificar y gestionar las inscripciones de los participantes",
-      icon: "lucide:clipboard-list",
-      link: "/admin/inscriptions",
+const linkItems = [
+  {
+    title: "Inscripciones",
+    description:
+      "Verificar y gestionar las inscripciones de los participantes",
+    icon: "lucide:clipboard-list",
+    link: "/admin/inscriptions",
       shortcuts: [
         {
           name: "Ver",
@@ -98,26 +96,33 @@
         { name: "Ver", icon: "lucide:eye", link: "/admin/modules" },
         { name: "Crear", icon: "lucide:plus", link: "/admin/creacionModulos" },
       ],
-    },
-    {
-      title: "Modulos",
-      description:
-        "Creacion de Modulos",
-      icon: "lucide:building",
-      link: "/admin/creacionModulos",
-    },
-     {
-      title: "Salones",
-      description:
-        "Creacion de Salones",
-      icon: "lucide:building",
-      link: "/admin/creacionSalones",
-    },
-  ];
+  },
+  {
+    title: "Modulos",
+    description:
+      "Creacion de Modulos",
+    icon: "lucide:building",
+    link: "/admin/creacionModulos",
+  },
+  {
+    title: "Salones",
+    description:
+      "Creacion de Salones",
+    icon: "lucide:building",
+    link: "/admin/creacionSalones",
+  },
+  {
+    title: "Presentaciones",
+    description:
+      "Creacion de Presentaciones",
+    icon: "lucide:building",
+    link: "/admin/creacionConferencias",
+  },
+];
 
-  const sessionStore = useSessionStore();
-  const { logout } = sessionStore;
-  const { session } = storeToRefs(sessionStore);
+const sessionStore = useSessionStore();
+const { logout } = sessionStore;
+const { session } = storeToRefs(sessionStore);
 
   definePageMeta({
     title: "Administración",
