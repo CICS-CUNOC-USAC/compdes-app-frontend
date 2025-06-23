@@ -4,7 +4,7 @@ export interface Salon {
     module: string
 }
 export async function postSalones(values: any){
-  const response = await $api(`/endpoint`, {
+  const response = await $api(`/classrooms/create`, {
     method: 'POST',
     body: values,
   });
@@ -12,7 +12,7 @@ export async function postSalones(values: any){
 }
 
 export async function getSalones(): Promise<Salon[]> {
-  const response = await $api(`/`, {
+  const response = await $api(`/classrooms/all`, {
     method: 'GET',
   });
   return response as Salon[];

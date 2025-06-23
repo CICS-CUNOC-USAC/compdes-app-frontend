@@ -32,7 +32,7 @@
           <FormItem>
             <FormLabel icon="lucide:mic-vocal">Modulo</FormLabel>
 
-            <Combobox by="label" v-bind="componentField">
+            <Combobox by="label" v-bind="componentField" v-model="form.moduleId">
               <FormControl>
                 <ComboboxAnchor as-child>
                   <ComboboxTrigger as-child>
@@ -61,8 +61,8 @@
                   No se encontraron resultados.
                 </ComboboxEmpty>
 
-                <ComboboxGroup heading="Salones disponibles">
-                  <ComboboxItem v-for="salon in salonList" :key="salon.id" :value="salon.name"
+                <ComboboxGroup heading="Modulos disponibles">
+                  <ComboboxItem v-for="salon in modulos" :key="salon.id" :value="salon.name"
                     class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
                     <ComboboxItemIndicator>
                       <Icon name="lucide:check" class="size-4" />
@@ -115,19 +115,20 @@ const form = ref({
 const showSalonError = ref(false);
 const errorMessage = ref("");
 
-const { mutate: cargarModulos } = useMutation({
+/*const { mutate: cargarModulos } = useMutation({
   mutation: getModulos,
   onSuccess: (data) => {
-    salonList.value = data;
+    moduleList.value = data;
   },
   onError: (error) => {
     console.error("Error al cargar modulos:", error);
   }
-});
+});*/
 
-onMounted(() => {
-  cargarModulos();
-});
+const {
+  data: modulos,
+
+} = await useAsyncData(() => getModulos())
 
 
 const { mutate, asyncStatus } = useMutation({

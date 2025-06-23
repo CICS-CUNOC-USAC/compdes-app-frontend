@@ -99,6 +99,20 @@
         { name: "Crear", icon: "lucide:plus", link: "/admin/creacionModulos" },
       ],
     },
+    {
+      title: "Modulos",
+      description:
+        "Creacion de Modulos",
+      icon: "lucide:building",
+      link: "/admin/creacionModulos",
+    },
+     {
+      title: "Salones",
+      description:
+        "Creacion de Salones",
+      icon: "lucide:building",
+      link: "/admin/creacionSalones",
+    },
   ];
 
   const sessionStore = useSessionStore();
