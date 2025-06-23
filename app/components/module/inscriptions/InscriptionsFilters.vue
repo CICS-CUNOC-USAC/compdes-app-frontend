@@ -71,8 +71,12 @@
       />
     </div>
 
-    <div class="self-center  col-span-1 md:col-span-2 flex items-center gap-2 flex-wrap">
-      <Label class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors">
+    <div
+      class="self-center col-span-1 md:col-span-2 flex items-center gap-2 flex-wrap"
+    >
+      <Label
+        class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors"
+      >
         <Checkbox
           @update:model-value="
             (val) => inputHandlers.isAuthor(val ? 'true' : '')
@@ -83,7 +87,9 @@
         />
         Autores
       </Label>
-      <Label class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors">
+      <Label
+        class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors"
+      >
         <Checkbox
           @update:model-value="
             (val) => inputHandlers.isGuest(val ? 'true' : '')
@@ -94,7 +100,9 @@
         />
         Invitados
       </Label>
-      <Label class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors">
+      <Label
+        class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors"
+      >
         <Checkbox
           @update:model-value="
             (val) => inputHandlers.isTransferPayment(val ? 'true' : '')
@@ -105,7 +113,9 @@
         />
         Transferencia
       </Label>
-      <Label class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors">
+      <Label
+        class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors"
+      >
         <Checkbox
           @update:model-value="
             (val) => inputHandlers.isCardPayment(val ? 'true' : '')
@@ -116,7 +126,9 @@
         />
         Tarjeta
       </Label>
-      <Label class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors">
+      <Label
+        class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors"
+      >
         <Checkbox
           @update:model-value="
             (val) => inputHandlers.isCashPayment(val ? 'true' : '')
@@ -127,7 +139,9 @@
         />
         Efectivo
       </Label>
-      <Label class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors">
+      <Label
+        class="inline-flex items-center cursor-pointer text-muted-foreground group hover:text-foreground transition-colors"
+      >
         <Checkbox
           @update:model-value="
             (val) => inputHandlers.isApproved(val ? 'true' : '')
@@ -165,6 +179,7 @@
       navigateTo({
         query: {
           ...route.query,
+          page: 0,
           [field]: value || undefined,
         },
       });

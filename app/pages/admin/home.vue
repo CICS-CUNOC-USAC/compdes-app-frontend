@@ -37,11 +37,15 @@
           >
             <span class="text-sm">Accesos rapidos</span>
             <div class="space-x-2">
-              <Button as-child size="sm" variant="secondary">
-                <NuxtLink to="/admin/inscriptions/new">
-                  <Icon name="lucide:plus" />
-                  Crear
-                </NuxtLink>
+              <Button
+                v-for="(shortcut, sIndex) in item.shortcuts"
+                :key="sIndex"
+                @click.stop="navigateTo(shortcut.link)"
+                size="sm"
+                variant="secondary"
+              >
+                <Icon :name="shortcut.icon" />
+                {{ shortcut.name }}
               </Button>
             </div>
           </CardFooter>
@@ -67,6 +71,20 @@
         "Verificar y gestionar las inscripciones de los participantes",
       icon: "lucide:clipboard-list",
       link: "/admin/inscriptions",
+      shortcuts: [
+        { name: "Ver", icon: "lucide:eye", link: "/admin/inscriptions" },
+        { name: "Crear", icon: "lucide:plus", link: "/admin/inscriptions/new" },
+      ],
+    },
+    {
+      title: "Modulos",
+      description: "Gestionar módulos disponibles dentro del Centro",
+      icon: "lucide:building",
+      link: "/admin/modules",
+      shortcuts: [
+        { name: "Ver", icon: "lucide:eye", link: "/admin/modules" },
+        { name: "Crear", icon: "lucide:plus", link: "/admin/creacionModulos" },
+      ],
     },
   ];
 
