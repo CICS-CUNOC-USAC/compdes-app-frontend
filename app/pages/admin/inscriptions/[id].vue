@@ -252,4 +252,9 @@ import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
       );
     },
   });
+
+  definePageMeta({
+    title: "Detalles de Inscripción",
+    layout: "admin",
+  })
 </script>

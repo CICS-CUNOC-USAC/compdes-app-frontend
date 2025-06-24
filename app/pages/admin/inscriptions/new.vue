@@ -482,5 +482,10 @@
       icon: "lucide:user-check",
     },
   ];
+
+  definePageMeta({
+    title: "Nueva Inscripción",
+    layout: "admin",
+  })
 </script>
 <style scoped></style>

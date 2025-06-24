@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="TData, TValue">
-  import type { ColumnDef } from "@tanstack/vue-table";
+  import type { ColumnDef, SortingState } from "@tanstack/vue-table";
   import {
     FlexRender,
     getCoreRowModel,
@@ -16,35 +16,53 @@
   } from "@/components/ui/table";
   import Button from "~/components/ui/button/Button.vue";
 
-  const props = defineProps<{
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-    totalElements?: number;
-    totalPages?: number;
-    paginationState?: {
-      pageIndex: number;
-      pageSize: number;
-    };
-  }>();
+  const props = withDefaults(
+    defineProps<{
+      columns: ColumnDef<TData, TValue>[];
+      data: TData[];
+      totalElements?: number;
+      totalPages?: number;
+      sorting: SortingState;
+      paginationState?: {
+        pageIndex: number;
+        pageSize: number;
+      };
+    }>(),
+    {
+      paginationState: () => ({
+        pageIndex: 0,
+        pageSize: 10,
+      }),
+      sorting: () => [],
+    },
+  );
 
-  const emit = defineEmits(["paginationChange"]);
+  const emit = defineEmits(["paginationChange", "sortChange"]);
 
   const table = useVueTable({
     get data() {
       return props.data;
     },
-    get columns() {
-      return props.columns;
-    },
+    // data: props.data,
+    // get columns() {
+    //   return props.columns;
+    // },
+    // data: props.data,
+    columns: props.columns,
     getCoreRowModel: getCoreRowModel(),
+    enableMultiSort: false,
     manualPagination: true,
+    manualSorting: true,
     rowCount: props.totalElements ?? 0,
     pageCount: props.totalPages ?? -1,
     onPaginationChange: (updater) => emit("paginationChange", updater),
+    onSortingChange: (updater) => emit("sortChange", updater),
     state: {
-      pagination: props.paginationState ?? {
-        pageIndex: 0,
-        pageSize: 10,
+      get pagination() {
+        return props.paginationState;
+      },
+      get sorting() {
+        return props.sorting;
       },
     },
   });
@@ -102,11 +120,46 @@
               :key="header.id"
               class="bg-accent"
             >
-              <FlexRender
-                v-if="!header.isPlaceholder"
-                :render="header.column.columnDef.header"
-                :props="header.getContext()"
-              />
+              <div
+                class="flex items-center gap-2 transition"
+                :class="{
+                  'select-none hover:text-foreground':
+                    !header.column.getIsSorted(),
+                  'text-foreground': header.column.getIsSorted(),
+                  'cursor-pointer': header.column.getCanSort(),
+                }"
+                @click="
+                  () => {
+                    if (header.column.getCanSort()) {
+                      header.column.toggleSorting();
+                    }
+                  }
+                "
+              >
+                <FlexRender
+                  v-if="!header.isPlaceholder"
+                  :render="header.column.columnDef.header"
+                  :props="header.getContext()"
+                />
+                <Icon
+                  v-if="header.column.getIsSorted() === 'asc'"
+                  name="lucide:arrow-up"
+                  class="inline ml-1"
+                />
+                <Icon
+                  v-else-if="header.column.getIsSorted() === 'desc'"
+                  name="lucide:arrow-down"
+                  class="inline ml-1"
+                />
+                <!-- you can omit the else-block if you don’t want any icon when unsorted -->
+                <Icon
+                  v-else-if="
+                    !header.column.getIsSorted() && header.column.getCanSort()
+                  "
+                  name="lucide:chevrons-up-down"
+                  class="inline ml-1 text-muted-foreground"
+                />
+              </div>
             </TableHead>
           </TableRow>
         </TableHeader>

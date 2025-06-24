@@ -15,7 +15,19 @@
                 <Icon name="lucide:menu" class="size-4" />
               </template>
             </SidebarTrigger>
-            <NuxtLink to="/" class="inline-block uppercase font-medium text-sm">Compdes</NuxtLink>
+            <NuxtLink to="/" class="inline-block uppercase font-medium text-sm"
+              >Compdes</NuxtLink
+            >
+            <h2
+              class="text-muted-foreground text-sm uppercase transition duration-300 ease-in-out"
+              :class="{
+                'opacity-100 translate-y-0': hasScrolled,
+                'opacity-0 translate-y-2': !hasScrolled,
+              }"
+            >
+              <Icon name="lucide:chevron-right" class="size-4 mb-0.5 inline" />
+              {{ $route.meta.title || "" }}
+            </h2>
           </section>
 
           <section>
@@ -37,20 +49,6 @@
                   </DialogDescription>
                 </DialogHeader>
                 <div class="grid gap-4 py-4 overflow-y-auto">
-                  <!-- <div class="flex flex-col justify-between h-[300dvh]">
-                    <p>
-                      This is some placeholder content to show the scrolling
-                      behavior for modals. We use repeated line breaks to
-                      demonstrate how content can exceed minimum inner height,
-                      thereby showing inner scrolling. When content becomes
-                      longer than the predefined max-height of modal, content
-                      will be cropped and scrollable within the modal.
-                    </p>
-
-                    <p>
-                      This content should appear at the bottom after you scroll.
-                    </p>
-                  </div> -->
                   <FaqContent />
                 </div>
                 <DialogFooter class="p-6 pt-0">
@@ -63,11 +61,6 @@
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-
-            <!-- <Button size="sm" variant="outline">
-              <Icon name="lucide:circle-help" class="size-4" />
-              Preguntas frecuentes
-            </Button> -->
           </section>
         </div>
         <div class="flex-1">
@@ -96,5 +89,18 @@
   } from "~/components/ui/dialog";
   import { Button } from "~/components/ui/button";
   import FaqContent from "~/components/content/FaqContent.vue";
+
+  // test
+  const hasScrolled = ref(false);
+  onMounted(() => {
+    window.addEventListener("scroll", () => {
+      hasScrolled.value = window.scrollY > 100;
+    });
+  });
+  onUnmounted(() => {
+    window.removeEventListener("scroll", () => {
+      hasScrolled.value = false;
+    });
+  });
 </script>
 <style scoped></style>
