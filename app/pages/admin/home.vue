@@ -20,41 +20,49 @@
       </ul>
     </section>
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-4">
-      <NuxtLink v-for="(item, index) in linkItems" :key="index" :to="item.link">
-        <Card
-          class="bg-gradient-to-b from-transparent to-primary/40 group hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5"
-        >
-          <CardHeader>
+      <Card
+        v-for="(item, index) in linkItems"
+        :key="index"
+        class="bg-gradient-to-b from-transparent to-primary/40 hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5"
+      >
+        <CardHeader>
+          <NuxtLink :to="item.link" class="group">
             <CardTitle class="flex items-center gap-2 text-lg">
               <Icon :name="item.icon" />
               {{ item.title }}
+              <Icon
+                name="lucide:chevron-right"
+                class="group-hover:translate-x-1 opacity-0 group-hover:opacity-100 transition duration-200"
+              />
             </CardTitle>
-            <CardDescription>{{ item.description }}</CardDescription>
-          </CardHeader>
-          <CardContent> </CardContent>
-          <CardFooter
-            class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200"
-          >
-            <span class="text-sm">Accesos rapidos</span>
-            <div class="space-x-2">
-              <Button
-                v-for="(shortcut, sIndex) in item.shortcuts"
-                :key="sIndex"
-                @click.stop="navigateTo(shortcut.link)"
-                size="sm"
-                variant="secondary"
-              >
-                <Icon :name="shortcut.icon" />
-                {{ shortcut.name }}
-              </Button>
-            </div>
-          </CardFooter>
-        </Card>
-      </NuxtLink>
+          </NuxtLink>
+          <CardDescription>{{ item.description }}</CardDescription>
+        </CardHeader>
+        <CardContent> </CardContent>
+        <CardFooter
+          class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200"
+        >
+          <!-- <span class="text-sm">Accesos rapidos</span> -->
+          <div class="space-x-2">
+            <Button
+              v-for="(shortcut, sIndex) in item.shortcuts"
+              :key="sIndex"
+              :as="NuxtLink"
+              size="sm"
+              variant="secondary"
+              :to="shortcut.link"
+            >
+              <Icon :name="shortcut.icon" />
+              {{ shortcut.name }}
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
     </section>
   </div>
 </template>
 <script setup>
+  import { NuxtLink } from "#components";
   import {
     Card,
     CardHeader,
@@ -72,7 +80,12 @@
       icon: "lucide:clipboard-list",
       link: "/admin/inscriptions",
       shortcuts: [
-        { name: "Ver", icon: "lucide:eye", link: "/admin/inscriptions" },
+        {
+          name: "Ver",
+          icon: "lucide:eye",
+          link: "/admin/inscriptions?sort=createdAt,desc",
+        },
+
         { name: "Crear", icon: "lucide:plus", link: "/admin/inscriptions/new" },
       ],
     },
@@ -91,5 +104,10 @@
   const sessionStore = useSessionStore();
   const { logout } = sessionStore;
   const { session } = storeToRefs(sessionStore);
+
+  definePageMeta({
+    title: "Administración",
+    layout: "admin",
+  });
 </script>
 <style scoped></style>

@@ -27,39 +27,60 @@
       </div>
     </div>
 
-    <div v-if="status == 'error'" class="p-4 text-center text-red-600">
-      Error: {{ JSON.stringify(error, null, 2) }}
+    <div
+      v-if="status == 'error'"
+      class="p-4 text-center text-sm text-destructive-foreground"
+    >
+      <strong>No se ha podido obtener la información:</strong>
+      {{ error?.data?.message || error?.message || "Error inesperado" }}
+      <br />
+      <span>
+        Intenta nuevamente, limpia los filtros o recarga la página.
+      </span>
     </div>
 
     <InscriptionsFilters class="mb-6" :loading="status === 'pending'" />
 
-    <LoaderIndicator v-if="status == 'pending'" />
+    <LoaderIndicator v-if="status == 'pending' && !participantesResponse" />
 
     <div
-      class="max-w-6xl mx-auto rounded-lg"
-      v-if="status === 'success' && participantesResponse"
+      class="max-w-6xl mx-auto rounded-lg relative"
+      v-if="participantesResponse"
     >
       <DataTable
-        :columns="columns"
-        :data="participantesResponse?.content ?? []"
+        :columns
+        :data="participantesResponse?.content"
         :totalElements="participantesResponse?.totalElements"
         :totalPages="participantesResponse?.totalPages"
         :paginationState="paginationOptions"
+        :sorting="sortingOptions"
+        @sort-change="
+          ($event) => {
+            const newSorting =
+              typeof $event === 'function' ? $event(sortingOptions) : $event;
+            sortingOptions = newSorting;
+          }
+        "
         @pagination-change="
           ($event) => {
             if (typeof $event === 'function') {
               paginationOptions = $event(paginationOptions);
-              console.log($event(paginationOptions));
             } else {
               paginationOptions = {
                 ...paginationOptions,
                 ...$event,
               };
-              console.log($event);
             }
           }
         "
       />
+      <!-- overlay: -->
+      <div
+        class="absolute inset-0 bg-background/40 flex items-center justify-center"
+        v-if="status === 'pending'"
+      >
+        <LoaderIndicator />
+      </div>
     </div>
   </div>
 </template>
@@ -126,7 +147,6 @@
       pageSize: route.query.size ? Number(route.query.size) : 10,
     }),
     set: (value) => {
-      console.log("Pagination options updated:", value);
       navigateTo({
         query: {
           ...route.query,
@@ -137,9 +157,37 @@
     },
   });
 
+  const sortingOptions = computed({
+    get: () => {
+      const sortQuery = route.query.sort as string | undefined;
+      // we'll alow only one sort at a time
+      if (!sortQuery) return [];
+
+      const [id, order] = sortQuery.split(",");
+
+      return [
+        {
+          id,
+          desc: order === "desc",
+        },
+      ];
+    },
+    set: (val) => {
+      navigateTo({
+        query: {
+          ...route.query,
+          sort:
+            val.map((s) => `${s.id},${s.desc ? "desc" : "asc"}`).join(",") ||
+            undefined,
+        },
+      });
+    },
+  });
+
   const columns: ColumnDef<Participant>[] = [
     {
       id: "actions",
+      enableSorting: false,
       header: () => (
         <div class="text-center font-semibold">
           <Icon name="lucide:mouse-pointer-click" class="inline mr-1 mb-0.5" />
@@ -148,27 +196,18 @@
       ),
       cell: ({ row }) => (
         <div class="flex gap-2 justify-center">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button asChild size="icon" variant="outline">
-                  <NuxtLink to={`/admin/inscriptions/${row.original.id}`}>
-                    <Icon name="lucide:eye" />
-                  </NuxtLink>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <span>Ver Inscripción</span>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Button asChild size="icon" class="size-8" variant="outline">
+            <NuxtLink to={`/admin/inscriptions/${row.original.id}`}>
+              <Icon name="lucide:eye" />
+            </NuxtLink>
+          </Button>
           <ConfirmActionDialog
             // @ts-expect-error
             onConfirm={() => approveInscription(row.original.id)}
             description="¿Estás segur@ de que deseas aprobar esta inscripción?"
             title="Aprobar Inscripción"
           >
-            <Button size="icon" variant="default">
+            <Button size="icon" class="size-8" variant="default">
               <Icon name="lucide:clipboard-check" />
             </Button>
           </ConfirmActionDialog>
@@ -197,6 +236,18 @@
       ),
       cell: ({ row }) => (
         <div class="text-base">{row.getValue("lastName")}</div>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:calendar" class="inline mr-1 mb-0.5" />
+          Fecha de Inscripción
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="text-center">{row.getValue("createdAt")}</div>
       ),
     },
     {
@@ -374,6 +425,7 @@
     {
       accessorFn: (row) => row.registrationStatus.isCashPayment,
       id: "isCashPayment",
+      enableSorting: false,
       header: () => (
         <div class="text-center font-semibold">
           <Icon name="lucide:receipt" class="inline mr-1 mb-0.5" />
@@ -391,4 +443,9 @@
       ),
     },
   ];
+
+  definePageMeta({
+    title: "Listado de Inscripciones",
+    layout: "admin",
+  });
 </script>
