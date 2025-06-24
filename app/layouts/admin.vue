@@ -80,17 +80,17 @@
             </SidebarTrigger>
             <NuxtLink
               to="/admin/home"
-              class="inline-block uppercase font-medium text-xs"
+              class="inline-block uppercase font-medium text-sm"
               >ADMIN</NuxtLink
             >
             <h2
-              class="text-muted-foreground text-xs uppercase transition duration-300 ease-in-out"
+              class="text-muted-foreground text-sm uppercase transition duration-300 ease-in-out flex items-center gap-2"
               :class="{
                 'opacity-100 translate-y-0': hasScrolled,
                 'opacity-0 translate-y-2': !hasScrolled,
               }"
             >
-              <Icon name="lucide:chevron-right" class="size-4 mb-0.5 inline" />
+              <Icon name="lucide:chevron-right" class="size-4" />
               {{ $route.meta.title || "" }}
             </h2>
           </section>
