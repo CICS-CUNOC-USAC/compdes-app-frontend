@@ -5,8 +5,17 @@ export default defineNuxtRouteMiddleware((to, _from) => {
   const sessionStore = useSessionStore();
   const { session, role } = storeToRefs(sessionStore);
 
-  // Only protect /admin routes
-  if (!to.path.startsWith("/admin")) {
+   if (session.value) {
+    if (to.path === "/admin/login" && role.value === "ADMIN") {
+      return navigateTo("/admin");
+    }
+    if (to.path === "/login" && role.value === "PARTICIPANT") {
+      return navigateTo("/participant");
+    }
+  }
+
+  // Only protect /admin and /participant routes
+  if (!to.path.startsWith("/admin") && !to.path.startsWith("/participant")) {
     return; // let everything else through
   }
 
@@ -20,8 +29,11 @@ export default defineNuxtRouteMiddleware((to, _from) => {
     return navigateTo("/");
   }
 
-  // If logged in but not an admin, also go to home
-  if (role.value !== "ADMIN") {
+  if (to.path.startsWith("/admin") && role.value !== "ADMIN") {
+    return navigateTo("/");
+  }
+
+  if (to.path.startsWith("/participant") && role.value !== "PARTICIPANT") {
     return navigateTo("/");
   }
 });

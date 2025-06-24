@@ -90,5 +90,46 @@
         </SidebarMenuItem>
       </SidebarMenu>
     </SidebarFooter>
+    <SidebarFooter v-else-if="session && session.role === 'PARTICIPANT'">
+      <Alert>
+        <Icon name="lucide:triangle-alert" class="!text-amber-400" />
+        <AlertTitle>Sesión activa</AlertTitle>
+        <AlertDescription>
+          Has iniciado sesion!
+        </AlertDescription>
+      </Alert>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton class=" justify-between">
+                <span class="flex items-center gap-2">
+                  <Icon name="lucide:user" /> {{ session?.username }}
+                </span>
+                <Icon name="lucide:chevrons-up-down" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              side="top"
+              class="w-(--reka-popper-anchor-width)"
+            >
+              <DropdownMenuItem as-child>
+                <NuxtLink to="/participant">
+                  <span>Tu Perfil</span>
+                  <Icon name="lucide:layout-dashboard" />
+                </NuxtLink>
+              </DropdownMenuItem>
+              <DropdownMenuItem @click="logout">
+                <span>Cerrar sesión</span>
+                <Icon
+                  name="lucide:log-out"
+                  class="text-destructive-foreground"
+                />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarFooter>
   </Sidebar>
 </template>
