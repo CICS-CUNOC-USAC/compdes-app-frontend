@@ -175,7 +175,7 @@
 
             <FormField v-slot="{ componentField }" name="organisation">
               <FormItem>
-                <FormLabel icon="lucide:school">Universidad</FormLabel>
+                <FormLabel icon="lucide:school">Universidad/Organizacion</FormLabel>
 
                 <Combobox by="label" v-bind="componentField">
                   <FormControl>

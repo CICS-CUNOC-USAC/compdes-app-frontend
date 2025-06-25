@@ -33,4 +33,8 @@ export const universitiesList = [
     group: "Guatemala",
     items: guatemalaUniversitiesList,
   },
+  {
+    group: "Otros",
+    items: ["Otro"],
+  },
 ];

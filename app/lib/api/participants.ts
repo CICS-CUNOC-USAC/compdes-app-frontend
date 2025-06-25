@@ -54,3 +54,10 @@ export interface RegistrationStatus extends Entity {
   isCashPayment: boolean;
   voucherNumber: null;
 }
+
+export async function getMyProfile() {
+  const response = await $api(`/participants/my-profile`, {
+    method: "GET",
+  });
+  return response;
+}
