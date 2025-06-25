@@ -8,14 +8,15 @@ export const useSessionStore = defineStore('session', () => {
   const loading = ref(false)
 
   const login = async (credentials) => {
-    const { username, password } = credentials
+    const { username, password, email } = credentials
     loading.value = true
     let token = ''
     try {
       const { setToken } = useNuxtApp().$authCookie
+      const requestBody = { username: username ?? email, password }
       const response = await $api('/login', {
         method: 'POST',
-        body: { username, password },
+        body: requestBody,
         onResponse: ({ response }) => {
           // if (response.headers.get('Authorization')) {
           //   token = response.headers.get('Authorization')?.replace('Bearer ', '')
@@ -32,7 +33,11 @@ export const useSessionStore = defineStore('session', () => {
       session.value.username = session.value?.userName
       toast.success('Sesión iniciada correctamente')
 
-      navigateTo('/admin/home')
+      if (username) {
+        navigateTo('/admin/home')
+      } else {
+        navigateTo('/participant')
+      }
 
       return response
     } catch (error) {
@@ -136,7 +141,11 @@ export const useSessionStore = defineStore('session', () => {
 
   const logout = () => {
     // todo: call to logout endpoint
-    navigateTo('/admin/login')
+    if (role.value === "PARTICIPANT") {
+      navigateTo('/login')
+    } else {
+      navigateTo('/admin/login')
+    }
     session.value = null
     const { removeToken } = useNuxtApp().$authCookie
     removeToken()
