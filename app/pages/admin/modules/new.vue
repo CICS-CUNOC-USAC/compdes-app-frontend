@@ -11,7 +11,7 @@
     </div>
     <button aria-label="Cerrar alerta" @click="showModuloError = false" class="ml-4 text-red-600 hover:text-red-800"
       style="font-weight: bold;">
-      ×
+      <Icon name="lucide:x" />
     </button>
   </Alert>
 
@@ -28,8 +28,8 @@
           <Input v-model="form.name" type="text" id="name" required />
         </div>
 
-        <Button type="submit" class="w-full" :loading="asyncStatus.loading">
-          <Icon name="lucide:shield-check" />
+        <Button type="submit" class="w-full" :loading="asyncStatus === 'loading'">
+          <Icon name="lucide:check" />
           Crear Modulo
         </Button>
       </form>
@@ -52,6 +52,7 @@ import { useSessionStore } from "~/stores/session";
 import { patchPassword } from "~/lib/api/inscriptions";
 import { postSalones } from "~/lib/api/salones";
 import { getModulos, postModules } from "~/lib/api/modules";
+import { toast } from "vue-sonner";
 
 const sessionStore = useSessionStore();
 const { loading } = storeToRefs(sessionStore);
@@ -71,9 +72,11 @@ const errorMessage = ref("");
 const { mutate, asyncStatus } = useMutation({
   mutation: (val) => postModules(val),
   onSuccess: (response) => {
-    alert(response.message || "Modulo creado con éxito");
+    // alert(response.message || "Modulo creado con éxito");
+    toast.success(response.message || "Modulo creado con éxito");
     form.value.name = "";
     form.value.moduleId = "";
+    navigateTo('/admin/modules')
   },
   onError: (error) => {
     errorMessage.value = error.data?.message || "Error al crear el modulo. Intenta de nuevo.";

@@ -21,7 +21,7 @@
       <Card
         v-for="(item, index) in linkItems"
         :key="index"
-        class="bg-gradient-to-b from-transparent to-primary/40 hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5"
+        class="bg-gradient-to-b from-transparent to-primary/40 hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5 flex flex-col justify-between"
       >
         <CardHeader>
           <NuxtLink :to="item.link" class="group">
@@ -38,7 +38,7 @@
         </CardHeader>
         <CardContent> </CardContent>
         <CardFooter
-          class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200"
+          class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200 "
         >
           <!-- <span class="text-sm">Accesos rapidos</span> -->
           <div class="space-x-2">
@@ -97,13 +97,13 @@ const linkItems = [
         { name: "Crear", icon: "lucide:plus", link: "/admin/creacionModulos" },
       ],
   },
-  {
-    title: "Modulos",
-    description:
-      "Creacion de Modulos",
-    icon: "lucide:building",
-    link: "/admin/creacionModulos",
-  },
+  // {
+  //   title: "Modulos",
+  //   description:
+  //     "Creacion de Modulos",
+  //   icon: "lucide:building",
+  //   link: "/admin/creacionModulos",
+  // },
   {
     title: "Salones",
     description:

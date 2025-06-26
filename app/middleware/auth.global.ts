@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware((to, _from) => {
 
    if (session.value) {
     if (to.path === "/admin/login" && role.value === "ADMIN") {
-      return navigateTo("/admin");
+      return navigateTo("/admin/home");
     }
     if (to.path === "/login" && role.value === "PARTICIPANT") {
       return navigateTo("/participant");

@@ -22,7 +22,8 @@
       data: TData[];
       totalElements?: number;
       totalPages?: number;
-      sorting: SortingState;
+      sorting?: SortingState;
+      enableSorting?: boolean;
       paginationState?: {
         pageIndex: number;
         pageSize: number;
@@ -53,6 +54,7 @@
     enableMultiSort: false,
     manualPagination: true,
     manualSorting: true,
+    enableSorting: props.enableSorting ?? true,
     rowCount: props.totalElements ?? 0,
     pageCount: props.totalPages ?? -1,
     onPaginationChange: (updater) => emit("paginationChange", updater),
@@ -109,7 +111,7 @@
       </div>
     </div>
     <div class="border rounded-md overflow-hidden">
-      <Table>
+      <Table class="w-full">
         <TableHeader>
           <TableRow
             v-for="headerGroup in table.getHeaderGroups()"

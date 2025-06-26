@@ -90,7 +90,7 @@
                 'opacity-0 translate-y-2': !hasScrolled,
               }"
             >
-              <Icon name="lucide:chevron-right" class="size-4" />
+              <Icon name="lucide:chevron-right" class="size-4" v-if="$route.meta.title" />
               {{ $route.meta.title || "" }}
             </h2>
           </section>
