@@ -1,7 +1,7 @@
 export const typeList = [
-  "Meeting",
-  "Workshop",
-  "Presentation",
+  "MEETING",
+  "WORKSHOP",
+  "PRESENTATION",
 ];
 
 export const presentationTypeList = [
