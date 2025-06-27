@@ -36,6 +36,7 @@
         pageSize: 10,
       }),
       sorting: () => [],
+      enableSorting: true,
     },
   );
 
@@ -50,12 +51,16 @@
     //   return props.columns;
     // },
     // data: props.data,
+    defaultColumn: {
+      minSize: 0,
+      size: 0,
+    },
     columns: props.columns,
     getCoreRowModel: getCoreRowModel(),
     enableMultiSort: false,
     manualPagination: true,
     manualSorting: true,
-    enableSorting: props.enableSorting ?? true,
+    enableSorting: props.enableSorting,
     rowCount: props.totalElements ?? 0,
     pageCount: props.totalPages ?? -1,
     onPaginationChange: (updater) => emit("paginationChange", updater),
@@ -135,7 +140,7 @@
                   'cursor-pointer': header.column.getCanSort(),
                 }"
                 :style="{
-                  width: header.getSize() + 'px',
+                  width: header.getSize() !== 0 ? `${header.getSize()}px` : undefined
                 }"
                 @click="
                   () => {
