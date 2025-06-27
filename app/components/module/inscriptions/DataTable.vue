@@ -24,6 +24,7 @@
       totalPages?: number;
       sorting?: SortingState;
       enableSorting?: boolean;
+      disablePagination?: boolean;
       paginationState?: {
         pageIndex: number;
         pageSize: number;
@@ -72,7 +73,10 @@
 
 <template>
   <div>
-    <div class="flex justify-between items-center pb-2.5">
+    <div
+      class="flex justify-between items-center pb-2.5"
+      v-if="!props.disablePagination"
+    >
       <div>
         <span class="text-sm text-muted-foreground">
           Página
@@ -129,6 +133,9 @@
                     !header.column.getIsSorted(),
                   'text-foreground': header.column.getIsSorted(),
                   'cursor-pointer': header.column.getCanSort(),
+                }"
+                :style="{
+                  width: header.getSize() + 'px',
                 }"
                 @click="
                   () => {

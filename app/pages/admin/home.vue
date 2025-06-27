@@ -94,7 +94,7 @@ const linkItems = [
       link: "/admin/modules",
       shortcuts: [
         { name: "Ver", icon: "lucide:eye", link: "/admin/modules" },
-        { name: "Crear", icon: "lucide:plus", link: "/admin/creacionModulos" },
+        { name: "Crear", icon: "lucide:plus", link: "/admin/modules/new" },
       ],
   },
   // {
@@ -109,14 +109,22 @@ const linkItems = [
     description:
       "Creacion de Salones",
     icon: "lucide:building",
-    link: "/admin/creacionSalones",
+    link: "/admin/classrooms",
+    shortcuts: [
+      { name: "Ver", icon: "lucide:eye", link: "/admin/classrooms" },
+      { name: "Crear", icon: "lucide:plus", link: "/admin/classrooms/new" },
+    ],
   },
   {
     title: "Presentaciones",
     description:
       "Creacion de Presentaciones",
     icon: "lucide:building",
-    link: "/admin/creacionConferencias",
+    link: "/admin/conferences",
+    shortcuts: [
+      { name: "Ver", icon: "lucide:eye", link: "/admin/conferences" },
+      { name: "Crear", icon: "lucide:plus", link: "/admin/conferences/new" },
+    ],
   },
 ];
 
@@ -125,7 +133,7 @@ const { logout } = sessionStore;
 const { session } = storeToRefs(sessionStore);
 
   definePageMeta({
-    title: "Administración",
+    title: "Inicio",
     layout: "admin",
   });
 </script>

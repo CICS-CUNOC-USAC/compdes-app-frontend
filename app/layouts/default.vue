@@ -15,8 +15,11 @@
                 <Icon name="lucide:menu" class="size-4" />
               </template>
             </SidebarTrigger>
-            <NuxtLink to="/" class="inline-block uppercase font-medium text-sm"
-              >Compdes</NuxtLink
+            <NuxtLink to="/" class="inline-block uppercase font-medium text-sm text-foreground">
+              <CompdesLogo
+                class="size-4.5 inline-block mr-1 mb-0.5 fill-foreground"
+              />
+              Compdes</NuxtLink
             >
             <h2
               class="text-muted-foreground text-sm uppercase transition duration-300 ease-in-out flex items-center gap-2"
@@ -93,6 +96,7 @@
   } from "~/components/ui/dialog";
   import { Button } from "~/components/ui/button";
   import FaqContent from "~/components/content/FaqContent.vue";
+import CompdesLogo from "~/components/partials/CompdesLogo.vue";
 
   // test
   const hasScrolled = ref(false);

@@ -80,9 +80,13 @@
             </SidebarTrigger>
             <NuxtLink
               to="/admin/home"
-              class="inline-block uppercase font-medium text-sm"
-              >ADMIN</NuxtLink
+              class="inline-block uppercase font-medium text-sm text-foreground"
             >
+            <CompdesLogo
+              class="size-4.5 inline-block mr-1 mb-0.5 fill-foreground"
+            />
+              ADMIN
+            </NuxtLink>
             <h2
               class="text-muted-foreground text-sm uppercase transition duration-300 ease-in-out flex items-center gap-2"
               :class="{
@@ -90,7 +94,11 @@
                 'opacity-0 translate-y-2': !hasScrolled,
               }"
             >
-              <Icon name="lucide:chevron-right" class="size-4" v-if="$route.meta.title" />
+              <Icon
+                name="lucide:chevron-right"
+                class="size-4"
+                v-if="$route.meta.title"
+              />
               {{ $route.meta.title || "" }}
             </h2>
           </section>
@@ -103,7 +111,8 @@
   </div>
 </template>
 <script setup>
-  import Sidebar from "~/components/ui/sidebar/Sidebar.vue";
+  import CompdesLogo from "~/components/partials/CompdesLogo.vue";
+import Sidebar from "~/components/ui/sidebar/Sidebar.vue";
   import SidebarContent from "~/components/ui/sidebar/SidebarContent.vue";
   import SidebarGroup from "~/components/ui/sidebar/SidebarGroup.vue";
   import SidebarGroupContent from "~/components/ui/sidebar/SidebarGroupContent.vue";

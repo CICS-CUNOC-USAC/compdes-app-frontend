@@ -41,7 +41,7 @@
 
     <!-- {{ modulesResponse }} -->
 
-    <div class=" mx-auto rounded-lg relative" v-if="modulesResponse">
+    <div class="mx-auto rounded-lg relative" v-if="modulesResponse">
       <DataTable
         :columns
         :data="modulesResponse?.content"
@@ -80,12 +80,10 @@
     Updater,
   } from "@tanstack/vue-table";
   import DataTable from "~/components/module/inscriptions/DataTable.vue";
-  import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
   import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
-  import type {
-    InscriptionsResponse,
-    Participant,
-  } from "~/lib/api/participants";
+  import type { Modulo } from "~/lib/api/modules";
+  import type { InscriptionsResponse } from "~/lib/api/participants";
+import type { PageableResponse } from "~/lib/api/shared";
   const route = useRoute();
 
   const {
@@ -93,9 +91,9 @@
     status,
     error,
     refresh: refreshModules,
-  } = await useAsyncData<InscriptionsResponse>(
+  } = await useAsyncData<PageableResponse<Modulo>>(
     () =>
-      $api("/modules/all", {
+      $api("/modules/paginated-modules", {
         query: {
           page: route.query.page ? Number(route.query.page) : 0,
           size: route.query.size ? Number(route.query.size) : 10,
@@ -124,62 +122,7 @@
     },
   });
 
-  // const sortingOptions = computed({
-  //   get: () => {
-  //     const sortQuery = route.query.sort as string | undefined;
-  //     // we'll alow only one sort at a time
-  //     if (!sortQuery) return [];
-
-  //     const [id, order] = sortQuery.split(",");
-
-  //     return [
-  //       {
-  //         id,
-  //         desc: order === "desc",
-  //       },
-  //     ];
-  //   },
-  //   set: (val) => {
-  //     navigateTo({
-  //       query: {
-  //         ...route.query,
-  //         sort:
-  //           val.map((s) => `${s.id},${s.desc ? "desc" : "asc"}`).join(",") ||
-  //           undefined,
-  //       },
-  //     });
-  //   },
-  // });
-
-  const columns: ColumnDef<Participant>[] = [
-    // {
-    //   id: "actions",
-    //   header: () => (
-    //     <div class="text-center font-semibold">
-    //       <Icon name="lucide:mouse-pointer-click" class="inline mr-1 mb-0.5" />
-    //       Acciones
-    //     </div>
-    //   ),
-    //   cell: ({ row }) => (
-    //     <div class="flex gap-2 justify-center">
-    //       <Button asChild size="icon" class="size-8" variant="outline">
-    //         <NuxtLink to={`/admin/inscriptions/${row.original.id}`}>
-    //           <Icon name="lucide:eye" />
-    //         </NuxtLink>
-    //       </Button>
-    //       <ConfirmActionDialog
-    //         // @ts-expect-error
-    //         onConfirm={() => approveInscription(row.original.id)}
-    //         description="¿Estás segur@ de que deseas aprobar esta inscripción?"
-    //         title="Aprobar Inscripción"
-    //       >
-    //         <Button size="icon" class="size-8" variant="default">
-    //           <Icon name="lucide:clipboard-check" />
-    //         </Button>
-    //       </ConfirmActionDialog>
-    //     </div>
-    //   ),
-    // },
+  const columns: ColumnDef<Modulo>[] = [
     {
       accessorKey: "name",
       header: () => (

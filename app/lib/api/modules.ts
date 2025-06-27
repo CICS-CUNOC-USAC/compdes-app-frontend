@@ -1,6 +1,6 @@
 export interface Modulo {
   id: number;
-  nombre: string;
+  name: string;
 }
 
 export async function postModules(values: any){
