@@ -22,7 +22,9 @@
       data: TData[];
       totalElements?: number;
       totalPages?: number;
-      sorting: SortingState;
+      sorting?: SortingState;
+      enableSorting?: boolean;
+      disablePagination?: boolean;
       paginationState?: {
         pageIndex: number;
         pageSize: number;
@@ -53,6 +55,7 @@
     enableMultiSort: false,
     manualPagination: true,
     manualSorting: true,
+    enableSorting: props.enableSorting ?? true,
     rowCount: props.totalElements ?? 0,
     pageCount: props.totalPages ?? -1,
     onPaginationChange: (updater) => emit("paginationChange", updater),
@@ -70,7 +73,10 @@
 
 <template>
   <div>
-    <div class="flex justify-between items-center pb-2.5">
+    <div
+      class="flex justify-between items-center pb-2.5"
+      v-if="!props.disablePagination"
+    >
       <div>
         <span class="text-sm text-muted-foreground">
           Página
@@ -109,7 +115,7 @@
       </div>
     </div>
     <div class="border rounded-md overflow-hidden">
-      <Table>
+      <Table class="w-full">
         <TableHeader>
           <TableRow
             v-for="headerGroup in table.getHeaderGroups()"
@@ -127,6 +133,9 @@
                     !header.column.getIsSorted(),
                   'text-foreground': header.column.getIsSorted(),
                   'cursor-pointer': header.column.getCanSort(),
+                }"
+                :style="{
+                  width: header.getSize() + 'px',
                 }"
                 @click="
                   () => {

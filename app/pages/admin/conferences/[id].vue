@@ -274,4 +274,8 @@ const steps = [
   },
 ];
 
+definePageMeta({
+  layout: "admin",
+  title: "Editar Conferencia",
+})
 </script>

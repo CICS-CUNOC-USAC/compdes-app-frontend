@@ -34,9 +34,7 @@
       <strong>No se ha podido obtener la información:</strong>
       {{ error?.data?.message || error?.message || "Error inesperado" }}
       <br />
-      <span>
-        Intenta nuevamente, limpia los filtros o recarga la página.
-      </span>
+      <span> Intenta nuevamente, limpia los filtros o recarga la página. </span>
     </div>
 
     <InscriptionsFilters class="mb-6" :loading="status === 'pending'" />
@@ -105,6 +103,7 @@
   import Badge from "~/components/ui/badge/Badge.vue";
   import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
   import InscriptionsFilters from "~/components/module/inscriptions/InscriptionsFilters.vue";
+  import type { PageableResponse } from "~/lib/api/shared";
   const route = useRoute();
 
   const {
@@ -112,7 +111,7 @@
     status,
     error,
     refresh: refreshInscriptions,
-  } = await useAsyncData<InscriptionsResponse>(
+  } = await useAsyncData<PageableResponse<Participant>>(
     () =>
       $api("/participants/all", {
         query: {

@@ -2,9 +2,7 @@
   <div class="container mx-auto p-5">
     <h1 class="text-2xl font-bold">Administración</h1>
     <section class="py-2 space-y-2">
-      <h5
-        class="text-xs text-muted-foreground uppercase font-light tracking-wider"
-      >
+      <h5 class="text-xs text-muted-foreground uppercase font-light tracking-wider">
         Sesión iniciada como:
       </h5>
       <h2 class="text-lg font-medium text-accent-foreground font-mono">
@@ -23,7 +21,7 @@
       <Card
         v-for="(item, index) in linkItems"
         :key="index"
-        class="bg-gradient-to-b from-transparent to-primary/40 hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5"
+        class="bg-gradient-to-b from-transparent to-primary/40 hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5 flex flex-col justify-between"
       >
         <CardHeader>
           <NuxtLink :to="item.link" class="group">
@@ -40,7 +38,7 @@
         </CardHeader>
         <CardContent> </CardContent>
         <CardFooter
-          class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200"
+          class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200 "
         >
           <!-- <span class="text-sm">Accesos rapidos</span> -->
           <div class="space-x-2">
@@ -63,22 +61,22 @@
 </template>
 <script setup>
   import { NuxtLink } from "#components";
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
-    CardContent,
-    CardFooter,
-  } from "~/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "~/components/ui/card";
 
-  const linkItems = [
-    {
-      title: "Inscripciones",
-      description:
-        "Verificar y gestionar las inscripciones de los participantes",
-      icon: "lucide:clipboard-list",
-      link: "/admin/inscriptions",
+const linkItems = [
+  {
+    title: "Inscripciones",
+    description:
+      "Verificar y gestionar las inscripciones de los participantes",
+    icon: "lucide:clipboard-list",
+    link: "/admin/inscriptions",
       shortcuts: [
         {
           name: "Ver",
@@ -96,17 +94,46 @@
       link: "/admin/modules",
       shortcuts: [
         { name: "Ver", icon: "lucide:eye", link: "/admin/modules" },
-        { name: "Crear", icon: "lucide:plus", link: "/admin/creacionModulos" },
+        { name: "Crear", icon: "lucide:plus", link: "/admin/modules/new" },
       ],
-    },
-  ];
+  },
+  // {
+  //   title: "Modulos",
+  //   description:
+  //     "Creacion de Modulos",
+  //   icon: "lucide:building",
+  //   link: "/admin/creacionModulos",
+  // },
+  {
+    title: "Salones",
+    description:
+      "Creacion de Salones",
+    icon: "lucide:building",
+    link: "/admin/classrooms",
+    shortcuts: [
+      { name: "Ver", icon: "lucide:eye", link: "/admin/classrooms" },
+      { name: "Crear", icon: "lucide:plus", link: "/admin/classrooms/new" },
+    ],
+  },
+  {
+    title: "Presentaciones",
+    description:
+      "Creacion de Presentaciones",
+    icon: "lucide:building",
+    link: "/admin/conferences",
+    shortcuts: [
+      { name: "Ver", icon: "lucide:eye", link: "/admin/conferences" },
+      { name: "Crear", icon: "lucide:plus", link: "/admin/conferences/new" },
+    ],
+  },
+];
 
-  const sessionStore = useSessionStore();
-  const { logout } = sessionStore;
-  const { session } = storeToRefs(sessionStore);
+const sessionStore = useSessionStore();
+const { logout } = sessionStore;
+const { session } = storeToRefs(sessionStore);
 
   definePageMeta({
-    title: "Administración",
+    title: "Inicio",
     layout: "admin",
   });
 </script>
