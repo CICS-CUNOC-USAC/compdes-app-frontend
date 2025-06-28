@@ -61,8 +61,14 @@
     manualPagination: true,
     manualSorting: true,
     enableSorting: props.enableSorting,
-    rowCount: props.totalElements ?? 0,
-    pageCount: props.totalPages ?? -1,
+    // rowCount: props.totalElements ?? 0,
+    // pageCount: props.totalPages ?? -1,
+    get rowCount() {
+      return props.totalElements ?? 0;
+    },
+    get pageCount() {
+      return props.totalPages ?? -1;
+    },
     onPaginationChange: (updater) => emit("paginationChange", updater),
     onSortingChange: (updater) => emit("sortChange", updater),
     state: {

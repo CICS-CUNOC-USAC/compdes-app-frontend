@@ -73,12 +73,14 @@
         "
       />
       <!-- overlay: -->
-      <div
-        class="absolute inset-0 bg-background/40 flex items-center justify-center"
-        v-if="status === 'pending'"
-      >
-        <LoaderIndicator />
-      </div>
+      <Transition name="fade-overlay" mode="out-in">
+        <div
+          class="absolute inset-0 bg-background/40 flex items-center justify-center"
+          v-if="status === 'pending'"
+        >
+          <LoaderIndicator />
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -448,3 +450,14 @@
     layout: "admin",
   });
 </script>
+<style scoped>
+  @reference '~/assets/css/main.css';
+  .fade-overlay-enter-active,
+  .fade-overlay-leave-active {
+    @apply transition-opacity duration-300;
+  }
+  .fade-overlay-enter-from,
+  .fade-overlay-leave-to {
+    opacity: 0;
+  }
+</style>
