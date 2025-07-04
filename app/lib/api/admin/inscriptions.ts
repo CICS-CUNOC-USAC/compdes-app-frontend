@@ -1,3 +1,31 @@
+import type { Entity } from "../shared";
+
+export interface Inscription extends Entity {
+  firstName: string;
+  lastName: string;
+  organisation: string;
+  isAuthor: boolean;
+  isGuest: boolean;
+  email: string;
+  phone: string;
+  identificationDocument: string;
+  qrCodeLink: string;
+  id: string;
+  registrationStatus: RegistrationStatus;
+  isTransferPayment: boolean;
+  isCardPayment: boolean;
+  cardPaymentProofLink: null;
+  transferPaymentProofLink: null;
+  createdAt: string;
+}
+
+export interface RegistrationStatus {
+  isApproved: boolean;
+  id: string;
+  isCashPayment: boolean;
+  voucherNumber: string;
+}
+
 export interface InscriptionData {
   firstName: string;
   lastName: string;
@@ -24,8 +52,8 @@ export async function deleteInscriptionByAdmin(id: string) {
   return response;
 }
 
-export async function getInscriptionByAdmin(id: string) {
-  const response = await $api(`/participants/${id}`, {
+export async function getInscriptionByAdmin(id: string): Promise<Inscription> {
+  const response = await $api<Inscription>(`/participants/${id}`, {
     method: "GET",
   });
   return response;

@@ -196,7 +196,7 @@
         </div>
       ),
       cell: ({ row }) => (
-        <div class="flex gap-2 justify-center">
+        <div class="flex justify-center [&>*:first-child]:rounded-r-none [&>*:last-child]:rounded-l-none [&>*:not(:first-child):not(:last-child)]:rounded-none">
           <Button asChild size="icon" class="size-8" variant="outline">
             <NuxtLink to={`/admin/inscriptions/${row.original.id}`}>
               <Icon name="lucide:eye" />
