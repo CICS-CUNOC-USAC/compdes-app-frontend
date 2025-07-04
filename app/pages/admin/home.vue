@@ -76,7 +76,7 @@ const linkItems = [
     description:
       "Verificar y gestionar las inscripciones de los participantes",
     icon: "lucide:clipboard-list",
-    link: "/admin/inscriptions",
+    link: "/admin/inscriptions?sort=createdAt,desc",
       shortcuts: [
         {
           name: "Ver",
