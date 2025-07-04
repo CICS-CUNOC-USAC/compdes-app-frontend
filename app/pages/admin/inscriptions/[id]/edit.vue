@@ -27,7 +27,6 @@
       No hemos podido cargar la inscripción
     </div>
 
-    <!-- <div v-else-if="!inscription" class="text-muted-foreground">Cargando</div> -->
     <LoaderIndicator v-if="status === 'pending'" />
 
     <Form v-else-if="inscription" class="mt-3" @submit="handleSubmit" :validation-schema="schema"
@@ -36,7 +35,7 @@
         Acciones:
       </h2>
       <div class="mb-5 space-x-2 space-y-2">
-        <Button size="sm" variant="default" type="submit">
+        <Button size="sm" variant="default" type="submit" :loading="asyncStatus === 'loading'">
           <Icon name="lucide:check" />
           Guardar Cambios
         </Button>
@@ -49,9 +48,6 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h2 class="font-semibold text-sm text-muted-foreground mb-1">Nombre y apellido</h2>
-          <!-- <p class="mt-1 text-lg">
-            {{ inscription.firstName }} {{ inscription.lastName }}
-          </p> -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormField v-slot="{ componentField }" name="firstName">
               <FormItem>
@@ -77,7 +73,6 @@
           <h2 class="font-semibold text-sm text-muted-foreground mb-1">
             Universidad
           </h2>
-          <!-- <p class="mt-1 text-lg">{{ inscription.organisation }}</p> -->
           <FormField v-slot="{ componentField }" name="organisation">
             <FormItem>
               <Combobox by="label" v-bind="componentField">
@@ -131,7 +126,6 @@
           <h2 class="font-semibold text-sm text-muted-foreground mb-1">
             Correo electrónico
           </h2>
-          <!-- <p class="mt-1 text-lg">{{ inscription.email }}</p> -->
           <FormField v-slot="{ componentField }" name="email">
             <FormItem>
               <FormControl>
@@ -144,7 +138,6 @@
 
         <div>
           <h2 class="font-semibold text-sm text-muted-foreground mb-1">Teléfono</h2>
-          <!-- <p class="mt-1 text-lg">{{ inscription.phone }}</p> -->
           <div class="flex gap-4 w-full">
             <!-- phone country selector -->
             <FormField v-slot="{ componentField }" name="phone" class="">
@@ -162,7 +155,6 @@
           <h2 class="font-semibold text-sm text-muted-foreground mb-1">
             Documento de Identificación
           </h2>
-          <!-- <p class="mt-1 text-lg">{{ inscription.identificationDocument }}</p> -->
           <FormField v-slot="{ componentField }" name="identificationDocument">
             <FormItem>
               <FormControl>
@@ -179,12 +171,6 @@
           <h2 class="font-semibold text-sm text-muted-foreground mb-1">
             ¿Es autor?
           </h2>
-          <!-- <p class="mt-1 font-medium" :class="inscription.isAuthor
-            ? 'text-green-600 dark:text-green-300'
-            : 'text-gray-600 dark:text-gray-400'
-            ">
-            {{ inscription.isAuthor ? "Si" : "No" }}
-          </p> -->
           <FormField v-slot="{ value, handleChange }" name="isAuthor">
             <FormItem class="flex items-center gap-2">
               <FormControl>
@@ -199,16 +185,10 @@
           <h2 class="font-semibold text-sm text-muted-foreground mb-1">
             ¿Es invitado?
           </h2>
-          <!-- <p class="mt-1 font-medium" :class="inscription.isGuest
-            ? 'text-green-600 dark:text-green-300'
-            : 'text-gray-600 dark:text-gray-400'
-            ">
-            {{ inscription.isGuest ? "Si" : "No" }}
-          </p> -->
           <FormField v-slot="{ value, handleChange }" name="isGuest">
             <FormItem class="flex items-center gap-2">
               <FormControl>
-                <Checkbox class="size-6" :default-value="value" @update:model-value="handleChange" />
+                <Checkbox class="size-6" :default-value="value" disabled @update:model-value="handleChange" />
               </FormControl>
               <FormMessage name="isGuest" />
             </FormItem>
@@ -279,11 +259,14 @@
 </template>
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
+import { toast } from "vue-sonner";
 import { z } from "zod";
 import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
 import {
   getInscriptionByAdmin,
-  type Inscription
+  updateInscriptionByAdmin,
+  type Inscription,
+  type InscriptionData
 } from "~/lib/api/admin/inscriptions";
 
 
@@ -296,7 +279,6 @@ const {
   data: inscription,
   error,
   status,
-  refresh: refreshInscription,
 } = await useAsyncData<Inscription>(() => getInscriptionByAdmin(route.params.id as string));
 
 useAsyncData(
@@ -347,39 +329,24 @@ const schema = toTypedSchema(
       .email("Correo inválido"),
     organisation: z.string({ message: "Campo requerido" }).min(1),
     isAuthor: z.boolean().default(false),
-    // link: z
-    //   .string()
-    //   .url("Debe ingresar un enlace válido al comprobante"),
-
   }),
 )
 
-function handleSubmit(values) {
-  console.log("Form submitted with values:", values);
+
+const { mutate: udpateInscription, asyncStatus } = useMutation({
+  mutation: (values: Omit<InscriptionData, "voucherNumber">) => updateInscriptionByAdmin(route.params.id as string, values),
+  onSuccess: () => {
+    toast.success("Inscripción actualizada correctamente");
+    navigateTo(`/admin/inscriptions/${route.params.id}`);
+  },
+  onError: (error) => {
+    toast.error(`No se ha podido actualizar la inscripción: ${error.data?.message || error.name}`);
+  },
+});
+
+function handleSubmit(values: Omit<InscriptionData, "voucherNumber">) {
+  udpateInscription(values);
 }
-
-
-// const { mutate: deleteInscription, asyncStatus } = useMutation({
-//   mutation: () => deleteInscriptionByAdmin(route.params.id),
-//   onSuccess: () => {
-//     toast.success("Inscripción eliminada correctamente");
-//     navigateTo("/admin/inscriptions");
-//   },
-// });
-
-// const { mutate: approveInscription } = useMutation({
-//   mutation: () => approveInscriptionByAdmin(route.params.id),
-//   onSuccess: () => {
-//     toast.success("Inscripción aprobada correctamente");
-//     refreshInscription();
-//   },
-//   onError: (error) => {
-//     toast.error(
-//       `Error al aprobar inscripción: ${error.data?.message || error.message}`,
-//     );
-//   },
-// });
-
 const transferProofObjUrl = ref();
 
 watchEffect(async () => {

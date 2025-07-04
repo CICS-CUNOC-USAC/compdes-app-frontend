@@ -45,6 +45,17 @@ export async function createInscriptionByAdmin(data: InscriptionData) {
   return response;
 }
 
+export async function updateInscriptionByAdmin(
+  id: string,
+  data: Omit<InscriptionData, "voucherNumber">,
+) {
+  const response = await $api(`/participants/${id}`, {
+    method: "PATCH",
+    body: data,
+  });
+  return response;
+}
+
 export async function deleteInscriptionByAdmin(id: string) {
   const response = await $api(`/participants/${id}`, {
     method: "DELETE",
