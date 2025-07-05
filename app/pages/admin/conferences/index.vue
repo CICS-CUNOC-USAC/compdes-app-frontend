@@ -35,7 +35,7 @@
     <LoaderIndicator v-if="status == 'pending' && !conferences" />
 
     <div class="mx-auto rounded-lg relative" v-if="conferences">
-      <DataTable :columns :data="conferences" :enableSorting="false" />
+      <DataTable :columns :data="conferences" :enableSorting="false" disable-pagination/>
       <div class="absolute inset-0 bg-background/40 flex items-center justify-center" v-if="status === 'pending'">
         <LoaderIndicator />
       </div>
@@ -68,7 +68,7 @@ const columns: ColumnDef<Conferences>[] = [
     accessorKey: "name",
     header: () => (
       <div class="text-center font-semibold">
-        <Icon name="lucide:school" class="inline mr-1 mb-0.5" />
+        <Icon name="lucide:text" class="inline mr-1 mb-0.5" />
         Nombre
       </div>
     ),
@@ -78,6 +78,7 @@ const columns: ColumnDef<Conferences>[] = [
     accessorKey: "description",
     header: () => (
       <div class="text-center font-semibold">
+        <Icon name="lucide:info" class="inline mr-1 mb-0.5" />
         Descripción
       </div>
     ),
@@ -87,6 +88,7 @@ const columns: ColumnDef<Conferences>[] = [
     accessorKey: "type",
     header: () => (
       <div class="text-center font-semibold">
+        <Icon name="lucide:shapes" class="inline mr-1 mb-0.5" />
         Tipo
       </div>
     ),
@@ -96,6 +98,7 @@ const columns: ColumnDef<Conferences>[] = [
     accessorKey: "initScheduledDate",
     header: () => (
       <div class="text-center font-semibold">
+        <Icon name="lucide:clock-arrow-up" class="inline mr-1 mb-0.5" />
         Inicio Programado
       </div>
     ),
@@ -105,6 +108,7 @@ const columns: ColumnDef<Conferences>[] = [
     accessorKey: "endScheduledDate",
     header: () => (
       <div class="text-center font-semibold">
+        <Icon name="lucide:clock-arrow-down" class="inline mr-1 mb-0.5" />
         Fin Programado
       </div>
     ),
@@ -114,6 +118,7 @@ const columns: ColumnDef<Conferences>[] = [
     id: "classroomName",
     header: () => (
       <div class="text-center font-semibold">
+        <Icon name="lucide:presentation" class="inline mr-1 mb-0.5" />
         Salón
       </div>
     ),
@@ -124,6 +129,7 @@ const columns: ColumnDef<Conferences>[] = [
     id: "moduleUniName",
     header: () => (
       <div class="text-center font-semibold">
+        <Icon name="lucide:building" class="inline mr-1 mb-0.5" />
         Modulo
       </div>
     ),
@@ -134,6 +140,7 @@ const columns: ColumnDef<Conferences>[] = [
     id: "actions",
     header: () => (
       <div class="text-center font-semibold">
+        <Icon name="lucide:settings" class="inline mr-1 mb-0.5" />
         Acciones
       </div>
     ),
