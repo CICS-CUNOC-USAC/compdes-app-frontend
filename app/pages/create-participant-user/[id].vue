@@ -81,6 +81,8 @@ const { mutate, asyncStatus } = useMutation({
     form.value.password = "";
     form.value.confirmPassword = "";
     showPasswordError.value = false;
+
+    navigateTo("/");
   },
   onError: (error) => {
     toast.error(error.data?.message || "Error al crear la contraseña. Intenta de nuevo.");
