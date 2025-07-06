@@ -20,3 +20,8 @@ const myUseId = () => useId();
     </NuxtLayout>
   </ConfigProvider>
 </template>
+<style>
+body {
+  scrollbar-gutter: stable;
+}
+</style>

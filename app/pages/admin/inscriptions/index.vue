@@ -9,7 +9,9 @@
       </Button>
     </div>
 
-    <div class="flex justify-between flex-col lg:flex-row lg:items-center gap-3 mb-6">
+    <div
+      class="flex justify-between flex-col lg:flex-row lg:items-center gap-3 mb-6"
+    >
       <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
 
       <div class="space-x-2 space-y-2">
@@ -25,7 +27,10 @@
       </div>
     </div>
 
-    <div v-if="status == 'error'" class="p-4 text-center text-sm text-destructive-foreground">
+    <div
+      v-if="status == 'error'"
+      class="p-4 text-center text-sm text-destructive-foreground"
+    >
       <strong>No se ha podido obtener la información:</strong>
       {{ error?.data?.message || error?.message || "Error inesperado" }}
       <br />
@@ -36,16 +41,25 @@
 
     <LoaderIndicator v-if="status == 'pending' && !participantesResponse" />
 
-    <div class="max-w-6xl mx-auto rounded-lg relative" v-if="participantesResponse">
-      <DataTable :columns :data="participantesResponse?.content" :totalElements="participantesResponse?.totalElements"
-        :totalPages="participantesResponse?.totalPages" :paginationState="paginationOptions" :sorting="sortingOptions"
+    <div
+      class="max-w-6xl mx-auto rounded-lg relative"
+      v-if="participantesResponse"
+    >
+      <DataTable
+        :columns
+        :data="participantesResponse?.content"
+        :totalElements="participantesResponse?.totalElements"
+        :totalPages="participantesResponse?.totalPages"
+        :paginationState="paginationOptions"
+        :sorting="sortingOptions"
         @sort-change="
           ($event) => {
             const newSorting =
               typeof $event === 'function' ? $event(sortingOptions) : $event;
             sortingOptions = newSorting;
           }
-        " @pagination-change="
+        "
+        @pagination-change="
           ($event) => {
             if (typeof $event === 'function') {
               paginationOptions = $event(paginationOptions);
@@ -56,10 +70,14 @@
               };
             }
           }
-        " />
+        "
+      />
       <!-- overlay: -->
       <Transition name="fade-overlay" mode="out-in">
-        <div class="absolute inset-0 bg-background/40 flex items-center justify-center" v-if="status === 'pending'">
+        <div
+          class="absolute inset-0 bg-background/40 flex items-center justify-center"
+          v-if="status === 'pending'"
+        >
           <LoaderIndicator />
         </div>
       </Transition>
@@ -68,403 +86,443 @@
 </template>
 
 <script setup lang="tsx">
-import { toast } from "vue-sonner";
-import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
-import { approveInscriptionByAdmin } from "~/lib/api/admin/inscriptions";
-import type {
-  InscriptionsResponse,
-  Participant,
-} from "~/lib/api/participants";
-import { FetchError } from "ofetch";
-import DataTable from "~/components/module/inscriptions/DataTable.vue";
-import type { ColumnDef } from "@tanstack/vue-table";
-import { Button, Icon, NuxtLink, Tooltip } from "#components";
-import {
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from "~/components/ui/tooltip";
-import Badge from "~/components/ui/badge/Badge.vue";
-import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
-import InscriptionsFilters from "~/components/module/inscriptions/InscriptionsFilters.vue";
-import type { PageableResponse } from "~/lib/api/shared";
-import DropdownMenu from "~/components/ui/dropdown-menu/DropdownMenu.vue";
-import DropdownMenuTrigger from "~/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-import DropdownMenuContent from "~/components/ui/dropdown-menu/DropdownMenuContent.vue";
-import DropdownMenuLabel from "~/components/ui/dropdown-menu/DropdownMenuLabel.vue";
-import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
-import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
-const route = useRoute();
+  import { toast } from "vue-sonner";
+  import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
+  import { approveInscriptionByAdmin } from "~/lib/api/admin/inscriptions";
+  import type {
+    InscriptionsResponse,
+    Participant,
+  } from "~/lib/api/participants";
+  import { FetchError } from "ofetch";
+  import DataTable from "~/components/module/inscriptions/DataTable.vue";
+  import type { ColumnDef } from "@tanstack/vue-table";
+  import { Button, Icon, NuxtLink, Tooltip } from "#components";
+  import {
+    TooltipProvider,
+    TooltipTrigger,
+    TooltipContent,
+  } from "~/components/ui/tooltip";
+  import Badge from "~/components/ui/badge/Badge.vue";
+  import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
+  import InscriptionsFilters from "~/components/module/inscriptions/InscriptionsFilters.vue";
+  import type { PageableResponse } from "~/lib/api/shared";
+  import DropdownMenu from "~/components/ui/dropdown-menu/DropdownMenu.vue";
+  import DropdownMenuTrigger from "~/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
+  import DropdownMenuContent from "~/components/ui/dropdown-menu/DropdownMenuContent.vue";
+  import DropdownMenuLabel from "~/components/ui/dropdown-menu/DropdownMenuLabel.vue";
+  import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
+  import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
+  const route = useRoute();
 
-const {
-  data: participantesResponse,
-  status,
-  error,
-  refresh: refreshInscriptions,
-} = await useAsyncData<PageableResponse<Participant>>(
-  () =>
-    $api("/participants/all", {
-      query: {
-        page: route.query.page ? Number(route.query.page) : 0,
-        size: route.query.size ? Number(route.query.size) : 10,
-        ...route.query, // All filters from the query
-      },
+  const {
+    data: participantesResponse,
+    status,
+    error,
+    refresh: refreshInscriptions,
+  } = await useAsyncData<PageableResponse<Participant>>(
+    () =>
+      $api("/participants/all", {
+        query: {
+          page: route.query.page ? Number(route.query.page) : 0,
+          size: route.query.size ? Number(route.query.size) : 10,
+          ...route.query, // All filters from the query
+        },
+      }),
+    {
+      lazy: true,
+      watch: [() => route.query],
+    },
+  );
+
+  const { mutate: approveInscription } = useMutation({
+    mutation: (id: string) => approveInscriptionByAdmin(id),
+    onSuccess: () => {
+      toast.success("Inscripción aprobada correctamente");
+      refreshInscriptions();
+    },
+    onError: (error) => {
+      const err = error as FetchError;
+      toast.error(
+        `Error al aprobar inscripción: ${err.data?.message || err.message}`,
+      );
+    },
+  });
+
+  const paginationOptions = computed({
+    get: () => ({
+      pageIndex: route.query.page ? Number(route.query.page) : 0,
+      pageSize: route.query.size ? Number(route.query.size) : 10,
     }),
-  {
-    lazy: true,
-    watch: [() => route.query],
-  },
-);
+    set: (value) => {
+      navigateTo({
+        query: {
+          ...route.query,
+          page: value.pageIndex,
+          size: value.pageSize,
+        },
+      });
+    },
+  });
 
-const { mutate: approveInscription } = useMutation({
-  mutation: (id: string) => approveInscriptionByAdmin(id),
-  onSuccess: () => {
-    toast.success("Inscripción aprobada correctamente");
-    refreshInscriptions();
-  },
-  onError: (error) => {
-    const err = error as FetchError;
-    toast.error(
-      `Error al aprobar inscripción: ${err.data?.message || err.message}`,
-    );
-  },
-});
+  const sortingOptions = computed({
+    get: () => {
+      const sortQuery = route.query.sort as string | undefined;
+      // we'll alow only one sort at a time
+      if (!sortQuery) return [];
 
-const paginationOptions = computed({
-  get: () => ({
-    pageIndex: route.query.page ? Number(route.query.page) : 0,
-    pageSize: route.query.size ? Number(route.query.size) : 10,
-  }),
-  set: (value) => {
-    navigateTo({
-      query: {
-        ...route.query,
-        page: value.pageIndex,
-        size: value.pageSize,
-      },
-    });
-  },
-});
+      const [id, order] = sortQuery.split(",");
 
-const sortingOptions = computed({
-  get: () => {
-    const sortQuery = route.query.sort as string | undefined;
-    // we'll alow only one sort at a time
-    if (!sortQuery) return [];
+      return [
+        {
+          id,
+          desc: order === "desc",
+        },
+      ];
+    },
+    set: (val) => {
+      navigateTo({
+        query: {
+          ...route.query,
+          sort:
+            val.map((s) => `${s.id},${s.desc ? "desc" : "asc"}`).join(",") ||
+            undefined,
+        },
+      });
+    },
+  });
 
-    const [id, order] = sortQuery.split(",");
-
-    return [
-      {
-        id,
-        desc: order === "desc",
-      },
-    ];
-  },
-  set: (val) => {
-    navigateTo({
-      query: {
-        ...route.query,
-        sort:
-          val.map((s) => `${s.id},${s.desc ? "desc" : "asc"}`).join(",") ||
-          undefined,
-      },
-    });
-  },
-});
-
-const columns: ColumnDef<Participant>[] = [
-  {
-    id: "actions",
-    enableSorting: false,
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:mouse-pointer-click" class="inline mr-1 mb-0.5" />
-        Acciones
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div class="flex justify-center [&>*:first-child]:rounded-r-none [&>*:last-child]:rounded-l-none [&>*:not(:first-child):not(:last-child)]:rounded-none">
-        <Button asChild size="icon" class="size-8" variant="default">
-          <NuxtLink to={`/admin/inscriptions/${row.original.id}`}>
-            <Icon name="lucide:eye" />
-          </NuxtLink>
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" class="size-8" size="icon">
-              <Icon name="lucide:ellipsis" class="w-4 h-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Otras Acciones</DropdownMenuLabel>
-            <DropdownMenuItem asChild>
-              <NuxtLink to={`/admin/inscriptions/${row.original.id}/edit`}>
-                <Icon name="lucide:pencil" class="inline mr-1 text-muted-foreground" />
-                Editar Inscripción
-              </NuxtLink>
-            </DropdownMenuItem>
-            <ConfirmActionDialog
-              // @ts-expect-error
-              onConfirm={() => approveInscription(row.original.id)}
-              description="¿Estás segur@ de que deseas aprobar esta inscripción?"
-              title="Aprobar Inscripción"
-            >
-              <DropdownMenuItem onSelect={(e: Event) => e.preventDefault()}>
-                <Icon name="lucide:clipboard-check" class="inline mr-1 text-muted-foreground" />
-                Aprobar Inscripción
+  const columns: ColumnDef<Participant>[] = [
+    {
+      id: "actions",
+      enableSorting: false,
+      enableHiding: false,
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:mouse-pointer-click" class="inline mr-1 mb-0.5" />
+          Acciones
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="flex justify-center [&>*:first-child]:rounded-r-none [&>*:last-child]:rounded-l-none [&>*:not(:first-child):not(:last-child)]:rounded-none">
+          <Button asChild size="icon" class="size-8" variant="default">
+            <NuxtLink to={`/admin/inscriptions/${row.original.id}`}>
+              <Icon name="lucide:eye" />
+            </NuxtLink>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" class="size-8" size="icon">
+                <Icon name="lucide:ellipsis" class="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Otras Acciones</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <NuxtLink to={`/admin/inscriptions/${row.original.id}/edit`}>
+                  <Icon
+                    name="lucide:pencil"
+                    class="inline mr-1 text-muted-foreground"
+                  />
+                  Editar Inscripción
+                </NuxtLink>
               </DropdownMenuItem>
-            </ConfirmActionDialog>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "firstName",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:user" class="inline mr-1 mb-0.5" />
-        Nombres
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div class="text-base">{row.getValue("firstName")}</div>
-    ),
-  },
-  {
-    accessorKey: "lastName",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:user" class="inline mr-1 mb-0.5" />
-        Apellidos
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div class="text-base">{row.getValue("lastName")}</div>
-    ),
-  },
-  {
-    accessorKey: "createdAt",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:calendar" class="inline mr-1 mb-0.5" />
-        Fecha de Inscripción
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div class="text-center">{row.getValue("createdAt")}</div>
-    ),
-  },
-  {
-    accessorKey: "organisation",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:school" class="inline mr-1 mb-0.5" />
-        Universidad
-      </div>
-    ),
-    cell: ({ row }) => (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div class="cursor-pointer max-w-xs truncate">
-              {row.getValue("organisation") || "Sin Universidad"}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <span class="">{row.getValue("organisation")}</span>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:mail" class="inline mr-1 mb-0.5" />
-        Correo Electrónico
-      </div>
-    ),
-    cell: ({ row }) => (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              class="cursor-pointer"
-              onClick={() => {
-                navigator?.clipboard.writeText(row.getValue("email"));
-                toast.success("Correo electrónico copiado al portapapeles");
-              }}
-            >
-              {row.getValue("email")}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <Icon name="lucide:copy" class="inline mr-1" />
-            <span>Copiar</span>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    ),
-  },
-  {
-    accessorKey: "phone",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:phone" class="inline mr-1 mb-0.5" />
-        Teléfono
-      </div>
-    ),
-    cell: ({ row }) => (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              class="cursor-pointer"
-              onClick={() => {
-                navigator?.clipboard.writeText(row.getValue("phone"));
-                toast.success("Teléfono copiado al portapapeles");
-              }}
-            >
-              {row.getValue("phone")}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <Icon name="lucide:copy" class="inline mr-1" />
-            <span>Copiar</span>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    ),
-  },
+              <ConfirmActionDialog
+                // @ts-expect-error
+                onConfirm={() => approveInscription(row.original.id)}
+                description="¿Estás segur@ de que deseas aprobar esta inscripción?"
+                title="Aprobar Inscripción"
+              >
+                <DropdownMenuItem onSelect={(e: Event) => e.preventDefault()}>
+                  <Icon
+                    name="lucide:clipboard-check"
+                    class="inline mr-1 text-muted-foreground"
+                  />
+                  Aprobar Inscripción
+                </DropdownMenuItem>
+              </ConfirmActionDialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "firstName",
+      meta: {
+        displayName: "Nombres",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:user" class="inline mr-1 mb-0.5" />
+          Nombres
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="text-base">{row.getValue("firstName")}</div>
+      ),
+    },
+    {
+      accessorKey: "lastName",
+      meta: {
+        displayName: "Apellidos",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:user" class="inline mr-1 mb-0.5" />
+          Apellidos
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="text-base">{row.getValue("lastName")}</div>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      meta: {
+        displayName: "Fecha de Inscripción",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:calendar" class="inline mr-1 mb-0.5" />
+          Fecha de Inscripción
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="text-center">{row.getValue("createdAt")}</div>
+      ),
+    },
+    {
+      accessorKey: "organisation",
+      meta: {
+        displayName: "Universidad",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:school" class="inline mr-1 mb-0.5" />
+          Universidad
+        </div>
+      ),
+      cell: ({ row }) => (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div class="cursor-pointer max-w-xs truncate">
+                {row.getValue("organisation") || "Sin Universidad"}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span class="">{row.getValue("organisation")}</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ),
+    },
+    {
+      accessorKey: "email",
+      meta: {
+        displayName: "Correo Electrónico",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:mail" class="inline mr-1 mb-0.5" />
+          Correo Electrónico
+        </div>
+      ),
+      cell: ({ row }) => (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                class="cursor-pointer"
+                onClick={() => {
+                  navigator?.clipboard.writeText(row.getValue("email"));
+                  toast.success("Correo electrónico copiado al portapapeles");
+                }}
+              >
+                {row.getValue("email")}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <Icon name="lucide:copy" class="inline mr-1" />
+              <span>Copiar</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ),
+    },
+    {
+      accessorKey: "phone",
+      meta: {
+        displayName: "Teléfono",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:phone" class="inline mr-1 mb-0.5" />
+          Teléfono
+        </div>
+      ),
+      cell: ({ row }) => (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                class="cursor-pointer"
+                onClick={() => {
+                  navigator?.clipboard.writeText(row.getValue("phone"));
+                  toast.success("Teléfono copiado al portapapeles");
+                }}
+              >
+                {row.getValue("phone")}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <Icon name="lucide:copy" class="inline mr-1" />
+              <span>Copiar</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ),
+    },
 
-  {
-    accessorKey: "identificationDocument",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:id-card" class="inline mr-1 mb-0.5" />
-        Identificación
-      </div>
-    ),
-    cell: ({ row }) => (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              class="cursor-pointer"
-              onClick={() => {
-                navigator?.clipboard.writeText(
-                  row.getValue("identificationDocument"),
-                );
-                toast.success("Identificación copiada al portapapeles");
-              }}
-            >
-              {row.getValue("identificationDocument")}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <Icon name="lucide:copy" class="inline mr-1" />
-            <span>Copiar</span>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    ),
-  },
-  {
-    accessorKey: "isAuthor",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:pencil-line" class="inline mr-1 mb-0.5" />
-        ¿Autor?
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div class="text-center">
+    {
+      accessorKey: "identificationDocument",
+      meta: {
+        displayName: "Identificación",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:id-card" class="inline mr-1 mb-0.5" />
+          Identificación
+        </div>
+      ),
+      cell: ({ row }) => (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                class="cursor-pointer"
+                onClick={() => {
+                  navigator?.clipboard.writeText(
+                    row.getValue("identificationDocument"),
+                  );
+                  toast.success("Identificación copiada al portapapeles");
+                }}
+              >
+                {row.getValue("identificationDocument")}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <Icon name="lucide:copy" class="inline mr-1" />
+              <span>Copiar</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ),
+    },
+    {
+      accessorKey: "isAuthor",
+      meta: {
+        displayName: "¿Autor?",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:pencil-line" class="inline mr-1 mb-0.5" />
+          ¿Autor?
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="text-center">
+          <Badge
+            variant={row.getValue("isAuthor") ? "default" : "outline"}
+            class="uppercase tracking-wider"
+          >
+            {row.getValue("isAuthor") ? "Sí" : "No"}
+          </Badge>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "isGuest",
+      meta: {
+        displayName: "¿Invitado?",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:user-plus" class="inline mr-1 mb-0.5" />
+          ¿Invitado?
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="text-center">
+          <Badge
+            variant={row.getValue("isGuest") ? "default" : "outline"}
+            class="uppercase tracking-wider"
+          >
+            {row.getValue("isGuest") ? "Sí" : "No"}
+          </Badge>
+        </div>
+      ),
+    },
+    {
+      accessorFn: (row) => row.registrationStatus.isApproved,
+      id: "registrationStatus",
+      meta: {
+        displayName: "Registro",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:clipboard-list" class="inline mr-1 mb-0.5" />
+          Registro
+        </div>
+      ),
+      cell: ({ row }) => (
         <Badge
-          variant={row.getValue("isAuthor") ? "default" : "outline"}
+          variant={row.getValue("registrationStatus") ? "success" : "warning"}
           class="uppercase tracking-wider"
         >
-          {row.getValue("isAuthor") ? "Sí" : "No"}
+          {row.getValue("registrationStatus") ? "Aprobado" : "Pendiente"}
         </Badge>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "isGuest",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:user-plus" class="inline mr-1 mb-0.5" />
-        ¿Invitado?
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div class="text-center">
-        <Badge
-          variant={row.getValue("isGuest") ? "default" : "outline"}
-          class="uppercase tracking-wider"
-        >
-          {row.getValue("isGuest") ? "Sí" : "No"}
-        </Badge>
-      </div>
-    ),
-  },
-  {
-    accessorFn: (row) => row.registrationStatus.isApproved,
-    id: "registrationStatus",
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:clipboard-list" class="inline mr-1 mb-0.5" />
-        Registro
-      </div>
-    ),
-    cell: ({ row }) => (
-      <Badge
-        variant={row.getValue("registrationStatus") ? "success" : "warning"}
-        class="uppercase tracking-wider"
-      >
-        {row.getValue("registrationStatus") ? "Aprobado" : "Pendiente"}
-      </Badge>
-    ),
-  },
-  {
-    accessorFn: (row) => row.registrationStatus.isCashPayment,
-    id: "isCashPayment",
-    enableSorting: false,
-    header: () => (
-      <div class="text-center font-semibold">
-        <Icon name="lucide:receipt" class="inline mr-1 mb-0.5" />
-        Pago
-      </div>
-    ),
-    cell: ({ row }) => (
-      <>
-        {row.getValue("isCashPayment")
-          ? "Efectivo"
-          : row.original.isCardPayment
+      ),
+    },
+    {
+      accessorFn: (row) => row.registrationStatus.isCashPayment,
+      id: "isCashPayment",
+      meta: {
+        displayName: "Pago en Efectivo",
+      },
+      enableSorting: false,
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:receipt" class="inline mr-1 mb-0.5" />
+          Pago
+        </div>
+      ),
+      cell: ({ row }) => (
+        <>
+          {row.getValue("isCashPayment")
+            ? "Efectivo"
+            : row.original.isCardPayment
             ? "Tarjeta"
             : "Transferencia"}
-      </>
-    ),
-  },
-];
+        </>
+      ),
+    },
+  ];
 
-definePageMeta({
-  title: "Listado de Inscripciones",
-  layout: "admin",
-});
+  definePageMeta({
+    title: "Listado de Inscripciones",
+    layout: "admin",
+  });
 </script>
 <style scoped>
-@reference '~/assets/css/main.css';
+  @reference '~/assets/css/main.css';
 
-.fade-overlay-enter-active,
-.fade-overlay-leave-active {
-  @apply transition-opacity duration-300;
-}
+  .fade-overlay-enter-active,
+  .fade-overlay-leave-active {
+    @apply transition-opacity duration-300;
+  }
 
-.fade-overlay-enter-from,
-.fade-overlay-leave-to {
-  opacity: 0;
-}
+  .fade-overlay-enter-from,
+  .fade-overlay-leave-to {
+    opacity: 0;
+  }
 </style>
