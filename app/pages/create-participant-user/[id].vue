@@ -1,20 +1,4 @@
 <template>
-  <Alert v-if="showPasswordError" variant="error" class="mb-4 flex items-start justify-between">
-    <div class="flex items-center gap-2">
-      <Icon name="lucide:alert-triangle" class="size-4 text-red-600" />
-      <div>
-        <AlertTitle class="font-semibold">Error</AlertTitle>
-        <AlertDescription class="text-sm">
-          {{ errorMessage }}
-        </AlertDescription>
-      </div>
-    </div>
-    <button aria-label="Cerrar alerta" @click="showPasswordError = false" class="ml-4 text-red-600 hover:text-red-800"
-      style="font-weight: bold;">
-      ×
-    </button>
-  </Alert>
-
   <main class="grid place-items-center h-full">
     <div class="max-w-md w-full p-6">
       <div class="flex justify-center mb-2 text-primary text-4xl">
@@ -58,6 +42,7 @@
 </template>
 
 <script setup>
+import { toast } from "vue-sonner";
 import { ref } from "vue";
 import Button from "~/components/ui/button/Button.vue";
 import Input from "~/components/ui/input/Input.vue";
@@ -92,29 +77,32 @@ const showConfirmPassword = ref(false);
 const { mutate, asyncStatus } = useMutation({
   mutation: (val) => patchPassword(val, id),
   onSuccess: (response) => {
-    alert(response.message || "Contraseña creada con éxito");
+    toast.success(response.message || "Contraseña creada con éxito");
     form.value.password = "";
     form.value.confirmPassword = "";
     showPasswordError.value = false;
+
+    navigateTo("/");
   },
   onError: (error) => {
-    errorMessage.value = error.data?.message || "Error al crear la contraseña. Intenta de nuevo.";
+    toast.error(error.data?.message || "Error al crear la contraseña. Intenta de nuevo.");
     showPasswordError.value = true;
   }
 });
+
 
 const crearPassword = () => {
   showPasswordError.value = false;
   errorMessage.value = "";
 
   if (form.value.password.length < 8) {
-    errorMessage.value = "La contraseña debe tener al menos 8 caracteres.";
+    toast.error("La contraseña debe tener al menos 8 caracteres.");
     showPasswordError.value = true;
     return;
   }
 
   if (form.value.password !== form.value.confirmPassword) {
-    errorMessage.value = "Las contraseñas no coinciden. Por favor, vuelve a intentarlo.";
+    toast.error("Las contraseñas no coinciden. Por favor, vuelve a intentarlo.");
     showPasswordError.value = true;
     return;
   }

@@ -37,7 +37,7 @@
             :loading="asyncStatus === 'pending'"
           >
             <Icon name="lucide:trash" />
-            Eliminar Inscripción
+            Eliminar
           </Button>
         </DeleteItemDialog>
         <ConfirmActionDialog
@@ -51,13 +51,13 @@
             :disabled="inscription.registrationStatus.isApproved"
           >
             <Icon name="lucide:clipboard-check" />
-            Aprobar Inscripción
+            Aprobar
           </Button>
         </ConfirmActionDialog>
         <Button size="sm" variant="outline" as-child>
           <NuxtLink :to="`/admin/inscriptions/${inscription.id}/edit`">
             <Icon name="lucide:pencil" />
-            Editar Inscripción
+            Editar
           </NuxtLink>
         </Button>
       </div>
