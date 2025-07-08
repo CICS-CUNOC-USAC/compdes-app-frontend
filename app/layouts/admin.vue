@@ -40,10 +40,7 @@
                     <Icon name="lucide:chevrons-up-down" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="top"
-                  class="w-(--reka-popper-anchor-width)"
-                >
+                <DropdownMenuContent side="top" class="w-(--reka-popper-anchor-width)">
                   <DropdownMenuItem as-child>
                     <NuxtLink to="/admin/home">
                       <span>Administración</span>
@@ -52,10 +49,7 @@
                   </DropdownMenuItem>
                   <DropdownMenuItem @click="logout">
                     <span>Cerrar sesión</span>
-                    <Icon
-                      name="lucide:log-out"
-                      class="text-destructive-foreground"
-                    />
+                    <Icon name="lucide:log-out" class="text-destructive-foreground" />
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -66,40 +60,32 @@
 
       <main class="w-full min-h-screen flex flex-col">
         <div
-          class="flex py-2 px-3.5 z-50 justify-between gap-x-2 sticky top-0 bg-background/80 backdrop-blur border-b transition ease-in-out"
+          class="flex py-2.5 px-3.5 z-50 justify-between gap-x-2 sticky top-0 bg-background/70 backdrop-blur-xs border-b"
           :class="{
             'border-b-border': hasScrolled,
             'border-b-transparent': !hasScrolled,
-          }"
-        >
+          }">
           <section class="flex items-center gap-x-1">
             <SidebarTrigger>
               <template #icon>
                 <Icon name="lucide:menu" class="size-4" />
               </template>
             </SidebarTrigger>
-            <NuxtLink
-              to="/admin/home"
-              class="inline-block uppercase font-medium text-sm text-foreground"
-            >
-            <CompdesLogo
-              class="size-4.5 inline-block mr-1 mb-0.5 fill-foreground"
-            />
+            <NuxtLink to="/admin/home" class="inline-block uppercase font-medium text-sm text-foreground">
+              <CompdesLogo class="size-4.5 inline-block mr-1 mb-0.5 fill-foreground" />
               ADMIN
             </NuxtLink>
-            <h2
-              class="text-muted-foreground text-sm uppercase transition duration-300 ease-in-out flex items-center gap-2"
-              :class="{
+            <h2 class="text-muted-foreground text-sm uppercase  flex items-center gap-1">
+              <Icon name="lucide:chevron-right" class="size-4 transition duration-300 ease-in-out" :class="{
+                'opacity-100 translate-x-0': hasScrolled,
+                'opacity-0 -translate-x-2': !hasScrolled,
+              }" v-if="$route.meta.title" />
+              <span :class="{
                 'opacity-100 translate-y-0': hasScrolled,
                 'opacity-0 translate-y-2': !hasScrolled,
-              }"
-            >
-              <Icon
-                name="lucide:chevron-right"
-                class="size-4"
-                v-if="$route.meta.title"
-              />
-              {{ $route.meta.title || "" }}
+              }" class="transition duration-300 ease-in-out">
+                {{ $route.meta.title || "" }}
+              </span>
             </h2>
           </section>
         </div>
@@ -111,46 +97,46 @@
   </div>
 </template>
 <script setup>
-  import CompdesLogo from "~/components/partials/CompdesLogo.vue";
+import CompdesLogo from "~/components/partials/CompdesLogo.vue";
 import Sidebar from "~/components/ui/sidebar/Sidebar.vue";
-  import SidebarContent from "~/components/ui/sidebar/SidebarContent.vue";
-  import SidebarGroup from "~/components/ui/sidebar/SidebarGroup.vue";
-  import SidebarGroupContent from "~/components/ui/sidebar/SidebarGroupContent.vue";
-  import SidebarGroupLabel from "~/components/ui/sidebar/SidebarGroupLabel.vue";
-  import SidebarMenu from "~/components/ui/sidebar/SidebarMenu.vue";
-  import SidebarMenuButton from "~/components/ui/sidebar/SidebarMenuButton.vue";
-  import SidebarMenuItem from "~/components/ui/sidebar/SidebarMenuItem.vue";
-  import SidebarProvider from "~/components/ui/sidebar/SidebarProvider.vue";
-  import SidebarTrigger from "~/components/ui/sidebar/SidebarTrigger.vue";
+import SidebarContent from "~/components/ui/sidebar/SidebarContent.vue";
+import SidebarGroup from "~/components/ui/sidebar/SidebarGroup.vue";
+import SidebarGroupContent from "~/components/ui/sidebar/SidebarGroupContent.vue";
+import SidebarGroupLabel from "~/components/ui/sidebar/SidebarGroupLabel.vue";
+import SidebarMenu from "~/components/ui/sidebar/SidebarMenu.vue";
+import SidebarMenuButton from "~/components/ui/sidebar/SidebarMenuButton.vue";
+import SidebarMenuItem from "~/components/ui/sidebar/SidebarMenuItem.vue";
+import SidebarProvider from "~/components/ui/sidebar/SidebarProvider.vue";
+import SidebarTrigger from "~/components/ui/sidebar/SidebarTrigger.vue";
 
-  const items = [
-    {
-      title: "Inicio",
-      url: "/admin/home",
-      icon: "lucide:house",
-    },
-    {
-      title: "Inscripciones",
-      url: "/admin/inscriptions",
-      icon: "lucide:clipboard-check",
-    },
-  ];
+const items = [
+  {
+    title: "Inicio",
+    url: "/admin/home",
+    icon: "lucide:house",
+  },
+  {
+    title: "Inscripciones",
+    url: "/admin/inscriptions",
+    icon: "lucide:clipboard-check",
+  },
+];
 
-  const sessionStore = useSessionStore();
-  const { logout } = sessionStore;
-  const { session } = storeToRefs(sessionStore);
+const sessionStore = useSessionStore();
+const { logout } = sessionStore;
+const { session } = storeToRefs(sessionStore);
 
-  // test
-  const hasScrolled = ref(false);
-  onMounted(() => {
-    window.addEventListener("scroll", () => {
-      hasScrolled.value = window.scrollY > 100;
-    });
+// test
+const hasScrolled = ref(false);
+onMounted(() => {
+  window.addEventListener("scroll", () => {
+    hasScrolled.value = window.scrollY > 100;
   });
-  onUnmounted(() => {
-    window.removeEventListener("scroll", () => {
-      hasScrolled.value = false;
-    });
+});
+onUnmounted(() => {
+  window.removeEventListener("scroll", () => {
+    hasScrolled.value = false;
   });
+});
 </script>
 <style scoped></style>

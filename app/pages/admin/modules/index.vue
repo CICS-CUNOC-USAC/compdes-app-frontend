@@ -49,6 +49,7 @@
         :totalPages="modulesResponse?.totalPages"
         :paginationState="paginationOptions"
         :enableSorting="false"
+        table-key-name="modules_table"
         @pagination-change="
           ($event: Updater<PaginationState>) => {
             if (typeof $event === 'function') {

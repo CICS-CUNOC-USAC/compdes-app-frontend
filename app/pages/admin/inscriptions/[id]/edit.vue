@@ -378,7 +378,7 @@ watchEffect(async () => {
 });
 
 definePageMeta({
-  title: "Detalles de Inscripción",
+  title: "Editar Inscripción",
   layout: "admin",
 });
 </script>
