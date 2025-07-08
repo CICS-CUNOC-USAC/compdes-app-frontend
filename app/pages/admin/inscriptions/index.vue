@@ -52,6 +52,7 @@
         :totalPages="participantesResponse?.totalPages"
         :paginationState="paginationOptions"
         :sorting="sortingOptions"
+        table-key-name="inscriptions-table"
         @sort-change="
           ($event) => {
             const newSorting =
@@ -86,32 +87,28 @@
 </template>
 
 <script setup lang="tsx">
-  import { toast } from "vue-sonner";
-  import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
-  import { approveInscriptionByAdmin } from "~/lib/api/admin/inscriptions";
-  import type {
-    InscriptionsResponse,
-    Participant,
-  } from "~/lib/api/participants";
-  import { FetchError } from "ofetch";
-  import DataTable from "~/components/module/inscriptions/DataTable.vue";
-  import type { ColumnDef } from "@tanstack/vue-table";
   import { Button, Icon, NuxtLink, Tooltip } from "#components";
+  import type { ColumnDef } from "@tanstack/vue-table";
+  import { FetchError } from "ofetch";
+  import { toast } from "vue-sonner";
+  import DataTable from "~/components/module/inscriptions/DataTable.vue";
+  import InscriptionsFilters from "~/components/module/inscriptions/InscriptionsFilters.vue";
+  import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
+  import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
+  import Badge from "~/components/ui/badge/Badge.vue";
+  import DropdownMenu from "~/components/ui/dropdown-menu/DropdownMenu.vue";
+  import DropdownMenuContent from "~/components/ui/dropdown-menu/DropdownMenuContent.vue";
+  import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
+  import DropdownMenuLabel from "~/components/ui/dropdown-menu/DropdownMenuLabel.vue";
+  import DropdownMenuTrigger from "~/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
   import {
+    TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-    TooltipContent,
   } from "~/components/ui/tooltip";
-  import Badge from "~/components/ui/badge/Badge.vue";
-  import ConfirmActionDialog from "~/components/partials/ConfirmActionDialog.vue";
-  import InscriptionsFilters from "~/components/module/inscriptions/InscriptionsFilters.vue";
+  import { approveInscriptionByAdmin } from "~/lib/api/admin/inscriptions";
+  import type { Participant } from "~/lib/api/participants";
   import type { PageableResponse } from "~/lib/api/shared";
-  import DropdownMenu from "~/components/ui/dropdown-menu/DropdownMenu.vue";
-  import DropdownMenuTrigger from "~/components/ui/dropdown-menu/DropdownMenuTrigger.vue";
-  import DropdownMenuContent from "~/components/ui/dropdown-menu/DropdownMenuContent.vue";
-  import DropdownMenuLabel from "~/components/ui/dropdown-menu/DropdownMenuLabel.vue";
-  import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
-  import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
   const route = useRoute();
 
   const {
@@ -204,14 +201,14 @@
       ),
       cell: ({ row }) => (
         <div class="flex justify-center [&>*:first-child]:rounded-r-none [&>*:last-child]:rounded-l-none [&>*:not(:first-child):not(:last-child)]:rounded-none">
-          <Button asChild size="icon" class="size-8" variant="default">
+          <Button asChild size="icon" class="size-9" variant="default">
             <NuxtLink to={`/admin/inscriptions/${row.original.id}`}>
               <Icon name="lucide:eye" />
             </NuxtLink>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" class="size-8" size="icon">
+              <Button variant="outline" class="size-9" size="icon">
                 <Icon name="lucide:ellipsis" class="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>

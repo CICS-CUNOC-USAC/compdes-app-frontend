@@ -33,6 +33,7 @@
       sorting?: SortingState;
       enableSorting?: boolean;
       disablePagination?: boolean;
+      tableKeyName?: string;
       paginationState?: {
         pageIndex: number;
         pageSize: number;
@@ -49,17 +50,60 @@
   );
 
   const emit = defineEmits(["paginationChange", "sortChange"]);
+  
+  // Initialize column visibility with localStorage persistence
+  const getStorageKey = () => props.tableKeyName ? `datatable_columns_${props.tableKeyName}` : null;
+  
+  // Function to load column visibility from localStorage
+  const loadColumnVisibility = (): VisibilityState => {
+    const storageKey = getStorageKey();
+    if (!storageKey || process.env.NODE_ENV === 'server') {
+      return {};
+    }
+    
+    try {
+      const stored = localStorage.getItem(storageKey);
+      return stored ? JSON.parse(stored) : {};
+    } catch (error) {
+      console.warn('Failed to parse stored column visibility:', error);
+      return {};
+    }
+  };
+  
+  // Function to save column visibility to localStorage
+  const saveColumnVisibility = (visibility: VisibilityState) => {
+    const storageKey = getStorageKey();
+    if (!storageKey || process.env.NODE_ENV === 'server') {
+      return;
+    }
+    
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(visibility));
+    } catch (error) {
+      console.warn('Failed to save column visibility:', error);
+    }
+  };
+  
   const columnVisibility = ref<VisibilityState>({});
+  
+  // Load initial column visibility on client side
+  onMounted(() => {
+    if (props.tableKeyName) {
+      columnVisibility.value = loadColumnVisibility();
+    }
+  });
+  
+  // Watch for changes and save to localStorage
+  watch(columnVisibility, (newVisibility) => {
+    if (props.tableKeyName) {
+      saveColumnVisibility(newVisibility);
+    }
+  }, { deep: true });
 
   const table = useVueTable({
     get data() {
       return props.data;
     },
-    // data: props.data,
-    // get columns() {
-    //   return props.columns;
-    // },
-    // data: props.data,
     defaultColumn: {
       minSize: 0,
       size: 0,
@@ -70,8 +114,6 @@
     manualPagination: true,
     manualSorting: true,
     enableSorting: props.enableSorting,
-    // rowCount: props.totalElements ?? 0,
-    // pageCount: props.totalPages ?? -1,
     get rowCount() {
       return props.totalElements ?? 0;
     },
@@ -117,7 +159,7 @@
         </span>
       </div>
 
-      <div class="flex gap-2 justify-center sm:justify-end self-end">
+      <div class="flex gap-2 justify-center sm:justify-end ">
         <template v-if="!props.disablePagination">
           <Button
             class=""
@@ -161,7 +203,11 @@
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
             <Button variant="secondary" size="sm" class="tracking-normal">
-              Columnas
+              <Icon
+                name="lucide:table-2"
+                class="max-sm:inline hidden h-4 w-4"
+              />
+              <span class="max-sm:hidden">Columnas</span>
               <Icon name="lucide:chevron-down" class="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -190,7 +236,7 @@
         </DropdownMenu>
       </div>
     </div>
-    <div class="border rounded-md overflow-hidden">
+    <div class="ring ring-border rounded-md overflow-hidden">
       <Table class="w-full">
         <TableHeader>
           <TableRow

@@ -42,7 +42,7 @@
     <!-- {{ classroomsResponse }} -->
 
     <div class="mx-auto rounded-lg relative" v-if="classroomsResponse">
-      <DataTable :columns :data="classroomsResponse" :enableSorting="false" disablePagination />
+      <DataTable :columns :data="classroomsResponse" :enableSorting="false" disablePagination table-key-name="classrooms_table" />
       <div
         class="absolute inset-0 bg-background/40 flex items-center justify-center"
         v-if="status === 'pending'"

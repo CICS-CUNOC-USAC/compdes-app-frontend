@@ -1,4 +1,4 @@
-export interface Conferences {
+export interface Activity {
   id: number;
   name: string;
   description: string;
@@ -24,9 +24,9 @@ export async function postConferencias(values: any){
   return response;
 }
 
-export async function getConferences(): Promise<Conferences[]> {
+export async function getConferences(): Promise<Activity[]> {
   const response = await $api(`/activities/all`, {
     method: 'GET',
   });
-  return response as Conferences[];
+  return response as Activity[];
 }
