@@ -25,6 +25,25 @@
       <h2
         class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4"
       >
+        Acciones:
+      </h2>
+      <div class="mb-3 space-x-2 space-y-2">
+        <DeleteItemDialog @confirm="">
+          <Button size="sm" variant="destructive">
+            <Icon name="lucide:trash" />
+            Eliminar
+          </Button>
+        </DeleteItemDialog>
+        <Button size="sm" variant="outline" as-child>
+          <NuxtLink :to="`/admin/conferences/${activity?.id}/edit`">
+            <Icon name="lucide:pencil" />
+            Editar
+          </NuxtLink>
+        </Button>
+      </div>
+      <h2
+        class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4"
+      >
         Información:
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -55,7 +74,8 @@
           </h2>
           <p class="mt-1 text-lg">
             <span class="text-base text-muted-foreground">
-              <Icon class="inline mb-0.5" name="lucide:clock-arrow-up" /> Inicio:
+              <Icon class="inline mb-0.5" name="lucide:clock-arrow-up" />
+              Inicio:
             </span>
             {{ formatDate(activity?.initScheduledDate) }}<br />
             <span class="text-base text-muted-foreground">
@@ -84,28 +104,33 @@
 </template>
 
 <script setup lang="ts">
-import Button from '~/components/ui/button/Button.vue';
-import LoaderIndicator from '~/components/partials/LoaderIndicator.vue';
-import type { Activity } from '~/lib/api/conferencias';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
-import Badge from '~/components/ui/badge/Badge.vue';
+  import Button from "~/components/ui/button/Button.vue";
+  import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
+  import type { Activity } from "~/lib/api/conferencias";
+  import { format } from "date-fns";
+  import { es } from "date-fns/locale";
+  import Badge from "~/components/ui/badge/Badge.vue";
+  import DeleteItemDialog from "~/components/partials/DeleteItemDialog.vue";
 
-const route = useRoute();
-const {
-  data: activity,
-  error,
-  status,
-} = await useAsyncData<Activity>(() => $api(`/activities/${route.params.id}`));
+  const route = useRoute();
+  const {
+    data: activity,
+    error,
+    status,
+  } = await useAsyncData<Activity>(() =>
+    $api(`/activities/${route.params.id}`),
+  );
 
-definePageMeta({
-  layout: "admin",
-  title: "Detalles de Actividad",
-});
+  definePageMeta({
+    layout: "admin",
+    title: "Detalles de Actividad",
+  });
 
-function formatDate(dateString?: string): string {
-  return dateString
-    ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", { locale: es })
-    : 'Fecha no disponible';
-}
+  function formatDate(dateString?: string): string {
+    return dateString
+      ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", {
+          locale: es,
+        })
+      : "Fecha no disponible";
+  }
 </script>
