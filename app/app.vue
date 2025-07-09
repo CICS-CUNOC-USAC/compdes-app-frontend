@@ -21,7 +21,7 @@ const myUseId = () => useId();
   </ConfigProvider>
 </template>
 <style>
-body {
+html {
   scrollbar-gutter: stable;
 }
 </style>
