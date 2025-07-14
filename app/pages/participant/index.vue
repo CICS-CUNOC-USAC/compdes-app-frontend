@@ -83,7 +83,6 @@ import {
 } from "~/components/ui/card";
 
 const linkItems = [
-  /*
   {
     title: "Ponencias",
     description:
@@ -93,11 +92,12 @@ const linkItems = [
     shortcuts: [
       {
         name: "Ver",
-        icon: "lucide:eye",
+        icon: "lucide:messages-square",
         link: "/participant/conferences",
       },
     ],
   },
+  /*
   {
     title: "Mapa",
     description: "Ve el mapa del CUNOC, sede del COMPDES",
