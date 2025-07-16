@@ -2,7 +2,7 @@
   <div class="max-w-5xl mx-auto p-4 sm:px-50">
     <section class="mt-6">
       <h2 class="text-xl font-semibold mb-4">Conferencias disponibles</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         <Card v-for="presentation in presentations" :key="presentation.id"
           class="bg-gradient-to-b from-transparent to-primary/40 hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5">
           <CardHeader>
@@ -27,7 +27,7 @@
     </section>
     <section class="mt-6">
       <h2 class="text-xl font-semibold mb-4">Talleres disponibles</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         <Card v-for="workshop in workshops" :key="workshop.id"
           class="bg-gradient-to-b from-transparent to-primary/40 hover:via-primary/10 via-primary/5 transition duration-200 dark:from-primary/20 dark:to-transparent dark:hover:via-primary/10 dark:via-primary/5">
           <CardHeader>
