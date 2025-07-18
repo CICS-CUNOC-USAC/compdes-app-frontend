@@ -140,6 +140,7 @@
     error,
     refresh: refreshInscriptions,
   } = await useAsyncData<PageableResponse<Participant>>(
+    "admin-inscriptions",
     () =>
       $api("/participants/all", {
         query: {
