@@ -22,6 +22,16 @@
               <strong>Módulo:</strong> {{ presentation.classroom.moduleUni?.name }}
             </p>
           </CardContent>
+          <CardFooter
+            class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200">
+            <div class="space-x-2">
+              <Button size="sm"
+                variant="secondary" :to="`/participant/conferences/${presentation.id}`">
+                <Icon name="lucide:eye" />
+                Ver
+              </Button>
+            </div>
+          </CardFooter>
         </Card>
       </div>
     </section>
@@ -60,6 +70,7 @@
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { getConferences, type Activity } from '~/lib/api/conferencias';
+import CardFooter from '~/components/ui/card/CardFooter.vue';
 
 const {
   data: activities,
