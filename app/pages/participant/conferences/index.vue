@@ -25,10 +25,11 @@
           <CardFooter
             class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200">
             <div class="space-x-2">
-              <Button size="sm"
-                variant="secondary" :to="`/participant/conferences/${presentation.id}`">
-                <Icon name="lucide:eye" />
-                Ver
+              <Button as-child size="sm" variant="secondary">
+                <NuxtLink :to="`/participant/conferences/${presentation.id}`">
+                  <Icon name="lucide:eye" />
+                  Ver
+                </NuxtLink>
               </Button>
             </div>
           </CardFooter>
