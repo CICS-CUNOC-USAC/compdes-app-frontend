@@ -15,6 +15,10 @@
       <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
 
       <div class="space-x-2 space-y-2">
+        <Button size="sm" as-child>
+            <Icon name="lucide:plus" />
+            Exportar correos
+        </Button>
         <Button size="icon" variant="outline" @click="refreshInscriptions">
           <Icon name="lucide:refresh-ccw" />
         </Button>
