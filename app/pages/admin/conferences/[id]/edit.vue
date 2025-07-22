@@ -250,10 +250,10 @@ const initialValues = computed(() => {
     ...activity.value,
     classroomId: activity.value.classroom || undefined,
     initScheduledDate: activity.value.initScheduledDate
-      ? formatDateLocal(new Date(activity.value.initScheduledDate))
+      ? new Date(activity.value.initScheduledDate)
       : undefined,
     endScheduledDate: activity.value.endScheduledDate
-      ? formatDateLocal(new Date(activity.value.endScheduledDate))
+      ? new Date(activity.value.endScheduledDate)
       : undefined,
   };
 });
