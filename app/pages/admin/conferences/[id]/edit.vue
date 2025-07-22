@@ -299,6 +299,12 @@ const { mutate, asyncStatus } = useMutation({
       body: {
         ...values,
         classroomId: values.classroomId?.id, // Use the ID for the API call
+        initScheduledDate: values.initScheduledDate
+          ? formatDateLocal(new Date(values.initScheduledDate))
+          : undefined,
+        endScheduledDate: values.endScheduledDate
+          ? formatDateLocal(new Date(values.endScheduledDate))
+          : undefined,
       },
     }),
   onSuccess: () => {
