@@ -1,281 +1,351 @@
 <template>
-  <div class="flex flex-col h-full pt-4">
-    <Stepper class="flex w-full items-start gap-2 relative" v-model="stepIndex">
-      <StepperItem v-for="step in steps" :key="step.step" v-slot="{ state }" class="flex w-full flex-col items-center justify-center" :step="step.step">
-        <div class="z-10 rounded-full shrink-0 p-2" :class="[ state === 'active' && 'outline-2 outline-ring outline-offset-2' ]" @click="() => undefined">
-          <Icon name="lucide:check" v-if="state === 'completed'" />
-          <Icon :name="step.icon" v-else />
+  <div class="container mx-auto p-5">
+    <div class="">
+      <Button as-child size="sm" variant="link" class="mb-3">
+        <NuxtLink :to="`/admin/conferences/${route.params.id}`">
+          <Icon name="lucide:arrow-left" />
+          Volver a <span>"{{ activity?.name || "Actividad" }}"</span>
+        </NuxtLink>
+      </Button>
+      <Button as-child size="sm" variant="link" class="mb-3">
+        <NuxtLink to="/admin/inscriptions">
+          <Icon name="lucide:list" />
+          Volver a Actividades
+        </NuxtLink>
+      </Button>
+      <Button as-child size="sm" variant="link" class="mb-3">
+        <NuxtLink to="/admin/home">
+          <Icon name="lucide:house" />
+          Volver a Inicio
+        </NuxtLink>
+      </Button>
+
+      <h1 class="text-2xl font-bold">Editar Actividad</h1>
+    </div>
+
+    <div v-if="error" class="text-red-600">Failed to load activity.</div>
+
+    <LoaderIndicator v-if="status === 'pending'" />
+
+    <Form
+      v-else-if="activity"
+      class="mt-3"
+      @submit="handleSubmit"
+      :validation-schema="schema"
+      :initial-values="initialValues"
+    >
+      <h2
+        class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4"
+      >
+        Acciones:
+      </h2>
+      <div class="mb-5 space-x-2 space-y-2">
+        <Button
+          size="sm"
+          variant="default"
+          type="submit"
+          :loading="asyncStatus === 'loading'"
+        >
+          <Icon name="lucide:check" />
+          Guardar Cambios
+        </Button>
+      </div>
+      <h2
+        class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4"
+      >
+        Información:
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h2 class="font-semibold text-sm text-muted-foreground mb-1">
+            <Icon class="inline mb-0.5" name="lucide:user" /> Nombre
+          </h2>
+          <FormField v-slot="{ componentField }" name="name">
+            <FormItem>
+              <FormControl>
+                <Input type="text" v-bind="componentField" />
+              </FormControl>
+              <FormMessage name="name" />
+            </FormItem>
+          </FormField>
+          <!-- <p class="mt-1 text-lg">{{ activity?.name }}</p> -->
         </div>
 
-        <StepperTitle :class="[state === 'active' && 'text-primary']" class="absolute top-full mt-4 w-max -translate-x-1/2 left-1/2 text-xl font-semibold" v-if="state === 'active'">
-          {{ step.title }}
-        </StepperTitle>
-      </StepperItem>
-    </Stepper>
+        <div>
+          <h2 class="font-semibold text-sm text-muted-foreground mb-1">
+            <Icon class="inline mb-0.5" name="lucide:info" /> Descripción
+          </h2>
+          <!-- <p class="mt-1 text-lg">{{ activity?.description }}</p> -->
+          <FormField v-slot="{ componentField }" name="description">
+            <FormItem>
+              <FormControl>
+                <Input type="text" v-bind="componentField" />
+              </FormControl>
+              <FormMessage name="description" />
+            </FormItem>
+          </FormField>
+        </div>
 
-    <Form @submit="handleNextStep" :validation-schema="currentSchema" keep-values class="flex flex-col flex-1 pt-6">
-      <div class="flex-1 overflow-auto self-center w-full max-w-xl px-4 pt-20">
-        <template v-if="stepIndex === 1">
-          <fieldset class="gap-4 grid grid-cols-1">
-            <FormField v-slot="{ componentField }" name="name">
-              <FormItem>
-                <FormLabel icon="lucide:monitor-play">Nombre</FormLabel>
+        <div>
+          <h2 class="font-semibold text-sm text-muted-foreground mb-1">
+            <Icon class="inline mb-0.5" name="lucide:shapes" /> Tipo
+          </h2>
+          <!-- <Badge class="mt-1 text-base">{{ activity?.type }}</Badge> -->
+          <FormField v-slot="{ componentField }" name="type">
+            <FormItem>
+              <Combobox by="label" v-bind="componentField">
                 <FormControl>
-                  <Input type="text" v-bind="componentField" />
+                  <ComboboxAnchor as-child class="">
+                    <ComboboxTrigger as-child class="">
+                      <Button
+                        variant="outline"
+                        class="justify-between rounded-md py-2.5 min-w-full max-w-full"
+                      >
+                        <span class="truncate font-normal">
+                          {{
+                            componentField.modelValue ??
+                            "Selecciona un tipo de presentacion..."
+                          }}
+                        </span>
+                        <Icon
+                          name="lucide:chevrons-up-down"
+                          class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                        />
+                      </Button>
+                    </ComboboxTrigger>
+                  </ComboboxAnchor>
                 </FormControl>
-                <FormMessage name="name" />
-              </FormItem>
-            </FormField>
+                <ComboboxList class="max-h-[300px] overflow-y-auto !block">
+                  <div class="relative w-full items-center">
+                    <ComboboxInput
+                      class="pl-0 focus-visible:ring-0 rounded-none h-10"
+                      placeholder="Buscar tipo..."
+                      :autoFocus="false"
+                    />
+                    <span
+                      class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+                    >
+                      <Icon name="lucide:search" class="h-4 w-4 opacity-50">
+                      </Icon>
+                    </span>
+                  </div>
 
-            <FormField v-slot="{ componentField }" name="description">
-              <FormItem>
-                <FormLabel icon="lucide:file-text"> Descripcion </FormLabel>
+                  <ComboboxEmpty class="w-full">
+                    No se encontraron resultados.
+                  </ComboboxEmpty>
+
+                  <ComboboxGroup
+                    v-for="group in presentationTypeList"
+                    :heading="group.group"
+                    :key="group.group"
+                  >
+                    <ComboboxItem
+                      v-for="uni in group.items"
+                      :key="uni"
+                      :value="uni"
+                      class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold"
+                    >
+                      <ComboboxItemIndicator>
+                        <Icon name="lucide:check" class="size-4" />
+                      </ComboboxItemIndicator>
+                      {{ uni }}
+                    </ComboboxItem>
+                  </ComboboxGroup>
+                </ComboboxList>
+              </Combobox>
+              <FormMessage name="type" />
+            </FormItem>
+          </FormField>
+        </div>
+
+        <div class="md:col-span-2">
+          <h2 class="font-semibold text-sm text-muted-foreground mb-1">
+            <Icon class="inline mb-0.5" name="lucide:calendar" /> Programación
+          </h2>
+          <p class="mt-1 text-lg">
+            <span class="text-base text-muted-foreground">
+              <Icon class="inline mb-0.5" name="lucide:clock-arrow-up" />
+              Inicio:
+            </span>
+            {{ formatDate(activity?.initScheduledDate) }}<br />
+            <span class="text-base text-muted-foreground">
+              <Icon class="inline mb-0.5" name="lucide:clock-arrow-down" /> Fin:
+            </span>
+            {{ formatDate(activity?.endScheduledDate) }}
+          </p>
+        </div>
+
+        <div>
+          <h2 class="font-semibold text-sm text-muted-foreground mb-1">
+            <Icon class="inline mb-0.5" name="lucide:door-open" /> Salón
+          </h2>
+          <!-- <p class="mt-1 text-lg">{{ activity?.classroom?.name }}</p> -->
+          <FormField v-slot="{ componentField }" name="classroomId">
+            <FormItem>
+              <Combobox by="label" v-bind="componentField">
                 <FormControl>
-                  <Input type="text" v-bind="componentField" />
+                  <ComboboxAnchor as-child>
+                    <ComboboxTrigger as-child>
+                      <Button
+                        variant="outline"
+                        class="justify-between rounded-md py-2.5 min-w-full max-w-full"
+                      >
+                        <span class="truncate font-normal">
+                          {{
+                            componentField.modelValue["name"] ??
+                            "Selecciona un salón..."
+                          }}
+                        </span>
+                        <Icon
+                          name="lucide:chevrons-up-down"
+                          class="ml-2 h-4 w-4 shrink-0 opacity-50"
+                        />
+                      </Button>
+                    </ComboboxTrigger>
+                  </ComboboxAnchor>
                 </FormControl>
-                <FormMessage name="description" />
-              </FormItem>
-            </FormField>
 
-            <FormField v-slot="{ componentField }" name="type">
-              <FormItem>
-                <FormLabel icon="lucide:mic-vocal">Tipo de Presentacion</FormLabel>
-                <Combobox by="label" v-bind="componentField">
-                  <FormControl>
-                    <ComboboxAnchor as-child>
-                      <ComboboxTrigger as-child>
-                        <Button variant="outline" class="justify-between rounded-md py-2.5 min-w-full max-w-full">
-                          <span class="truncate font-normal">
-                            {{ componentField.modelValue ?? "Selecciona un tipo de presentacion..." }}
-                          </span>
-                          <Icon name="lucide:chevrons-up-down" class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </ComboboxTrigger>
-                    </ComboboxAnchor>
-                  </FormControl>
-                  <ComboboxList class="max-h-[300px] overflow-y-auto !block">
-                    <div class="relative w-full items-center">
-                      <ComboboxInput class="pl-0 focus-visible:ring-0 rounded-none h-10" placeholder="Buscar tipo..." :autoFocus="false" />
-                      <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
-                        <Icon name="lucide:search" class="h-4 w-4 opacity-50" />
-                      </span>
-                    </div>
-                    <ComboboxEmpty class="w-full">No se encontraron resultados.</ComboboxEmpty>
-                    <ComboboxGroup v-for="group in presentationTypeList" :heading="group.group" :key="group.group">
-                      <ComboboxItem v-for="uni in group.items" :key="uni" :value="uni" class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
-                        <ComboboxItemIndicator>
-                          <Icon name="lucide:check" class="size-4" />
-                        </ComboboxItemIndicator>
-                        {{ uni }}
-                      </ComboboxItem>
-                    </ComboboxGroup>
-                  </ComboboxList>
-                </Combobox>
-                <FormMessage name="type" />
-              </FormItem>
-            </FormField>
-          </fieldset>
-        </template>
+                <ComboboxList class="max-h-[300px] overflow-y-auto !block">
+                  <div class="relative w-full items-center">
+                    <ComboboxInput
+                      class="pl-0 focus-visible:ring-0 rounded-none h-10"
+                      placeholder="Buscar salón..."
+                      :autoFocus="false"
+                    />
+                    <span
+                      class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
+                    >
+                      <Icon name="lucide:search" class="h-4 w-4 opacity-50" />
+                    </span>
+                  </div>
 
-        <template v-if="stepIndex === 2">
-          <fieldset class="gap-4 grid grid-cols-1">
-            <FormField v-slot="{ componentField }" name="sheduledDate">
-              <FormItem>
-                <FormLabel icon="lucide:calendar-clock">Fecha y Hora</FormLabel>
-                <FormControl>
-                  <Datepicker :model-value="componentField.modelValue" @update:model-value="componentField.onChange" :enable-time-picker="true" :minute-increment="5" locale="es" format="yyyy-MM-dd HH:mm" placeholder="Selecciona fecha y hora" auto-apply class="w-full" />
-                </FormControl>
-                <FormMessage name="sheduledDate" />
-              </FormItem>
-            </FormField>
+                  <ComboboxEmpty class="w-full">
+                    No se encontraron resultados.
+                  </ComboboxEmpty>
 
-            <FormField v-slot="{ componentField }" name="classroomId">
-              <FormItem>
-                <FormLabel icon="lucide:mic-vocal">Salón</FormLabel>
-                <Combobox by="label" v-bind="componentField">
-                  <FormControl>
-                    <ComboboxAnchor as-child>
-                      <ComboboxTrigger as-child>
-                        <Button variant="outline" class="justify-between rounded-md py-2.5 min-w-full max-w-full">
-                          <span class="truncate font-normal">
-                            {{ componentField.modelValue ?? "Selecciona un salón..." }}
-                          </span>
-                          <Icon name="lucide:chevrons-up-down" class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </ComboboxTrigger>
-                    </ComboboxAnchor>
-                  </FormControl>
-                  <ComboboxList class="max-h-[300px] overflow-y-auto !block">
-                    <div class="relative w-full items-center">
-                      <ComboboxInput class="pl-0 focus-visible:ring-0 rounded-none h-10" placeholder="Buscar salón..." :autoFocus="false" />
-                      <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
-                        <Icon name="lucide:search" class="h-4 w-4 opacity-50" />
-                      </span>
-                    </div>
-                    <ComboboxEmpty class="w-full">No se encontraron resultados.</ComboboxEmpty>
-                    <ComboboxGroup heading="Salones disponibles">
-                      <ComboboxItem v-for="salon in salonList" :key="salon.id" :value="salon.name" class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
-                        <ComboboxItemIndicator>
-                          <Icon name="lucide:check" class="size-4" />
-                        </ComboboxItemIndicator>
-                        {{ salon.name }}
-                      </ComboboxItem>
-                    </ComboboxGroup>
-                  </ComboboxList>
-                </Combobox>
-                <FormMessage name="classroomId" />
-              </FormItem>
-            </FormField>
-          </fieldset>
-        </template>
-      </div>
+                  <ComboboxGroup heading="Salones disponibles">
+                    <ComboboxItem
+                      v-for="salon in classrooms"
+                      :key="salon.id"
+                      :value="salon"
+                      class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold"
+                    >
+                      <ComboboxItemIndicator>
+                        <Icon name="lucide:check" class="size-4" />
+                      </ComboboxItemIndicator>
+                      {{ salon.name }}
+                    </ComboboxItem>
+                  </ComboboxGroup>
+                </ComboboxList>
+              </Combobox>
+              <FormMessage name="classroomId" />
+            </FormItem>
+          </FormField>
+        </div>
 
-      <div class="w-full grid grid-cols-2 sticky bottom-0 bg-background">
-        <Button variant="outline" class="rounded-none" @click="handlePrevStep" :disabled="stepIndex === 1" type="button">Anterior</Button>
-        <Button variant="outline" class="rounded-none" v-if="stepIndex !== steps.length" type="submit">Siguiente</Button>
-        <Button variant="outline" class="rounded-none" v-if="stepIndex === steps.length" type="submit">Finalizar</Button>
+        <!-- <div v-if="activity?.classroom?.moduleUni">
+          <h2 class="font-semibold text-sm text-muted-foreground mb-1">
+            <Icon class="inline mb-0.5" name="lucide:building" /> Módulo
+          </h2>
+          <p class="mt-1 text-lg">{{ activity?.classroom?.moduleUni?.name }}</p>
+        </div> -->
       </div>
     </Form>
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { FormField, NuxtLink } from "#components";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Stepper,
-  StepperItem,
-  StepperSeparator,
-  StepperTitle,
-} from "@/components/ui/stepper";
-import { toTypedSchema } from "@vee-validate/zod";
-import * as z from "zod";
-import Combobox from "~/components/ui/combobox/Combobox.vue";
-import ComboboxAnchor from "~/components/ui/combobox/ComboboxAnchor.vue";
-import ComboboxEmpty from "~/components/ui/combobox/ComboboxEmpty.vue";
-import ComboboxGroup from "~/components/ui/combobox/ComboboxGroup.vue";
-import ComboboxInput from "~/components/ui/combobox/ComboboxInput.vue";
-import ComboboxItem from "~/components/ui/combobox/ComboboxItem.vue";
-import ComboboxItemIndicator from "~/components/ui/combobox/ComboboxItemIndicator.vue";
-import ComboboxList from "~/components/ui/combobox/ComboboxList.vue";
-import ComboboxTrigger from "~/components/ui/combobox/ComboboxTrigger.vue";
-import FormControl from "~/components/ui/form/FormControl.vue";
-import FormItem from "~/components/ui/form/FormItem.vue";
-import FormLabel from "~/components/ui/form/FormLabel.vue";
-import Datepicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
+  import { toTypedSchema } from "@vee-validate/zod";
+  import { format } from "date-fns";
+  import { es } from "date-fns/locale";
+  import { Form } from "vee-validate";
+  import { toast } from "vue-sonner";
+  import { z } from "zod";
+  import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
+  import Button from "~/components/ui/button/Button.vue";
+  import { FormField } from "~/components/ui/form";
+  import type { Activity } from "~/lib/api/conferencias";
+  import { getSalones } from "~/lib/api/salones";
 
-const languages = [
-  { label: "English", value: "en" },
-  { label: "French", value: "fr" },
-  { label: "German", value: "de" },
-  { label: "Spanish", value: "es" },
-  { label: "Portuguese", value: "pt" },
-  { label: "Russian", value: "ru" },
-  { label: "Japanese", value: "ja" },
-  { label: "Korean", value: "ko" },
-  { label: "Chinese", value: "zh" },
-] as const;
+  const route = useRoute();
+  const {
+    data: activity,
+    error,
+    status,
+  } = await useAsyncData<Activity>(() =>
+    $api(`/activities/${route.params.id}`),
+  );
 
-const frameworks = [
-  { value: "next.js", label: "Next.js" },
-  { value: "sveltekit", label: "SvelteKit" },
-  { value: "nuxt", label: "Nuxt" },
-  { value: "remix", label: "Remix" },
-  { value: "astro", label: "Astro" },
-];
+  // we have to map the activity.classroom.id to the classroomId field and leave the rest of fields as they are
+  const initialValues = computed(() => {
+    if (!activity.value) return {};
+    return {
+      ...activity.value,
+      classroomId: activity.value.classroom || undefined,
+    };
+  });
 
-const value = ref<(typeof frameworks)[0]>();
+  const { data: classrooms } = await useAsyncData(() => getSalones(), {
+    lazy: true,
+  });
 
-import { ref, onMounted } from 'vue'
+  const zSchema = z.object({
+    name: z.string().min(1, "El nombre es obligatorio"),
+    description: z.string().optional(),
+    type: z.string().optional(),
+    initScheduledDate: z.string().optional(),
+    endScheduledDate: z.string().optional(),
+    classroomId: z
+      .object({
+        id: z.string().min(1, "El salón es obligatorio"),
+        name: z.string().optional(), // Optional to allow for display purposes
+      })
+      .optional(),
+  });
+  const schema = toTypedSchema(zSchema);
 
-interface Salon {
-  id: number
-  name: string
-}
-
-const salonList = ref<Salon[]>([])
-
-async function cargarSalones() {
-  try {
-    const response = await fetch('endpoint')
-    const data = await response.json()
-    salonList.value = data.data
-  } catch (error) {
-    console.error('Error al cargar salones:', error)
-  }
-}
-
-onMounted(() => {
-  cargarSalones()
-})
-
-
-const stepIndex = ref(1);
-const schemas = [
-  toTypedSchema(
-    z.object({
-      name: z
-        .string({ message: "Campo requerido" })
-        .min(1, "El nombre debe contener al menos 1 caracter")
-        .max(100),
-      description: z
-        .string({ message: "Campo requerido" })
-        .min(1, "La descripcion debe contener al menos 1 caracter")
-        .max(500),
-      type: z.string({ message: "Campo requerido" }).min(1),
-    }),
-  ),
-  undefined,
-  toTypedSchema(
-    z.object({
-      sheduledDate: z.string(),
-      classroomId: z.string({ message: "Campo requerido" }).min(1),
-    }),
-  ),
-];
-const currentSchema = computed(() => {
-  return schemas[stepIndex.value - 1];
-});
-
-function handleNextStep(values: any) {
-  console.log("Current Step: ", values);
-  if (stepIndex.value === 2) {
-    console.log("Informacion a Enviar: ", JSON.stringify(values, null, 2));
-    return;
+  async function handleSubmit(values: z.infer<typeof zSchema>) {
+    console.log("Submitting form with values:", values.classroomId?.id);
+    // Trigger the mutation to update the activity
+    // mutate(values);
+    await $api(`/activities/${route.params.id}`, {
+        method: "PATCH",
+        body: {
+          ...values,
+          classroomId: values.classroomId?.id, // Use the ID for the API call
+        },
+      })
   }
 
-  stepIndex.value++;
-}
+  const { mutate, asyncStatus } = useMutation({
+    mutation: (values: z.infer<typeof zSchema>) =>
+      $api(`/activities/${route.params.id}`, {
+        method: "PUT",
+        body: {
+          ...values,
+          classroomId: values.classroomId?.id, // Use the ID for the API call
+        },
+      }),
+    onSuccess: () => {
+      toast.success("Actividad actualizada correctamente");
+      navigateTo(`/admin/conferences/${route.params.id}`);
+    },
+    onError: (error) => {
+      toast.error("Error al actualizar la actividad");
+      console.error("Error updating activity:", error);
+    },
+  });
 
-function handlePrevStep() {
-  if (stepIndex.value === 1) {
-    return;
+  definePageMeta({
+    layout: "admin",
+    title: "Detalles de Actividad",
+  });
+
+  function formatDate(dateString?: string): string {
+    return dateString
+      ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", {
+          locale: es,
+        })
+      : "Fecha no disponible";
   }
-
-  stepIndex.value--;
-}
-
-const steps = [
-  {
-    step: 1,
-    title: "Datos de la Conferencia",
-    description: "Provide the conference details",
-    icon: "lucide:projector",
-  },
-  {
-    step: 2,
-    title: "Fecha y Lugar",
-    description: "Provide the date and location of the conference",
-    icon: "lucide:calendar-days",
-  },
-];
-
-definePageMeta({
-  layout: "admin",
-  title: "Editar Conferencia",
-})
 </script>
