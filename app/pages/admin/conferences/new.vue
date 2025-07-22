@@ -304,13 +304,12 @@
   import { Button } from "@/components/ui/button";
   import { Form } from "@/components/ui/form";
   import { Input } from "@/components/ui/input";
-  import {
-    Stepper,
-    StepperItem,
-    StepperSeparator,
-    StepperTitle,
-  } from "@/components/ui/stepper";
+  import { Stepper, StepperItem, StepperTitle } from "@/components/ui/stepper";
   import { toTypedSchema } from "@vee-validate/zod";
+  import Datepicker from "@vuepic/vue-datepicker";
+  import "@vuepic/vue-datepicker/dist/main.css";
+  import { reactive } from "vue";
+  import { useRouter } from "vue-router";
   import * as z from "zod";
   import Combobox from "~/components/ui/combobox/Combobox.vue";
   import ComboboxAnchor from "~/components/ui/combobox/ComboboxAnchor.vue";
@@ -324,25 +323,11 @@
   import FormControl from "~/components/ui/form/FormControl.vue";
   import FormItem from "~/components/ui/form/FormItem.vue";
   import FormLabel from "~/components/ui/form/FormLabel.vue";
-  import Datepicker from "@vuepic/vue-datepicker";
-  import "@vuepic/vue-datepicker/dist/main.css";
-  import { useRouter } from "vue-router";
+  import { ref } from "vue";
+  import { postConferencias } from "~/lib/api/conferencias";
+  import { getSalones } from "~/lib/api/salones";
 
   const router = useRouter();
-
-  function volver() {
-    router.back(); // o router.push('/listadoSalones')
-  }
-
-  const frameworks = [
-    { value: "next.js", label: "Next.js" },
-    { value: "sveltekit", label: "SvelteKit" },
-    { value: "nuxt", label: "Nuxt" },
-    { value: "remix", label: "Remix" },
-    { value: "astro", label: "Astro" },
-  ];
-
-  import { reactive } from "vue";
 
   const formData = reactive({
     name: "",
@@ -352,10 +337,6 @@
     endScheduledDate: "",
     classroomId: "",
   });
-
-  import { ref, onMounted } from "vue";
-  import { postConferencias } from "~/lib/api/conferencias";
-  import { getSalones } from "~/lib/api/salones";
 
   const { data: salones } = await useAsyncData(() => getSalones());
 
