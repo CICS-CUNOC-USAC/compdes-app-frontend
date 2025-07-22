@@ -84,7 +84,6 @@
                 <strong>Módulo:</strong> {{ workshop.classroom.moduleUni?.name }}
               </p>
             </CardContent>
-            <!--
             <CardFooter
               class="flex gap-2 flex-col items-start px-6 text-muted-foreground group-hover:text-accent-foreground transition duration-200">
               <div class="space-x-2">
@@ -96,7 +95,6 @@
                 </Button>
               </div>
             </CardFooter>
-            -->
           </Card>
         </div>
       </TabsContent>
