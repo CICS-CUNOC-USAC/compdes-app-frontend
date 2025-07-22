@@ -250,10 +250,10 @@ const initialValues = computed(() => {
     ...activity.value,
     classroomId: activity.value.classroom || undefined,
     initScheduledDate: activity.value.initScheduledDate
-      ? new Date(activity.value.initScheduledDate)
+      ? formatDateLocal(new Date(activity.value.initScheduledDate))
       : undefined,
     endScheduledDate: activity.value.endScheduledDate
-      ? new Date(activity.value.endScheduledDate)
+      ? formatDateLocal(new Date(activity.value.endScheduledDate))
       : undefined,
   };
 });
@@ -316,11 +316,9 @@ definePageMeta({
   title: "Detalles de Actividad",
 });
 
-function formatDate(dateString?: string): string {
-  return dateString
-    ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", {
-      locale: es,
-    })
-    : "Fecha no disponible";
+function formatDateLocal(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 </script>
