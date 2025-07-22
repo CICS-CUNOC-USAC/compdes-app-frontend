@@ -1,3 +1,5 @@
+import type { Participant } from "./participants";
+
 export interface Activity {
   id: string;
   name: string;
@@ -44,4 +46,11 @@ export async function getUserWorkshops(): Promise<Activity[]> {
     method: 'GET',
   });
   return response as Activity[];
+}
+
+export async function asigneesWorkshop(workshopId: string): Promise<Participant[]> {
+  const response = await $api(`/reservations/allParticipants/${workshopId}`, {
+    method: 'GET',
+  });
+  return response as Participant[];
 }
