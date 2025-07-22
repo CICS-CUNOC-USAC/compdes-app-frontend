@@ -105,7 +105,7 @@
         <div v-else-if="asignees?.length">
           <ul class="list-disc list-inside text-muted-foreground">
             <li v-for="participant in asignees" :key="participant.id">
-              {{ participant }}
+              {{ (participant as any).participant.firstName + (participant as any).participant.lastName }}
             </li>
           </ul>
         </div>
