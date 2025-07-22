@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import Button from '~/components/ui/button/Button.vue';
 import LoaderIndicator from '~/components/partials/LoaderIndicator.vue';
-import { assignToWorkShop, getUserWorkshops, type Activity } from '~/lib/api/conferencias';
+import { asigneesWorkshop, assignToWorkShop, getUserWorkshops, type Activity } from '~/lib/api/conferencias';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Badge from '~/components/ui/badge/Badge.vue';
@@ -124,6 +124,30 @@ function formatDate(dateString?: string): string {
     ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", { locale: es })
     : 'Fecha no disponible';
 }
+
+const {
+  data: asignees,
+  status: asigneesStatus,
+  error: asigneesError,
+  refresh: refreshAsignees
+} = await useAsyncData(
+  `workshop-asignees-${route.params.id}`,
+  () => asigneesWorkshop(route.params.id as string),
+  {
+    lazy: true,
+    server: false,
+    watch: [() => activity.value?.type], // se reevalúa cuando cambie el tipo
+    immediate: false, // no se ejecuta hasta que manualmente se llame
+  }
+);
+
+watchEffect(() => {
+  if (activity.value?.type === "WORKSHOP") {
+    refreshAsignees()
+  }
+});
+
+const totalAsignees = computed(() => asignees.value?.length ?? 0);
 
 const { mutate: assignWorkshop, asyncStatus } = useMutation({
   mutation: () => assignToWorkShop(activity.value?.id ?? ''),

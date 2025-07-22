@@ -99,6 +99,18 @@
           <p class="mt-1 text-lg">{{ activity?.classroom?.moduleUni?.name }}</p>
         </div>
       </div>
+      <div v-if="activity?.type === 'WORKSHOP'" class="mt-6">
+        <h2 class="text-xl font-semibold mb-4">Participantes Asignados</h2>
+        <LoaderIndicator v-if="asigneesStatus === 'pending'" />
+        <div v-else-if="asignees?.length">
+          <ul class="list-disc list-inside text-muted-foreground">
+            <li v-for="participant in asignees" :key="participant.id">
+              {{ (participant.firstName + " " + participant.lastName) || participant.email }}
+            </li>
+          </ul>
+        </div>
+        <p v-else class="text-muted-foreground">No hay participantes asignados aún.</p>
+      </div>
     </div>
   </div>
 </template>
@@ -106,7 +118,7 @@
 <script setup lang="ts">
   import Button from "~/components/ui/button/Button.vue";
   import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
-  import type { Activity } from "~/lib/api/conferencias";
+  import { asigneesWorkshop, type Activity } from "~/lib/api/conferencias";
   import { format } from "date-fns";
   import { es } from "date-fns/locale";
   import Badge from "~/components/ui/badge/Badge.vue";
@@ -125,6 +137,28 @@
     layout: "admin",
     title: "Detalles de Actividad",
   });
+
+const {
+  data: asignees,
+  status: asigneesStatus,
+  error: asigneesError,
+  refresh: refreshAsignees
+} = await useAsyncData(
+  `workshop-asignees-${route.params.id}`,
+  () => asigneesWorkshop(route.params.id as string),
+  {
+    lazy: true,
+    server: false,
+    watch: [() => activity.value?.type], // se reevalúa cuando cambie el tipo
+    immediate: false, // no se ejecuta hasta que manualmente se llame
+  }
+);
+
+watchEffect(() => {
+  if (activity.value?.type === "WORKSHOP") {
+    refreshAsignees()
+  }
+});
 
   function formatDate(dateString?: string): string {
     return dateString
