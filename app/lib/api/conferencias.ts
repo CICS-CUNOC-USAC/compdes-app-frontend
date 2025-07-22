@@ -1,5 +1,5 @@
 export interface Activity {
-  id: number;
+  id: string;
   name: string;
   description: string;
   type: string;
@@ -25,6 +25,21 @@ export async function postConferencias(values: any){
 }
 
 export async function getConferences(): Promise<Activity[]> {
+  const response = await $api(`/activities/all`, {
+    method: 'GET',
+  });
+  return response as Activity[];
+}
+
+export async function assignToWorkShop(activityId: string) {
+  const response = await $api(`/activities/register`, {
+    method: 'POST',
+    body: {'activityId': activityId},
+  });
+  return response;
+}
+
+export async function getUserWorkshops(): Promise<Activity[]> {
   const response = await $api(`/activities/all`, {
     method: 'GET',
   });

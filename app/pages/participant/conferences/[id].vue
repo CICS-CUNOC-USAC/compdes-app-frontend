@@ -22,9 +22,7 @@
     <LoaderIndicator v-if="status === 'pending'" />
 
     <div v-else class="mt-3">
-      <h2
-        class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4"
-      >
+      <h2 class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4">
         Información:
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -78,6 +76,15 @@
           </h2>
           <p class="mt-1 text-lg">{{ activity?.classroom?.moduleUni?.name }}</p>
         </div>
+        <div v-if="activity?.type === 'WORKSHOP'" class="mt-8">
+          <h2 class="text-sm text-muted-foreground font-semibold mb-2">
+            ¿Te gustaría participar en este taller?
+          </h2>
+          <Button size="sm" variant="default" @click="assignWorkshop" :disabled="isAlreadyAssigned">
+            <Icon name="lucide:plus-circle" />
+            {{ isAlreadyAssigned ? "Ya estás inscrito" : "Unirme al taller" }}
+          </Button>
+        </div>
       </div>
     </div>
   </div>
@@ -86,10 +93,11 @@
 <script setup lang="ts">
 import Button from '~/components/ui/button/Button.vue';
 import LoaderIndicator from '~/components/partials/LoaderIndicator.vue';
-import type { Activity } from '~/lib/api/conferencias';
+import { assignToWorkShop, getUserWorkshops, type Activity } from '~/lib/api/conferencias';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Badge from '~/components/ui/badge/Badge.vue';
+import { toast } from 'vue-sonner';
 
 const route = useRoute();
 const {
@@ -97,6 +105,14 @@ const {
   error,
   status,
 } = await useAsyncData<Activity>(() => $api(`/activities/${route.params.id}`));
+
+const {
+  data: userActivities,
+} = await useAsyncData<Activity[]>(() => getUserWorkshops());
+
+const isAlreadyAssigned = computed(() =>
+  userActivities.value?.some(a => a.id === activity.value?.id)
+);
 
 definePageMeta({
   layout: "participant",
@@ -108,4 +124,15 @@ function formatDate(dateString?: string): string {
     ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", { locale: es })
     : 'Fecha no disponible';
 }
+
+const { mutate: assignWorkshop, asyncStatus } = useMutation({
+  mutation: () => assignToWorkShop(activity.value?.id ?? ''),
+  onSuccess: (response) => {
+    const res = response as { message?: string };
+    toast.success(res.message || "Taller asignado correctamente!");
+  },
+  onError: (error) => {
+    toast.error(error?.message || "Error al asignar el taller. Intenta de nuevo mas tarde.")
+  },
+});
 </script>
