@@ -82,7 +82,7 @@
           </h2>
 
           <p class="text-sm text-muted-foreground">
-            Participantes asignados: <strong>{{ totalAsignees }}</strong>
+            Participantes asignados: <strong>{{ countAssigneesData?.total }}</strong>
             <template v-if="participantLimit !== undefined">
               / {{ participantLimit }}
             </template>
@@ -107,7 +107,7 @@
 <script setup lang="ts">
 import Button from '~/components/ui/button/Button.vue';
 import LoaderIndicator from '~/components/partials/LoaderIndicator.vue';
-import { asigneesWorkshop, assignToWorkShop, getUserWorkshops, type Activity } from '~/lib/api/conferencias';
+import { assignToWorkShop, countParticipants, getUserWorkshops, isAssigned, type Activity } from '~/lib/api/conferencias';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Badge from '~/components/ui/badge/Badge.vue';
@@ -140,13 +140,13 @@ function formatDate(dateString?: string): string {
 }
 
 const {
-  data: asignees,
-  status: asigneesStatus,
-  error: asigneesError,
-  refresh: refreshAsignees
+  data: countAssigneesData,
+  status: countStatus,
+  error: countError,
+  refresh: refreshCount
 } = await useAsyncData(
-  `workshop-asignees-${route.params.id}`,
-  () => asigneesWorkshop(route.params.id as string),
+  `workshop-assignee-count-${route.params.id}`,
+  () => countParticipants(route.params.id as string),
   {
     lazy: true,
     server: false,
@@ -157,11 +157,9 @@ const {
 
 watchEffect(() => {
   if (activity.value?.type === "WORKSHOP") {
-    refreshAsignees()
+    refreshCount()
   }
 });
-
-const totalAsignees = computed(() => asignees.value?.length ?? 0);
 
 const participantLimit = computed(() => {
   const match = activity.value?.description?.match(/L[ií]mite:\s*(\d+)/i);
@@ -169,7 +167,7 @@ const participantLimit = computed(() => {
 });
 
 const isFull = computed(() => {
-  return participantLimit.value !== undefined && totalAsignees.value >= participantLimit.value;
+  return participantLimit.value !== undefined && (countAssigneesData.value?.total ?? 0) >= participantLimit.value;
 });
 
 const { mutate: assignWorkshop, asyncStatus } = useMutation({
