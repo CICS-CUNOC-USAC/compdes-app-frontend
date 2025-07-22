@@ -13,10 +13,15 @@
       </CardHeader>
       <CardContent>
         <h2 class="mb-2 font-semibold">Importante</h2>
-        <p>En el siguiente link puedes encontrar tambien el cronograma por dia de las ponencias y talleres. <a
+        <p>En el siguiente link puedes encontrar el cronograma por dia de las ponencias y talleres. <a
             class="underline text-red-700"
             href="https://docs.google.com/spreadsheets/d/1NTDuaOdQ1z2jy0tvp8vRCOIBJpbTS-o0fKV_nPJvtz4">Link de
-            Sheets</a></p>
+            Cronograma</a></p>
+
+        <p>En el siguiente link puedes encontrar tambien informacion importante sobre los talleres <a
+            class="underline text-red-700"
+            href="https://docs.google.com/spreadsheets/d/1Bnn4gI9FBt2KElaBO_ngR5u_sLuRQK6Xrf0g_wFSqBg">Link de
+            Talleres</a></p>
 
       </CardContent>
     </Card>
