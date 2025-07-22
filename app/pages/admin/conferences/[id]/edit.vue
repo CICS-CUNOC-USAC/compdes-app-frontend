@@ -27,32 +27,18 @@
 
     <LoaderIndicator v-if="status === 'pending'" />
 
-    <Form
-      v-else-if="activity"
-      class="mt-3"
-      @submit="handleSubmit"
-      :validation-schema="schema"
-      :initial-values="initialValues"
-    >
-      <h2
-        class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4"
-      >
+    <Form v-else-if="activity" class="mt-3" @submit="handleSubmit" :validation-schema="schema"
+      :initial-values="initialValues">
+      <h2 class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4">
         Acciones:
       </h2>
       <div class="mb-5 space-x-2 space-y-2">
-        <Button
-          size="sm"
-          variant="default"
-          type="submit"
-          :loading="asyncStatus === 'loading'"
-        >
+        <Button size="sm" variant="default" type="submit" :loading="asyncStatus === 'loading'">
           <Icon name="lucide:check" />
           Guardar Cambios
         </Button>
       </div>
-      <h2
-        class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4"
-      >
+      <h2 class="uppercase tracking-wider text-muted-foreground text-sm font-light mb-4">
         Información:
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -97,34 +83,23 @@
                 <FormControl>
                   <ComboboxAnchor as-child class="">
                     <ComboboxTrigger as-child class="">
-                      <Button
-                        variant="outline"
-                        class="justify-between rounded-md py-2.5 min-w-full max-w-full"
-                      >
+                      <Button variant="outline" class="justify-between rounded-md py-2.5 min-w-full max-w-full">
                         <span class="truncate font-normal">
                           {{
                             componentField.modelValue ??
                             "Selecciona un tipo de presentacion..."
                           }}
                         </span>
-                        <Icon
-                          name="lucide:chevrons-up-down"
-                          class="ml-2 h-4 w-4 shrink-0 opacity-50"
-                        />
+                        <Icon name="lucide:chevrons-up-down" class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </ComboboxTrigger>
                   </ComboboxAnchor>
                 </FormControl>
                 <ComboboxList class="max-h-[300px] overflow-y-auto !block">
                   <div class="relative w-full items-center">
-                    <ComboboxInput
-                      class="pl-0 focus-visible:ring-0 rounded-none h-10"
-                      placeholder="Buscar tipo..."
-                      :autoFocus="false"
-                    />
-                    <span
-                      class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
-                    >
+                    <ComboboxInput class="pl-0 focus-visible:ring-0 rounded-none h-10" placeholder="Buscar tipo..."
+                      :autoFocus="false" />
+                    <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
                       <Icon name="lucide:search" class="h-4 w-4 opacity-50">
                       </Icon>
                     </span>
@@ -134,17 +109,9 @@
                     No se encontraron resultados.
                   </ComboboxEmpty>
 
-                  <ComboboxGroup
-                    v-for="group in presentationTypeList"
-                    :heading="group.group"
-                    :key="group.group"
-                  >
-                    <ComboboxItem
-                      v-for="uni in group.items"
-                      :key="uni"
-                      :value="uni"
-                      class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold"
-                    >
+                  <ComboboxGroup v-for="group in presentationTypeList" :heading="group.group" :key="group.group">
+                    <ComboboxItem v-for="uni in group.items" :key="uni" :value="uni"
+                      class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
                       <ComboboxItemIndicator>
                         <Icon name="lucide:check" class="size-4" />
                       </ComboboxItemIndicator>
@@ -163,15 +130,28 @@
             <Icon class="inline mb-0.5" name="lucide:calendar" /> Programación
           </h2>
           <p class="mt-1 text-lg">
-            <span class="text-base text-muted-foreground">
-              <Icon class="inline mb-0.5" name="lucide:clock-arrow-up" />
-              Inicio:
-            </span>
-            {{ formatDate(activity?.initScheduledDate) }}<br />
-            <span class="text-base text-muted-foreground">
-              <Icon class="inline mb-0.5" name="lucide:clock-arrow-down" /> Fin:
-            </span>
-            {{ formatDate(activity?.endScheduledDate) }}
+            <FormField v-slot="{ componentField }" name="initScheduledDate">
+              <FormItem>
+                <FormLabel icon="lucide:calendar-clock">Fecha y Hora de Inicio</FormLabel>
+                <FormControl>
+                  <Datepicker :model-value="componentField.modelValue" @update:model-value="componentField.onChange"
+                    :enable-time-picker="true" :minute-increment="5" locale="es" format="yyyy-MM-dd HH:mm"
+                    placeholder="Selecciona fecha y hora" auto-apply class="w-full rounded-lg" />
+                </FormControl>
+                <FormMessage name="initScheduledDate" />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="endScheduledDate">
+              <FormItem>
+                <FormLabel icon="lucide:calendar-clock">Fecha y Hora Final</FormLabel>
+                <FormControl>
+                  <Datepicker :model-value="componentField.modelValue" @update:model-value="componentField.onChange"
+                    :enable-time-picker="true" :minute-increment="5" locale="es" format="yyyy-MM-dd HH:mm"
+                    placeholder="Selecciona fecha y hora" auto-apply class="w-full rounded-lg" />
+                </FormControl>
+                <FormMessage name="endScheduledDate" />
+              </FormItem>
+            </FormField>
           </p>
         </div>
 
@@ -186,20 +166,14 @@
                 <FormControl>
                   <ComboboxAnchor as-child>
                     <ComboboxTrigger as-child>
-                      <Button
-                        variant="outline"
-                        class="justify-between rounded-md py-2.5 min-w-full max-w-full"
-                      >
+                      <Button variant="outline" class="justify-between rounded-md py-2.5 min-w-full max-w-full">
                         <span class="truncate font-normal">
                           {{
                             componentField.modelValue["name"] ??
                             "Selecciona un salón..."
                           }}
                         </span>
-                        <Icon
-                          name="lucide:chevrons-up-down"
-                          class="ml-2 h-4 w-4 shrink-0 opacity-50"
-                        />
+                        <Icon name="lucide:chevrons-up-down" class="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </ComboboxTrigger>
                   </ComboboxAnchor>
@@ -207,14 +181,9 @@
 
                 <ComboboxList class="max-h-[300px] overflow-y-auto !block">
                   <div class="relative w-full items-center">
-                    <ComboboxInput
-                      class="pl-0 focus-visible:ring-0 rounded-none h-10"
-                      placeholder="Buscar salón..."
-                      :autoFocus="false"
-                    />
-                    <span
-                      class="absolute start-0 inset-y-0 flex items-center justify-center px-3"
-                    >
+                    <ComboboxInput class="pl-0 focus-visible:ring-0 rounded-none h-10" placeholder="Buscar salón..."
+                      :autoFocus="false" />
+                    <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
                       <Icon name="lucide:search" class="h-4 w-4 opacity-50" />
                     </span>
                   </div>
@@ -224,12 +193,8 @@
                   </ComboboxEmpty>
 
                   <ComboboxGroup heading="Salones disponibles">
-                    <ComboboxItem
-                      v-for="salon in classrooms"
-                      :key="salon.id"
-                      :value="salon"
-                      class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold"
-                    >
+                    <ComboboxItem v-for="salon in classrooms" :key="salon.id" :value="salon"
+                      class="whitespace-normal cursor-pointer break-words max-w-full data-[state=checked]:font-bold">
                       <ComboboxItemIndicator>
                         <Icon name="lucide:check" class="size-4" />
                       </ComboboxItemIndicator>
@@ -255,97 +220,105 @@
 </template>
 
 <script setup lang="ts">
-  import { toTypedSchema } from "@vee-validate/zod";
-  import { format } from "date-fns";
-  import { es } from "date-fns/locale";
-  import { Form } from "vee-validate";
-  import { toast } from "vue-sonner";
-  import { z } from "zod";
-  import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
-  import Button from "~/components/ui/button/Button.vue";
-  import { FormField } from "~/components/ui/form";
-  import type { Activity } from "~/lib/api/conferencias";
-  import { getSalones } from "~/lib/api/salones";
+import { toTypedSchema } from "@vee-validate/zod";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { Form } from "vee-validate";
+import { toast } from "vue-sonner";
+import { z } from "zod";
+import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
+import Button from "~/components/ui/button/Button.vue";
+import { FormField } from "~/components/ui/form";
+import type { Activity } from "~/lib/api/conferencias";
+import { getSalones } from "~/lib/api/salones";
 
-  const route = useRoute();
-  const {
-    data: activity,
-    error,
-    status,
-  } = await useAsyncData<Activity>(() =>
-    $api(`/activities/${route.params.id}`),
-  );
+const route = useRoute();
+const {
+  data: activity,
+  error,
+  status,
+} = await useAsyncData<Activity>(() =>
+  $api(`/activities/${route.params.id}`),
+);
 
-  // we have to map the activity.classroom.id to the classroomId field and leave the rest of fields as they are
-  const initialValues = computed(() => {
-    if (!activity.value) return {};
-    return {
-      ...activity.value,
-      classroomId: activity.value.classroom || undefined,
-    };
-  });
+// we have to map the activity.classroom.id to the classroomId field and leave the rest of fields as they are
+const initialValues = computed(() => {
+  if (!activity.value) return {};
+  return {
+    ...activity.value,
+    classroomId: activity.value.classroom || undefined,
+    initScheduledDate: activity.value.initScheduledDate
+      ? new Date(activity.value.initScheduledDate)
+      : undefined,
+    endScheduledDate: activity.value.endScheduledDate
+      ? new Date(activity.value.endScheduledDate)
+      : undefined,
+  };
+});
 
-  const { data: classrooms } = await useAsyncData(() => getSalones(), {
-    lazy: true,
-  });
+const { data: classrooms } = await useAsyncData(() => getSalones(), {
+  lazy: true,
+});
 
-  const zSchema = z.object({
-    name: z.string().min(1, "El nombre es obligatorio"),
-    description: z.string().optional(),
-    type: z.string().optional(),
-    initScheduledDate: z.string().optional(),
-    endScheduledDate: z.string().optional(),
-    classroomId: z
-      .object({
-        id: z.string().min(1, "El salón es obligatorio"),
-        name: z.string().optional(), // Optional to allow for display purposes
-      })
-      .optional(),
-  });
-  const schema = toTypedSchema(zSchema);
+const zSchema = z.object({
+  name: z.string().min(1, "El nombre es obligatorio"),
+  description: z.string().optional(),
+  type: z.string().optional(),
+  initScheduledDate: z.date().optional(),
+  endScheduledDate: z.date().optional(),
+  classroomId: z
+    .object({
+      id: z.string().min(1, "El salón es obligatorio"),
+      name: z.string().optional(), // Optional to allow for display purposes
+    })
+    .optional(),
+});
+const schema = toTypedSchema(zSchema);
 
-  async function handleSubmit(values: z.infer<typeof zSchema>) {
-    console.log("Submitting form with values:", values.classroomId?.id);
-    // Trigger the mutation to update the activity
-    // mutate(values);
-    await $api(`/activities/${route.params.id}`, {
-        method: "PATCH",
-        body: {
-          ...values,
-          classroomId: values.classroomId?.id, // Use the ID for the API call
-        },
-      })
-  }
+async function handleSubmit(values: z.infer<typeof zSchema>) {
+  console.log("Submitting form with values:", values.classroomId?.id);
+  // Trigger the mutation to update the activity
+  mutate(values);
+  /*
+  await $api(`/activities/${route.params.id}`, {
+      method: "PATCH",
+      body: {
+        ...values,
+        classroomId: values.classroomId?.id, // Use the ID for the API call
+      },
+    })
+  */
+}
 
-  const { mutate, asyncStatus } = useMutation({
-    mutation: (values: z.infer<typeof zSchema>) =>
-      $api(`/activities/${route.params.id}`, {
-        method: "PUT",
-        body: {
-          ...values,
-          classroomId: values.classroomId?.id, // Use the ID for the API call
-        },
-      }),
-    onSuccess: () => {
-      toast.success("Actividad actualizada correctamente");
-      navigateTo(`/admin/conferences/${route.params.id}`);
-    },
-    onError: (error) => {
-      toast.error("Error al actualizar la actividad");
-      console.error("Error updating activity:", error);
-    },
-  });
+const { mutate, asyncStatus } = useMutation({
+  mutation: (values: z.infer<typeof zSchema>) =>
+    $api(`/activities/${route.params.id}`, {
+      method: "PUT",
+      body: {
+        ...values,
+        classroomId: values.classroomId?.id, // Use the ID for the API call
+      },
+    }),
+  onSuccess: () => {
+    toast.success("Actividad actualizada correctamente");
+    navigateTo(`/admin/conferences/${route.params.id}`);
+  },
+  onError: (error) => {
+    toast.error("Error al actualizar la actividad");
+    console.error("Error updating activity:", error);
+  },
+});
 
-  definePageMeta({
-    layout: "admin",
-    title: "Detalles de Actividad",
-  });
+definePageMeta({
+  layout: "admin",
+  title: "Detalles de Actividad",
+});
 
-  function formatDate(dateString?: string): string {
-    return dateString
-      ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", {
-          locale: es,
-        })
-      : "Fecha no disponible";
-  }
+function formatDate(dateString?: string): string {
+  return dateString
+    ? format(new Date(dateString), "HH:mm 'del' EEEE dd 'de' MMMM yyyy", {
+      locale: es,
+    })
+    : "Fecha no disponible";
+}
 </script>
