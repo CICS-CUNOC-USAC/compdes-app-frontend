@@ -232,6 +232,7 @@ import { FormField } from "~/components/ui/form";
 import type { Activity } from "~/lib/api/conferencias";
 import { getSalones } from "~/lib/api/salones";
 import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 const route = useRoute();
 const {
