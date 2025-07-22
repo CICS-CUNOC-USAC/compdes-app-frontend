@@ -80,9 +80,23 @@
           <h2 class="text-sm text-muted-foreground font-semibold mb-2">
             ¿Te gustaría participar en este taller?
           </h2>
-          <Button size="sm" variant="default" @click="assignWorkshop" :disabled="isAlreadyAssigned">
+
+          <p class="text-sm text-muted-foreground">
+            Participantes asignados: <strong>{{ totalAsignees }}</strong>
+            <template v-if="participantLimit !== undefined">
+              / {{ participantLimit }}
+            </template>
+          </p>
+
+          <Button size="sm" variant="default" @click="assignWorkshop" :disabled="isAlreadyAssigned || isFull">
             <Icon name="lucide:plus-circle" />
-            {{ isAlreadyAssigned ? "Ya estás inscrito" : "Unirme al taller" }}
+            {{
+              isAlreadyAssigned
+                ? "Ya estás inscrito"
+                : isFull
+                  ? "Cupo lleno"
+                  : "Unirme al taller"
+            }}
           </Button>
         </div>
       </div>
@@ -148,6 +162,15 @@ watchEffect(() => {
 });
 
 const totalAsignees = computed(() => asignees.value?.length ?? 0);
+
+const participantLimit = computed(() => {
+  const match = activity.value?.description?.match(/L[ií]mite:\s*(\d+)/i);
+  return match ? parseInt(match[1], 10) : undefined;
+});
+
+const isFull = computed(() => {
+  return participantLimit.value !== undefined && totalAsignees.value >= participantLimit.value;
+});
 
 const { mutate: assignWorkshop, asyncStatus } = useMutation({
   mutation: () => assignToWorkShop(activity.value?.id ?? ''),
