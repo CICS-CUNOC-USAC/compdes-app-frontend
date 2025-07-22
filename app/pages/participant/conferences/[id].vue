@@ -88,8 +88,6 @@
             </template>
           </p>
 
-          <p>{{ isAlreadyAssigned }}</p>
-          <p>{{ userActivities }}</p>
           <Button size="sm" variant="default" @click="assignWorkshop" :disabled="isAlreadyAssigned || isFull">
             <Icon name="lucide:plus-circle" />
             {{
