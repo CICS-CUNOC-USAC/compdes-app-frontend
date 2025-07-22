@@ -42,7 +42,7 @@ export async function getConferences(): Promise<Activity[]> {
 }
 
 export async function assignToWorkShop(activityId: string) {
-  const response = await $api(`/activities/register`, {
+  const response = await $api(`/reservations/register`, {
     method: 'POST',
     body: {'activityId': activityId},
   });
