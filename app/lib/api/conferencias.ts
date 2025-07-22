@@ -50,7 +50,7 @@ export async function assignToWorkShop(activityId: string) {
 }
 
 export async function getUserWorkshops(): Promise<Activity[]> {
-  const response = await $api(`/activities/all`, {
+  const response = await $api(`/reservations/all`, {
     method: 'GET',
   });
   return response as Activity[];
