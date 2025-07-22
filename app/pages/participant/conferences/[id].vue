@@ -127,7 +127,7 @@ const {
 } = await useAsyncData<Activity[]>(() => getUserWorkshops());
 
 const isAlreadyAssigned = computed(() =>
-  userActivities.value?.some(a => a.id == (route.params.id as string))
+  userActivities.value?.some(a => (a as any).activity.id == (route.params.id as string))
 );
 
 definePageMeta({
