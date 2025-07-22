@@ -15,7 +15,7 @@
       <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
 
       <div class="space-x-2 space-y-2">
-        <Button size="sm" as-child>
+        <Button size="sm" as-child @click="exportarCorreos">
             <Icon name="lucide:plus" />
             Exportar correos
         </Button>
@@ -114,6 +114,25 @@
   import type { Participant } from "~/lib/api/participants";
   import type { PageableResponse } from "~/lib/api/shared";
   const route = useRoute();
+
+  function exportarCorreos() {
+    $api<Blob>("/reports/get-approved-participants-email", {
+      method: "GET",
+      responseType: "blob",
+    })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "correos.txt";
+        link.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => {
+        toast.error("No se pudo exportar los correos");
+        console.error(err);
+      });
+  }
 
   const {
     data: participantesResponse,
