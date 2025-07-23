@@ -630,7 +630,6 @@
           v-if="stepIndex === steps.length"
           type="submit"
           :loading="asyncStatus === 'loading'"
-          disabled
         >
           Finalizar
           <Icon name="lucide:check" />
