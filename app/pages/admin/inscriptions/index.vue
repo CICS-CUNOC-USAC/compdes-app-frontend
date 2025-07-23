@@ -15,12 +15,12 @@
       <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
 
       <div class="space-x-2 space-y-2">
-        <Button size="sm" as-child @click="exportarCorreos">
-            <Icon name="lucide:plus" />
-            Exportar correos
-        </Button>
         <Button size="icon" variant="outline" @click="refreshInscriptions">
           <Icon name="lucide:refresh-ccw" />
+        </Button>
+        <Button size="sm" @click="exportarCorreos" variant="outline">
+          <Icon name="lucide:file-output" />
+          Exportar correos
         </Button>
         <Button size="sm" as-child>
           <NuxtLink to="/admin/inscriptions/new">
@@ -140,6 +140,7 @@
     error,
     refresh: refreshInscriptions,
   } = await useAsyncData<PageableResponse<Participant>>(
+    "admin-inscriptions",
     () =>
       $api("/participants/all", {
         query: {
@@ -524,6 +525,31 @@
             ? "Tarjeta"
             : "Transferencia"}
         </>
+      ),
+    },
+    {
+      accessorKey: "qrCodeNumber",
+      meta: {
+        displayName: "Número QR",
+      },
+      header: () => (
+        <div class="text-center font-semibold">
+          <Icon name="lucide:qr-code" class="inline mr-1 mb-0.5" />
+          Número QR
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div class="text-center">
+          {row.getValue("qrCodeNumber") ? (
+            <Badge variant="secondary" class="uppercase tracking-wider">
+              {row.getValue("qrCodeNumber")}
+            </Badge>
+          ) : (
+            <Badge variant="outline" class="uppercase tracking-wider">
+              Sin QR
+            </Badge>
+          )}
+        </div>
       ),
     },
   ];

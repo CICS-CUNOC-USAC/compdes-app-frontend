@@ -23,6 +23,7 @@ export interface Participant extends Entity {
   isGuest: boolean;
   email: string;
   phone: string;
+  qrCodeNumber: number | null;
   identificationDocument: string;
   qrCodeLink: null;
   id: string;
