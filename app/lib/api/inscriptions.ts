@@ -1,4 +1,5 @@
-import type { NitroFetchOptions } from 'nitropack'
+import type { NitroFetchOptions } from "nitropack";
+import type { Participant } from "./participants";
 
 export interface InscriptionData {
   firstName: string;
@@ -40,18 +41,28 @@ export async function createInscription(data: InscriptionData) {
   return response;
 }
 
-export async function verifyInscriptionById(id: string, opts: NitroFetchOptions<any>) {
+export async function verifyInscriptionById(
+  id: string,
+  opts: NitroFetchOptions<any>,
+) {
   const response = await $api(
     `/participants/public-inscription/by-document/${id}`,
-    opts
+    opts,
   );
   return response;
 }
 
-export async function patchPassword(values: any, user_id: string){
+export async function patchPassword(values: any, user_id: string) {
   const response = await $api(`/users/finalize/${user_id}`, {
-    method: 'PATCH',
+    method: "PATCH",
     body: values,
   });
+  return response;
+}
+
+export async function getParticipantInfoByQr(
+  qrId: string,
+): Promise<Participant> {
+  const response = await $api<Participant>(`/participants/by-qr/${qrId}/admin`);
   return response;
 }
