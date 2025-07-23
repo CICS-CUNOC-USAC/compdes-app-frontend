@@ -255,6 +255,8 @@
     },
   );
 
+  const nuxtApp = useNuxtApp();
+
   const { mutate: deleteInscription, asyncStatus } = useMutation({
     mutation: () => deleteInscriptionByAdmin(route.params.id),
     onSuccess: () => {
