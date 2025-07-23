@@ -16,11 +16,9 @@
 
       <section class="flex flex-col gap-8 lg:gap-18 items-center justify-center">
         <section class="flex flex-col gap-8 lg:gap-4">
-          <Button class="lg:text-lg lg:py-8" as-child>
-            <NuxtLink to="inscripcion">
+          <Button class="lg:text-lg lg:py-8" as-child disabled>
               <Icon name="lucide:log-in" class="size-6" />
-              Inscríbete ahora
-            </NuxtLink>
+              Gracias por participar
           </Button>
 
           o
