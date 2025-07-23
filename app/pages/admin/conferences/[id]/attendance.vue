@@ -74,7 +74,7 @@
       </p>
       <div class="pb-2 text-xs">
         <template v-if="!result"> Esperando a leer el código QR... </template>
-        <template v-if="true">
+        <template v-else-if="result">
           <p>
             ID leído: <strong>{{ result }}</strong>
           </p>
