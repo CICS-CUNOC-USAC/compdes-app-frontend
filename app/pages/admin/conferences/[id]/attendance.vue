@@ -74,17 +74,21 @@
       </p>
       <div class="pb-2 text-xs">
         <template v-if="!result"> Esperando a leer el código QR... </template>
-        <template v-else-if="result">
+        <template v-if="true">
           <p>
             ID leído: <strong>{{ result }}</strong>
           </p>
+          <Label class="my-2.5 text-lg cursor-pointer">
+            <Switch v-model="entrance" class="py-3 w-10" thumb-class="py-2.5 px-2.5"/>
+            {{ entrance ? "Entrada" : "Salida" }}
+          </Label>
           <div class="mt-1 mb-0.5 flex gap-2">
             <Button
-              @click="confirmAttendance"
+              @click="handleConfirmAttendance"
               variant="default"
               class="flex-1"
               size="sm"
-              >Confirmar Asistencia</Button
+              >Guardar</Button
             >
             <Button @click="clearResult" variant="outline" size="sm"
               >Limpiar</Button
@@ -114,6 +118,7 @@
   import { toast } from "vue-sonner";
   import LoaderIndicator from "~/components/partials/LoaderIndicator.vue";
   import Button from "~/components/ui/button/Button.vue";
+  import { Label } from "~/components/ui/label";
   import type { Activity } from "~/lib/api/conferencias";
 
   const route = useRoute();
@@ -130,6 +135,8 @@
   const paused = ref(false);
 
   const result = ref("");
+
+  const entrance = ref(true);
 
   const defaultConstraintOptions = [
     { label: "rear camera", constraints: { facingMode: "environment" } },
@@ -211,15 +218,53 @@
 
   // ends QR Code handling
 
-  function confirmAttendance() {
+  function handleConfirmAttendance() {
     if (!result.value) {
       toast.error("No se ha leído ningún código QR");
       return;
     }
 
     // Aquí puedes manejar la confirmación de asistencia
-    toast.success(`Asistencia confirmada para el ID: ${result.value}`);
+    // toast.success(`Asistencia confirmada para el ID: ${result.value}`);
+    confirmAttendance({
+      qrCode: result.value,
+      activityId: activity.value?.id || "",
+      entrance: entrance.value,
+    });
   }
+
+  const { mutate: confirmAttendance, asyncStatus } = useMutation({
+    mutation: ({
+      qrCode,
+      activityId,
+      entrance,
+    }: {
+      qrCode: string;
+      activityId: string | number;
+      entrance: boolean;
+    }) => {
+      const finalUrl = entrance ? `/attendances/create` : `/attendances/exit`;
+      const method = entrance ? "POST" : "PATCH";
+
+      return $api(finalUrl, {
+        method,
+        body: {
+          qrCode,
+          activityId,
+        },
+      });
+    },
+    onSuccess: () => {
+      toast.success("Asistencia registrada correctamente");
+      clearResult();
+    },
+    onError: (error) => {
+      toast.error(
+        `Error al registrar asistencia: ${error.data?.message || error.name}`,
+      );
+      clearResult();
+    },
+  });
 
   definePageMeta({
     layout: "admin",
