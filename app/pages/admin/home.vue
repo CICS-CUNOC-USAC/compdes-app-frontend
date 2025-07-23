@@ -83,8 +83,8 @@ const linkItems = [
           icon: "lucide:eye",
           link: "/admin/inscriptions?sort=createdAt,desc",
         },
-
         { name: "Crear", icon: "lucide:plus", link: "/admin/inscriptions/new" },
+        { name: "Escanear", icon: "lucide:scan-qr-code", link: "/admin/inscriptions/scan" },
       ],
     },
     {
