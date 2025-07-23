@@ -15,12 +15,12 @@
       <h1 class="text-2xl font-bold">Listado de Inscripciones</h1>
 
       <div class="space-x-2 space-y-2">
-        <Button size="sm" as-child @click="exportarCorreos">
-            <Icon name="lucide:plus" />
-            Exportar correos
-        </Button>
         <Button size="icon" variant="outline" @click="refreshInscriptions">
           <Icon name="lucide:refresh-ccw" />
+        </Button>
+        <Button size="sm" @click="exportarCorreos" variant="outline">
+            <Icon name="lucide:file-output" />
+            Exportar correos
         </Button>
         <Button size="sm" as-child>
           <NuxtLink to="/admin/inscriptions/new">
