@@ -36,6 +36,11 @@
             <li>Revisa esta pagina regularmente para encontrar informacion importante.</li>
             <li>Ingresa al grupo de apoyo de Telegram para participantes! <a class="underline text-red-700"
                 href="https://t.me/+cSTfUBCiNcE5MTQ5">Link de Telegram</a></li>
+            <li>Llena el siguiente forms para participar en la Ruta del Cafe!<a class="underline text-red-700"
+                href="https://forms.gle/M8RvXSgpiGg7FP1J8">Link de Encuesta</a></li>
+
+            <li>IMPORTANTE: Si eres estudiante del Centro Universitario de Occidente, llena el siguiente formulario.<a class="underline text-red-700"
+                href="https://forms.gle/w2sEpW8rkAixSC7A6">Link de Interes de Cursos</a></li>
 
           </ul>
         </CardContent>
