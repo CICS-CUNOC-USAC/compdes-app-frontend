@@ -18,6 +18,14 @@
         <Button size="icon" variant="outline" @click="refreshInscriptions">
           <Icon name="lucide:refresh-ccw" />
         </Button>
+        <Button size="sm" @click="exportarPonentes" variant="outline">
+          <Icon name="lucide:file-output" />
+          Exportar ponentes
+        </Button>
+        <Button size="sm" @click="exportarParticipantes" variant="outline">
+          <Icon name="lucide:file-output" />
+          Exportar participantes
+        </Button>
         <Button size="sm" @click="exportarCorreos" variant="outline">
           <Icon name="lucide:file-output" />
           Exportar correos
@@ -114,6 +122,44 @@
   import type { Participant } from "~/lib/api/participants";
   import type { PageableResponse } from "~/lib/api/shared";
   const route = useRoute();
+
+  function exportarParticipantes() {
+    $api<Blob>("/reports/approved-participants-by-role-email/false", {
+      method: "GET",
+      responseType: "blob",
+    })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "correos.txt";
+        link.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => {
+        toast.error("No se pudo exportar los correos");
+        console.error(err);
+      });
+  }
+
+  function exportarPonentes() {
+    $api<Blob>("/reports/approved-participants-by-role-email/true", {
+      method: "GET",
+      responseType: "blob",
+    })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "correos.txt";
+        link.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => {
+        toast.error("No se pudo exportar los correos");
+        console.error(err);
+      });
+  }
 
   function exportarCorreos() {
     $api<Blob>("/reports/get-approved-participants-email", {
