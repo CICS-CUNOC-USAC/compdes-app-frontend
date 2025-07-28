@@ -4,17 +4,17 @@
       <h1>My Application</h1>
     </header> -->
     <SidebarProvider>
-      <AppSidebar />
+      <!-- <AppSidebar /> -->
       <main class="w-full min-h-screen flex flex-col">
         <div
           class="flex py-2 px-3.5 z-50 justify-between gap-x-2 sticky top-0 bg-background/80 backdrop-blur"
         >
           <section class="flex items-center gap-x-2">
-            <SidebarTrigger>
+            <!-- <SidebarTrigger>
               <template #icon>
                 <Icon name="lucide:menu" class="size-4" />
               </template>
-            </SidebarTrigger>
+            </SidebarTrigger> -->
             <NuxtLink to="/" class="inline-block uppercase font-medium text-sm text-foreground">
               <CompdesLogo
                 class="size-4.5 inline-block mr-1 mb-0.5 fill-foreground"

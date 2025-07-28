@@ -1,7 +1,11 @@
 <template>
   <div class="text-center h-svh px-6 bg-background" vaul-drawer-wrapper>
-    <div class="flex gap-12 flex-col items-center justify-center h-full lg:grid lg:grid-cols-2 lg:gap-0">
-      <section class="flex gap-7 flex-col items-center justify-center lg:border-r lg:border-neutral-200 lg:h-full">
+    <div
+      class="flex gap-12 flex-col items-center justify-center h-full lg:grid lg:grid-cols-2 lg:gap-0"
+    >
+      <section
+        class="flex gap-7 flex-col items-center justify-center lg:h-full"
+      >
         <!-- <img src="~/assets/svg/compdes-logo.svg" alt="COMPDES Logo" class="size-32 mx-auto" /> -->
         <CompdesIcon class="size-32 mx-auto fill-black dark:fill-white" />
 
@@ -14,8 +18,20 @@
         </p>
       </section>
 
-      <section class="flex flex-col gap-8 lg:gap-18 items-center justify-center">
-        <section class="flex flex-col gap-8 lg:gap-4">
+      <section
+        class="flex flex-col gap-8 p-4 lg:gap-18 items-center justify-center"
+      >
+        <section class="flex flex-col gap-6 items-center lg:gap-8">
+          <h3 class="text-4xl font-bold text-foreground">
+            ¡Gracias por haber asistido al congreso!
+          </h3>
+          <p class="text-lg text-center text-muted-foreground max-w-prose">
+            Fue un placer contar con tu presencia y tu entusiasmo en cada
+            charla, taller y actividad. Esperamos que hayas disfrutado y
+            aprendido tanto como nosotros disfrutamos organizándolo.
+          </p>
+        </section>
+        <!-- <section class="flex flex-col gap-8 lg:gap-4">
           <Button class="lg:text-lg lg:py-8" as-child>
             <NuxtLink to="inscripcion">
               <Icon name="lucide:log-in" class="size-6" />
@@ -37,14 +53,26 @@
           </NuxtLink>
           <p class="font-medium text-sm mt-4 max-w-80">Si usaste el antiguo formulario de Forms, no es necesario que
             vuelvas a inscribirte</p>
-        </div>
+        </div> -->
       </section>
+      <footer class="bg-background text-center p-4 self-center lg:col-span-2 lg:p-8">
+        <p class="text-sm text-muted-foreground">
+          &lt;/&gt; con <span class="text-red-500">♥</span> por
+          <a
+          href="https://www.cics.cunoc.edu.gt"
+          target="_blank"
+            class="text-brand-green hover:underline"
+          >
+            Comité de Ingeniería en Ciencias y Sistemas - CICS - CUNOC
+          </a>
+        </p>
+      </footer>
     </div>
   </div>
 </template>
 <script setup>
-import { NuxtLink } from "#components";
-import CompdesIcon from "~/components/icons/CompdesIcon.vue";
-import Button from "~/components/ui/button/Button.vue";
+  import { NuxtLink } from "#components";
+  import CompdesIcon from "~/components/icons/CompdesIcon.vue";
+  import Button from "~/components/ui/button/Button.vue";
 </script>
 <style scoped></style>
