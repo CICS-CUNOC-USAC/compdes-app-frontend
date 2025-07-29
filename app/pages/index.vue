@@ -59,7 +59,7 @@
         <p class="text-sm text-muted-foreground">
           &lt;/&gt; con <span class="text-red-500">♥</span> por
           <a
-          href="https://www.cics.cunoc.edu.gt"
+          href="https://cics.cunoc.edu.gt"
           target="_blank"
             class="text-brand-green hover:underline"
           >
